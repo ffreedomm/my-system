@@ -69,18 +69,133 @@ export default {
                 {
                     icon: 'el-icon-lx-calendar',
                     index: '3',
-                    title: '表单相关',
+                    title: '基础信息管理',
                     subs: [
                         {
+                            index: 'icon',
+                            title: '行业管理'
+                        },
+                        {
                             index: 'form',
-                            title: '基本表单'
+                            title: '地区管理'
+                        },
+                        {
+                            index: 'form',
+                            title: '机构管理'
+                        },
+                        {
+                            index: 'form',
+                            title: '用户管理'
+                        },
+                        {
+                            index: 'form',
+                            title: '设备管理'
+                        },
+                        {
+                            index: 'form',
+                            title: '终端管理'
+                        },
+                        {
+                            index: 'form',
+                            title: '采集数据管理'
+                        },
+                        {
+                            index: 'form',
+                            title: '报警参数设置'
+                        },
+                        {
+                            index: 'form',
+                            title: '工作时段设置'
+                        },
+                        {
+                            index: 'form',
+                            title: '错峰时段报备'
                         },
                     ]
                 },
                 {
-                    icon: 'el-icon-lx-emoji',
-                    index: 'icon',
-                    title: '自定义图标'
+                   icon: 'el-icon-s-grid',
+                    index: '3',
+                    title: '数据监控',
+                    subs: [
+                      {
+                            index: 'form',
+                            title: '设备实时监控'
+                        },
+                    ]
+                },
+                {
+                   icon: 'el-icon-eleme',
+                    index: '3',
+                    title: '故障情况统计',
+                    subs: [
+                      {
+                          index: 'form',
+                          title: '按行业统计'
+                      },
+                      {
+                          index: 'form',
+                          title: '按地区统计'
+                      },
+                      {
+                          index: 'form',
+                          title: '按机构统计'
+                      },
+                      {
+                          index: 'form',
+                          title: '按设备统计'
+                      },
+                      {
+                          index: 'form',
+                          title: '设备故障现场分析'
+                      },
+                    ]
+                },
+                {
+                   icon: 'el-icon-table-lamp',
+                    index: '3',
+                    title: '用电情况统计',
+                    subs: [
+                        {
+                          index: 'form',
+                          title: '按行业统计'
+                      },
+                      {
+                          index: 'form',
+                          title: '按地区统计'
+                      },
+                      {
+                          index: 'form',
+                          title: '按机构统计'
+                      },
+                      {
+                          index: 'form',
+                          title: '按设备统计'
+                      },
+                      {
+                          index: 'form',
+                          title: '按关联设备对比统计'
+                      },
+                    ]
+                },
+                {
+                   icon: 'el-icon-setting',
+                    index: '3',
+                    title: '其他',
+                    subs: [
+                        {
+                          index: 'form',
+                          title: '上传数据查看'
+                      },
+                      {
+                          index: 'form',
+                          title: '操作日志管理'
+                      },
+                      {
+                          index: 'form',
+                          title: '修改密码'
+                      },
+                    ]
                 },
             ]
         };

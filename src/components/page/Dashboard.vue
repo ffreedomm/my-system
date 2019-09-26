@@ -5,61 +5,105 @@
             <el-col :span="24">
                 <el-row :gutter="20" class="mgb20">
                     <el-col :span="4">
-                        <el-card shadow="hover" :body-style="{padding: '0px'}">
+                        <el-card
+                            shadow="always"
+                            :body-style="{padding: '0px','background-color': 'aqua'}"
+                        >
+                            <div slot="header" class="clearfix">
+                                <div
+                                    style="font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #fff;"
+                                >机构总数</div>
+                            </div>
                             <div class="grid-content grid-con-1">
                                 <div class="grid-cont-right">
                                     <div class="grid-num">5家</div>
-                                    <div>机构总数</div>
                                 </div>
                             </div>
                         </el-card>
                     </el-col>
                     <el-col :span="4">
-                        <el-card shadow="hover" :body-style="{padding: '0px'}">
+                        <el-card
+                            shadow="hover"
+                            :body-style="{padding: '0px','background-color': '#94d6da'}"
+                        >
+                            <div slot="header" class="clearfix">
+                                <div
+                                    style="font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #fff;"
+                                >产污设备数</div>
+                            </div>
                             <div class="grid-content grid-con-2">
                                 <div class="grid-cont-right">
                                     <div class="grid-num">6个</div>
-                                    <div>产污设备数</div>
                                 </div>
                             </div>
                         </el-card>
                     </el-col>
                     <el-col :span="4">
-                        <el-card shadow="hover" :body-style="{padding: '0px'}">
+                        <el-card
+                            shadow="hover"
+                            :body-style="{padding: '0px','background-color': '#dbce8f'}"
+                        >
+                            <div slot="header" class="clearfix">
+                                <div
+                                    style="font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #fff;"
+                                >治污设备数</div>
+                            </div>
                             <div class="grid-content grid-con-2">
                                 <div class="grid-cont-right">
                                     <div class="grid-num">8个</div>
-                                    <div>治污设备数</div>
                                 </div>
                             </div>
                         </el-card>
                     </el-col>
                     <el-col :span="4">
-                        <el-card shadow="hover" :body-style="{padding: '0px'}">
+                        <el-card
+                            shadow="hover"
+                            :body-style="{padding: '0px','background-color': '#d3d7d4'}"
+                        >
+                            <div slot="header" class="clearfix">
+                                <div
+                                    style="font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #fff;"
+                                >监控点数</div>
+                            </div>
+
                             <div class="grid-content grid-con-1">
                                 <div class="grid-cont-right">
                                     <div class="grid-num">12个</div>
-                                    <div>监控点数</div>
                                 </div>
                             </div>
                         </el-card>
                     </el-col>
                     <el-col :span="4">
-                        <el-card shadow="hover" :body-style="{padding: '0px'}">
+                        <el-card
+                            shadow="hover"
+                            :body-style="{padding: '0px','background-color': '#f173ac'}"
+                        >
+                            <div slot="header" class="clearfix">
+                                <div
+                                    style="font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #fff;"
+                                >产污异常机构数</div>
+                            </div>
                             <div class="grid-content grid-con-3">
                                 <div class="grid-cont-right">
                                     <div class="grid-num">4家</div>
-                                    <div>产污异常机构数</div>
                                 </div>
                             </div>
                         </el-card>
                     </el-col>
                     <el-col :span="4">
-                        <el-card shadow="hover" :body-style="{padding: '0px'}">
+                        <el-card
+                            shadow="hover"
+                            :header-style="{color:'#f3704b'}"
+                            :body-style="{padding: '0px','background-color': '#f3704b'}"
+                        >
+                            <div slot="header" style="{color:#f3704b}" class="clearfix">
+                                <div
+                                    style="font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #fff;"
+                                >治污异常机构数</div>
+                            </div>
                             <div class="grid-content grid-con-3">
                                 <div class="grid-cont-right">
                                     <div class="grid-num">3家</div>
-                                    <div>治污异常机构数</div>
                                 </div>
                             </div>
                         </el-card>
@@ -226,7 +270,7 @@ export default {
 .grid-content {
     display: flex;
     align-items: center;
-    height: 100px;
+    height: 80px;
 }
 
 .grid-cont-right {
@@ -255,7 +299,7 @@ export default {
 }
 
 .grid-con-1 .grid-num {
-    color: rgb(45, 140, 240);
+    color: #fff;
 }
 
 .grid-con-2 .grid-con-icon {
@@ -263,7 +307,7 @@ export default {
 }
 
 .grid-con-2 .grid-num {
-    color: rgb(45, 140, 240);
+    color: #fff;
 }
 
 .grid-con-3 .grid-con-icon {
@@ -271,7 +315,7 @@ export default {
 }
 
 .grid-con-3 .grid-num {
-    color: rgb(242, 94, 67);
+    color: #fff;
 }
 
 .user-info {
@@ -292,7 +336,7 @@ export default {
     padding-left: 50px;
     flex: 1;
     font-size: 14px;
-    color: #999;
+    color: blue;
 }
 
 .user-info-cont div:first-child {
@@ -302,7 +346,7 @@ export default {
 
 .user-info-list {
     font-size: 14px;
-    color: #999;
+    color: lightskyblue;
     line-height: 25px;
 }
 
