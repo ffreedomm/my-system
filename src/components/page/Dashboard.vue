@@ -1,6 +1,11 @@
 <template>
     <div>
-        <el-divider content-position="left">整体情况监控</el-divider>
+      <el-row>
+        <el-col :span="24">
+          整体情况监控
+        </el-col>
+      </el-row>
+        <!-- <el-divider content-position="left">整体情况监控</el-divider> -->
         <el-row :gutter="20">
             <el-col :span="24">
                 <el-row :gutter="20" class="mgb20">
