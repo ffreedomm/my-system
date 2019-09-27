@@ -71,39 +71,39 @@ export default {
                             title: '行业管理'
                         },
                         {
-                            index: 'form',
+                            index: 'region',
                             title: '地区管理'
                         },
                         {
-                            index: 'form',
+                            index: 'organ',
                             title: '机构管理'
                         },
                         {
-                            index: 'form',
+                            index: 'users',
                             title: '用户管理'
                         },
                         {
-                            index: 'form',
+                            index: 'equipment',
                             title: '设备管理'
                         },
                         {
-                            index: 'form',
+                            index: 'terminal',
                             title: '终端管理'
                         },
                         {
-                            index: 'form',
+                            index: 'collection',
                             title: '采集数据管理'
                         },
                         {
-                            index: 'form',
+                            index: 'alarmset',
                             title: '报警参数设置'
                         },
                         {
-                            index: 'form',
+                            index: 'intervalset',
                             title: '工作时段设置'
                         },
                         {
-                            index: 'form',
+                            index: 'peakset',
                             title: '错峰时段报备'
                         },
                     ]

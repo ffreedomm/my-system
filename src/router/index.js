@@ -26,8 +26,54 @@ export default new Router({
                 // },
                 {
                     path: '/industry',
-                    component: () => import('../components/page/BaseTable.vue'),
+                    component: () => import('../components/page/industry.vue'),
                     meta: { title: '行业管理' }
+                },
+                {
+
+                    path: '/region',
+                    component: () => import('../components/page/region.vue'),
+                    meta: { title: '地区管理' }
+                },
+                {
+                    path: '/organ',
+                    component: () => import('../components/page/organ.vue'),
+                    meta: { title: '机构管理' }
+                },
+                {
+                    path: '/users',
+                    component: () => import('../components/page/users.vue'),
+                    meta: { title: '用户管理' }
+                },
+                {
+                    path: '/equipment',
+                    component: () => import('../components/page/equipment.vue'),
+                    meta: { title: '设备管理' }
+                },
+                {
+                    path: '/terminal',
+                    component: () => import('../components/page/terminal.vue'),
+                    meta: { title: '终端管理' }
+                },
+                {
+                    path: '/collection',
+                    component: () => import('../components/page/collection.vue'),
+                    meta: { title: '采集数据管理' }
+                },
+                {
+                    path: '/alarmset',
+                    component: () => import('../components/page/alarmset.vue'),
+                    meta: { title: '报警参数设置' }
+                },
+                {
+                    path: '/intervalset',
+                    component: () => import('../components/page/intervalset.vue'),
+                    meta: { title: '工作时段设置' }
+                },
+                {
+                    path: '/peakset',
+                    component: () => import('../components/page/peakset.vue'),
+                    meta: { title: '错峰时段报备' }
                 },
                 {
                     path: '/monitor',
