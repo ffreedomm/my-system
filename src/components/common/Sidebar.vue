@@ -114,7 +114,7 @@ export default {
                     title: '数据监控',
                     subs: [
                       {
-                            index: 'form',
+                            index: 'monitor',
                             title: '设备实时监控'
                         },
                     ]

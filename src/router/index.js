@@ -29,11 +29,12 @@ export default new Router({
                     component: () => import('../components/page/BaseTable.vue'),
                     meta: { title: '行业管理' }
                 },
-                // {
-                //     path: '/form',
-                //     component: () => import('../components/page/BaseForm.vue'),
-                //     meta: { title: '基本表单' }
-                // },
+                {
+                    path: '/monitor',
+                    component: () => import('../components/page/Monitor.vue'),
+                    meta: { title: '设备实时监控' }
+                },
+                
             ]
         },
         {

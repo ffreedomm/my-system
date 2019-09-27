@@ -1,14 +1,15 @@
 <template>
     <div>
-      <el-row>
+    <div class="container">
+      <!-- <el-row>
         <el-col :span="24">
           <span style="font-weight:bold">整体情况监控</span>
         </el-col>
-      </el-row>
-        <!-- <el-divider content-position="left">整体情况监控</el-divider> -->
-        <el-row :gutter="20">
+      </el-row> -->
+      <el-row :gutter="60">
             <el-col :span="12">
-                <el-row :gutter="20" class="mgb20">
+        <el-divider content-position="left">整体情况监控</el-divider>
+                <el-row :gutter="60" class="mgb20">
                     <el-col :span="8">
                         <el-card
                             shadow="always"
@@ -16,7 +17,7 @@
                         >
                             <div slot="header" class="clearfix">
                                 <div
-                                    style="font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #fff;"
+                                    style="font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #f3f3f3;"
                                 >机构总数</div>
                             </div>
                             <div class="grid-content grid-con-1">
@@ -33,7 +34,7 @@
                         >
                             <div slot="header" class="clearfix">
                                 <div
-                                    style="font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #fff;"
+                                    style="font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #f3f3f3;"
                                 >产污设备数</div>
                             </div>
                             <div class="grid-content grid-con-2">
@@ -50,7 +51,7 @@
                         >
                             <div slot="header" class="clearfix">
                                 <div
-                                    style="font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #fff;"
+                                    style="font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #f3f3f3;"
                                 >治污设备数</div>
                             </div>
                             <div class="grid-content grid-con-2">
@@ -61,7 +62,7 @@
                         </el-card>
                     </el-col>
                 </el-row>
-                <el-row :gutter="20" class="mgb20">
+                <el-row :gutter="60" class="mgb20">
                     <el-col :span="8">
                         <el-card
                             shadow="hover"
@@ -69,7 +70,7 @@
                         >
                             <div slot="header" class="clearfix">
                                 <div
-                                    style="font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #fff;"
+                                    style="font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #f3f3f3;"
                                 >监控点数</div>
                             </div>
 
@@ -87,7 +88,7 @@
                         >
                             <div slot="header" class="clearfix">
                                 <div
-                                    style="font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #fff;"
+                                    style="font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #f3f3f3;"
                                 >产污异常机构数</div>
                             </div>
                             <div class="grid-content grid-con-3">
@@ -105,7 +106,7 @@
                         >
                             <div slot="header" style="{color:#f3704b}" class="clearfix">
                                 <div
-                                    style="font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #fff;"
+                                    style="font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #f3f3f3;"
                                 >治污异常机构数</div>
                             </div>
                             <div class="grid-content grid-con-3">
@@ -117,22 +118,26 @@
                     </el-col>
                 </el-row>
             </el-col>
+
             <el-col :span="12">
+        <el-divider content-position="left">机构分布</el-divider>
                 <div id="myChart" :style="{width: '500', height: '290px'}"></div>
             </el-col>
         </el-row>
-        <el-divider></el-divider>
+        
          <!-- <el-row :gutter="20">
             
            <el-col :span="12">
                  <div id="myChart2" :style="{width: '500', height: '380px'}"></div>
              </el-col>
         </el-row> -->
+        <el-divider content-position="left">用电量统计</el-divider>
         <el-row :gutter="20">
             <el-col :span="24">
                 <div id="myChart2" :style="{width: '500', height: '380px'}"></div>
             </el-col>
         </el-row>
+    </div>
     </div>
 </template>
 
@@ -372,7 +377,8 @@ export default {
             let myChart2 = this.$echarts.init(document.getElementById('myChart2'));
             // 绘制图表
             myChart.setOption({
-                title: { text: '机构分布' },
+                //backgroundColor:'#f3f3f3',
+                //title: { text: '机构分布' },
                 tooltip: {},
                 xAxis: {
                     data: ['安康市', '宝鸡市', '汉中市', '商洛市', '铜川市', '渭南市', '西安市', '延安市']
@@ -394,7 +400,8 @@ export default {
             });
             // 绘制图表
             myChart2.setOption({
-                 title: { text: '用电量统计' },
+                //backgroundColor:'#f3f3f3',
+                //title: { text: '用电量统计' },
                 color: ['#3398DB'],
                 tooltip : {
                     trigger: 'axis',
