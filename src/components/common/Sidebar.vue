@@ -62,17 +62,12 @@ export default {
                     title: '系统首页'
                 },
                 {
-                    icon: 'el-icon-lx-cascades',
-                    index: 'table',
-                    title: '基础表格'
-                },
-                {
                     icon: 'el-icon-lx-calendar',
                     index: '3',
                     title: '基础信息管理',
                     subs: [
                         {
-                            index: 'icon',
+                            index: 'industry',
                             title: '行业管理'
                         },
                         {
