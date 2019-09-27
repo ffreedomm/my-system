@@ -2,7 +2,7 @@
     <div>
       <el-row>
         <el-col :span="24">
-          整体情况监控
+          <span style="font-weight:bold">整体情况监控</span>
         </el-col>
       </el-row>
         <!-- <el-divider content-position="left">整体情况监控</el-divider> -->
@@ -351,10 +351,17 @@ export default {
         this.drawLine();
     },
     methods: {
+        find(str,cha,num){
+            var x=str.indexOf(cha);
+            for(var i=0;i<num;i++){
+                x=str.indexOf(cha,x+1);
+            }
+            return x;
+        },
         drawLine() {
         let timeArr = [];
         this.electricityTotalList.forEach(item =>{
-            timeArr.push(item.createTime);
+            timeArr.push(item.createTime.substring(0, this.find(item.createTime,'-',3)));
         });
         let kwhArr = [];
         this.powerTotalList.forEach(item =>{
@@ -387,6 +394,7 @@ export default {
             });
             // 绘制图表
             myChart2.setOption({
+                 title: { text: '用电量统计' },
                 color: ['#3398DB'],
                 tooltip : {
                     trigger: 'axis',
@@ -403,6 +411,10 @@ export default {
                 xAxis : [
                     {
                         type : 'category',
+                        axisLabel: {
+						interval: 0,    //强制文字产生间隔
+					    rotate: -45,     //文字逆时针旋转45°
+					   },
                         data : timeArr,
                         axisTick: {
                             alignWithLabel: true
@@ -414,8 +426,14 @@ export default {
                         type : 'value'
                     }
                 ],
+                legend: {
+                    data:['用电量统计']
+                },
                 series : [
                     {
+                        itemStyle: {
+                            normal: { color: 'rgba(45,140,240,1)' }
+                        },
                         name:'用电量统计',
                         type:'bar',
                         barWidth: '60%',
