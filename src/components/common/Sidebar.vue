@@ -110,7 +110,7 @@ export default {
                 },
                 {
                    icon: 'el-icon-s-grid',
-                    index: '3',
+                    index: '4',
                     title: '数据监控',
                     subs: [
                       {
@@ -121,7 +121,7 @@ export default {
                 },
                 {
                    icon: 'el-icon-eleme',
-                    index: '3',
+                    index: '5',
                     title: '故障情况统计',
                     subs: [
                       {
@@ -148,7 +148,7 @@ export default {
                 },
                 {
                    icon: 'el-icon-table-lamp',
-                    index: '3',
+                    index: '6',
                     title: '用电情况统计',
                     subs: [
                         {
@@ -175,7 +175,7 @@ export default {
                 },
                 {
                    icon: 'el-icon-setting',
-                    index: '3',
+                    index: '7',
                     title: '其他',
                     subs: [
                         {
