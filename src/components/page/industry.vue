@@ -77,7 +77,7 @@
             </span>
         </el-dialog>
         <!-- 下属机构详情 -->
-        <el-dialog title="下属机构详情" style="font-size: 15px;" :visible.sync="detailVisible" width="70%">
+        <el-dialog title="下属机构详情" :visible.sync="detailVisible" width="70%">
            <div class="container">
             <el-table
                 :data="list" 
