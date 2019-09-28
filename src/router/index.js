@@ -62,7 +62,7 @@ export default new Router({
                 },
                 {
                     path: '/alarmset',
-                    component: () => import('../components/page/alarmset.vue'),
+                    component: () => import('../components/page/baseinfo/alarmset.vue'),
                     meta: { title: '报警参数设置' }
                 },
                 {
