@@ -26,38 +26,38 @@ export default new Router({
                 // },
                 {
                     path: '/industry',
-                    component: () => import('../components/page/industry.vue'),
+                    component: () => import('../components/page/baseinfo/industry.vue'),
                     meta: { title: '行业管理' }
                 },
                 {
 
                     path: '/region',
-                    component: () => import('../components/page/region.vue'),
+                    component: () => import('../components/page/baseinfo/region.vue'),
                     meta: { title: '地区管理' }
                 },
                 {
                     path: '/organ',
-                    component: () => import('../components/page/organ.vue'),
+                    component: () => import('../components/page/baseinfo/organ.vue'),
                     meta: { title: '机构管理' }
                 },
                 {
                     path: '/users',
-                    component: () => import('../components/page/users.vue'),
+                    component: () => import('../components/page/baseinfo/users.vue'),
                     meta: { title: '用户管理' }
                 },
                 {
                     path: '/equipment',
-                    component: () => import('../components/page/equipment.vue'),
+                    component: () => import('../components/page/baseinfo/equipment.vue'),
                     meta: { title: '设备管理' }
                 },
                 {
                     path: '/terminal',
-                    component: () => import('../components/page/terminal.vue'),
+                    component: () => import('../components/page/baseinfo/terminal.vue'),
                     meta: { title: '终端管理' }
                 },
                 {
                     path: '/collection',
-                    component: () => import('../components/page/collection.vue'),
+                    component: () => import('../components/page/baseinfo/collection.vue'),
                     meta: { title: '采集数据管理' }
                 },
                 {
@@ -67,12 +67,12 @@ export default new Router({
                 },
                 {
                     path: '/intervalset',
-                    component: () => import('../components/page/intervalset.vue'),
+                    component: () => import('../components/page/baseinfo/intervalset.vue'),
                     meta: { title: '工作时段设置' }
                 },
                 {
                     path: '/peakset',
-                    component: () => import('../components/page/peakset.vue'),
+                    component: () => import('../components/page/baseinfo/peakset.vue'),
                     meta: { title: '错峰时段报备' }
                 },
                 {

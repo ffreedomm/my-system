@@ -6,7 +6,7 @@
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
             </div>
             <el-table
-                :data="tableData" 
+                :data="list" 
                 border
                 class="table"
                 ref="multipleTable"
@@ -14,32 +14,27 @@
                 @selection-change="handleSelectionChange"
             >
                 <el-table-column type="selection" width="55" align="center"></el-table-column>
-                <el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
+                 <el-table-column type="index" width="50"  label="序号"></el-table-column>
                 <el-table-column prop="name" label="用户名"></el-table-column>
-                <el-table-column label="账户余额">
+                <!-- <el-table-column label="账户余额">
                     <template slot-scope="scope">￥{{scope.row.money}}</template>
-                </el-table-column>
-                <el-table-column label="头像(查看大图)" align="center">
-                    <template slot-scope="scope">
-                        <el-image
-                            class="table-td-thumb"
-                            :src="scope.row.thumb"
-                            :preview-src-list="[scope.row.thumb]"
-                        ></el-image>
-                    </template>
-                </el-table-column>
+                </el-table-column> -->
+           
                 <el-table-column prop="address" label="地址"></el-table-column>
-                <el-table-column label="状态" align="center">
+                <!-- <el-table-column label="状态" align="center">
                     <template slot-scope="scope">
                         <el-tag
                             :type="scope.row.state==='成功'?'success':(scope.row.state==='失败'?'danger':'')"
                         >{{scope.row.state}}</el-tag>
                     </template>
-                </el-table-column>
-
-                <el-table-column prop="date" label="注册时间"></el-table-column>
-                <el-table-column label="操作" width="180" align="center">
+                </el-table-column> -->
+                <el-table-column label="操作" width="280" align="center">
                     <template slot-scope="scope">
+                        <el-button
+                            type="text"
+                            icon="el-icon-share"
+                            @click="handleDetail(scope.$index, scope.row)"
+                        >下属机构详情</el-button>
                         <el-button
                             type="text"
                             icon="el-icon-edit"
@@ -81,13 +76,61 @@
                 <el-button type="primary" @click="saveEdit">确 定</el-button>
             </span>
         </el-dialog>
+        <!-- 下属机构详情 -->
+        <el-dialog title="下属机构详情" :visible.sync="detailVisible" width="70%">
+           <div class="container">
+            <el-table
+                :data="list" 
+                border
+                class="table"
+                ref="multipleTable"
+                header-cell-class-name="table-header"
+                @selection-change="handleSelectionChange"
+            >
+                <el-table-column type="selection" width="55" align="center"></el-table-column>
+                 <el-table-column type="index" width="50"  label="序号"></el-table-column>
+                <el-table-column prop="name" label="用户名"></el-table-column>
+                <!-- <el-table-column label="账户余额">
+                    <template slot-scope="scope">￥{{scope.row.money}}</template>
+                </el-table-column> -->
+           
+                <el-table-column prop="address" label="地址"></el-table-column>
+                <!-- <el-table-column label="状态" align="center">
+                    <template slot-scope="scope">
+                        <el-tag
+                            :type="scope.row.state==='成功'?'success':(scope.row.state==='失败'?'danger':'')"
+                        >{{scope.row.state}}</el-tag>
+                    </template>
+                </el-table-column> -->
+                <el-table-column label="操作" width="280" align="center">
+                    <template slot-scope="scope">
+                        <el-button
+                            type="text"
+                            icon="el-icon-edit"
+                            @click="handleEdit(scope.$index, scope.row)"
+                        >编辑</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <div class="pagination">
+                <el-pagination
+                    background
+                    layout="total, prev, pager, next"
+                    :current-page="query.pageIndex"
+                    :page-size="query.pageSize"
+                    :total="pageTotal"
+                    @current-change="handlePageChange"
+                ></el-pagination>
+            </div>
+        </div>
+        </el-dialog>
     </div>
 </template>
 
 <script>
-import { fetchData } from '../../api/index';
+import { fetchData } from '@/api/index';
 export default {
-    name: 'basetable',
+    name: 'industry',
     data() {
         return {
             query: {
@@ -100,10 +143,17 @@ export default {
             multipleSelection: [],
             delList: [],
             editVisible: false,
+            detailVisible: false,
             pageTotal: 0,
             form: {},
             idx: -1,
-            id: -1
+            id: -1,
+            list:[
+              {
+                 name: '环保制造业',
+                 address: '天谷六路'
+              }
+            ]
         };
     },
     created() {
@@ -153,6 +203,12 @@ export default {
             this.idx = index;
             this.form = row;
             this.editVisible = true;
+        },
+        // 下属机构详情操作
+        handleDetail(index, row) {
+            // this.idx = index;
+            // this.form = row;
+            this.detailVisible = true;
         },
         // 保存编辑
         saveEdit() {
