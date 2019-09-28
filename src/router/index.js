@@ -80,6 +80,11 @@ export default new Router({
                     component: () => import('../components/page/Monitor.vue'),
                     meta: { title: '设备实时监控' }
                 },
+                {
+                    path: '/industryStatistics',
+                    component: () => import('../components/page/industryStatistics.vue'),
+                    meta: { title: '按行业统计' }
+                },
                 
             ]
         },

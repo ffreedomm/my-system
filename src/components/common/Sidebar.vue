@@ -125,7 +125,7 @@ export default {
                     title: '故障情况统计',
                     subs: [
                       {
-                          index: 'form',
+                          index: 'industryStatistics',
                           title: '按行业统计'
                       },
                       {
