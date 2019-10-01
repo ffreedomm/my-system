@@ -7,10 +7,10 @@ export const getNewCheckCode = () => {
     })
 }
 
-export const checkCodeImage = (sessionId) => {
+export const loginForUser = (data) => {
     return request({
-        url: '/CheckCodeImage?id='+sessionId,
-        method: 'post'
+        url: `/LoginForUser?code=${data.code}&name=${data.name}&password=${data.password}&sessionId=${data.sessionId}`,
+        method: 'post',
     })
 }
 
