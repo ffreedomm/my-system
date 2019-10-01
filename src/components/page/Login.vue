@@ -46,8 +46,8 @@ export default {
             imgBaseUrl:'https://video1.dushuren123.com/iotserver/CheckCodeImage?id=',
             codeImg: '',
             param: {
-                name: 'admin',
-                password: '20060811',
+                name: '',
+                password: '',
                 code: '',
             },
             rules: {
@@ -80,8 +80,13 @@ export default {
                     loginForUser(this.param).then(res=>{
                       if(res.success){
                         this.$message.success('登录成功');
-                        localStorage.setItem('username', res.object);
+                        localStorage.setItem('username', res.object.name);
+                        localStorage.setItem('id', res.object.id);
+                        localStorage.setItem('role', res.object.role);
                         this.$router.push('/');
+                      }else{
+                        //success，error，info，warning
+                         this.$message.warning(res.message);
                       }
                     })
                 } else {

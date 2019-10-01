@@ -14,15 +14,15 @@ Vue.use(ElementUI, {
 });
 
 //使用钩子函数对路由进行权限跳转
-router.beforeEach((to, from, next) => {
-    document.title = '物联网数据终端管理系统';
-    const role = localStorage.getItem('username').role;
-    if (!role && to.path !== '/login') {
-        next('/login');
-    }else {
-        next();
-    }
-});
+// router.beforeEach((to, from, next) => {
+//     document.title = '物联网数据终端管理系统';
+//     const role = localStorage.getItem('username').role;
+//     if (!role && to.path !== '/login') {
+//         next('/login');
+//     }else {
+//         next();
+//     }
+// });
 
 new Vue({
     router,
