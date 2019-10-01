@@ -1,15 +1,10 @@
 <template>
     <div>
     <div class="container">
-      <!-- <el-row>
-        <el-col :span="24">
-          <span style="font-weight:bold">整体情况监控</span>
-        </el-col>
-      </el-row> -->
-      <el-row :gutter="60">
-            <el-col :span="12">
+      <el-row :gutter="40">
+            <el-col :span="10">
         <el-divider content-position="left">整体情况监控</el-divider>
-                <el-row :gutter="60" class="mgb20">
+                <el-row :gutter="20" class="mgb20">
                     <el-col :span="8">
                         <el-card
                             shadow="always"
@@ -17,12 +12,12 @@
                         >
                             <div slot="header" class="clearfix">
                                 <div
-                                    style="font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #f3f3f3;"
+                                    style="font-size:14px;font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #f3f3f3;"
                                 >机构总数</div>
                             </div>
                             <div class="grid-content grid-con-1">
                                 <div class="grid-cont-right">
-                                    <div class="grid-num">5家</div>
+                                    <div class="grid-num">{{t1Data.orgSum}}家</div>
                                 </div>
                             </div>
                         </el-card>
@@ -34,12 +29,12 @@
                         >
                             <div slot="header" class="clearfix">
                                 <div
-                                    style="font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #f3f3f3;"
+                                    style="font-size:14px;font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #f3f3f3;"
                                 >产污设备数</div>
                             </div>
                             <div class="grid-content grid-con-2">
                                 <div class="grid-cont-right">
-                                    <div class="grid-num">6个</div>
+                                    <div class="grid-num">{{t1Data.productDeviceSum}}个</div>
                                 </div>
                             </div>
                         </el-card>
@@ -51,18 +46,18 @@
                         >
                             <div slot="header" class="clearfix">
                                 <div
-                                    style="font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #f3f3f3;"
+                                    style="font-size:14px;font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #f3f3f3;"
                                 >治污设备数</div>
                             </div>
                             <div class="grid-content grid-con-2">
                                 <div class="grid-cont-right">
-                                    <div class="grid-num">8个</div>
+                                    <div class="grid-num">{{t1Data.treatDeviceSum}}个</div>
                                 </div>
                             </div>
                         </el-card>
                     </el-col>
                 </el-row>
-                <el-row :gutter="60" class="mgb20">
+                <el-row :gutter="20" class="mgb20">
                     <el-col :span="8">
                         <el-card
                             shadow="hover"
@@ -70,13 +65,13 @@
                         >
                             <div slot="header" class="clearfix">
                                 <div
-                                    style="font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #f3f3f3;"
+                                    style="font-size:14px;font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #f3f3f3;"
                                 >监控点数</div>
                             </div>
 
                             <div class="grid-content grid-con-1">
                                 <div class="grid-cont-right">
-                                    <div class="grid-num">12个</div>
+                                    <div class="grid-num">{{t1Data.terminalSum}}个</div>
                                 </div>
                             </div>
                         </el-card>
@@ -88,12 +83,12 @@
                         >
                             <div slot="header" class="clearfix">
                                 <div
-                                    style="font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #f3f3f3;"
+                                    style="font-size:14px;font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #f3f3f3;"
                                 >产污异常机构数</div>
                             </div>
                             <div class="grid-content grid-con-3">
                                 <div class="grid-cont-right">
-                                    <div class="grid-num">4家</div>
+                                    <div class="grid-num">{{t1Data.productFaultOrgSum}}家</div>
                                 </div>
                             </div>
                         </el-card>
@@ -106,12 +101,12 @@
                         >
                             <div slot="header" style="{color:#f3704b}" class="clearfix">
                                 <div
-                                    style="font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #f3f3f3;"
+                                    style="font-size:14px;font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #f3f3f3;"
                                 >治污异常机构数</div>
                             </div>
                             <div class="grid-content grid-con-3">
                                 <div class="grid-cont-right">
-                                    <div class="grid-num">3家</div>
+                                    <div class="grid-num">{{t1Data.treatFaultOrgSum}}家</div>
                                 </div>
                             </div>
                         </el-card>
@@ -119,18 +114,11 @@
                 </el-row>
             </el-col>
 
-            <el-col :span="12">
+            <el-col :span="14">
         <el-divider content-position="left">机构分布</el-divider>
-                <div id="myChart" :style="{width: '500', height: '290px'}"></div>
+                <div id="myChart" :style="{width: '800', height: '290px'}"></div>
             </el-col>
         </el-row>
-        
-         <!-- <el-row :gutter="20">
-            
-           <el-col :span="12">
-                 <div id="myChart2" :style="{width: '500', height: '380px'}"></div>
-             </el-col>
-        </el-row> -->
         <el-divider content-position="left">用电量统计</el-divider>
         <el-row :gutter="20">
             <el-col :span="24">
@@ -142,208 +130,17 @@
 </template>
 
 <script>
-import bus from '../common/bus';
+import { getBasicInfoTotalForToday,getOrgInZoneTotalList,getPETotalForAll} from '@/api/homepage';
 export default {
     name: 'dashboard',
     data() {
         return {
-            "electricityTotalList": [{
-			"createTime": "2019-8-28-19-59-52",
-			"electricity": 0.0,
-			"power": 0.0,
-			"voltage": 0.0
-		}, {
-			"createTime": "2019-8-30-10-6-12",
-			"electricity": 0.0,
-			"power": 0.0,
-			"voltage": 0.0
-		}, {
-			"createTime": "2019-9-1-0-12-31",
-			"electricity": 0.0,
-			"power": 0.0,
-			"voltage": 0.0
-		}, {
-			"createTime": "2019-9-2-14-18-50",
-			"electricity": 0.0,
-			"power": 0.0,
-			"voltage": 0.0
-		}, {
-			"createTime": "2019-9-4-4-25-10",
-			"electricity": 0.0,
-			"power": 0.0,
-			"voltage": 0.0
-		}, {
-			"createTime": "2019-9-5-18-31-29",
-			"electricity": 0.0,
-			"power": 0.0,
-			"voltage": 0.0
-		}, {
-			"createTime": "2019-9-7-8-37-48",
-			"electricity": 0.0,
-			"power": 0.0,
-			"voltage": 0.0
-		}, {
-			"createTime": "2019-9-8-22-44-8",
-			"electricity": 0.0,
-			"power": 0.0,
-			"voltage": 0.0
-		}, {
-			"createTime": "2019-9-10-12-50-27",
-			"electricity": 0.0,
-			"power": 0.0,
-			"voltage": 0.0
-		}, {
-			"createTime": "2019-9-12-2-56-46",
-			"electricity": 0.0,
-			"power": 0.0,
-			"voltage": 0.0
-		}, {
-			"createTime": "2019-9-13-17-3-6",
-			"electricity": 0.0,
-			"power": 0.0,
-			"voltage": 0.0
-		}, {
-			"createTime": "2019-9-15-7-9-25",
-			"electricity": 0.0,
-			"power": 0.0,
-			"voltage": 0.0
-		}, {
-			"createTime": "2019-9-16-21-15-44",
-			"electricity": 0.0,
-			"power": 0.0,
-			"voltage": 0.0
-		}, {
-			"createTime": "2019-9-18-11-22-4",
-			"electricity": 0.0,
-			"power": 0.0,
-			"voltage": 0.0
-		}, {
-			"createTime": "2019-9-20-1-28-23",
-			"electricity": 0.0,
-			"power": 0.0,
-			"voltage": 0.0
-		}, {
-			"createTime": "2019-9-21-15-34-42",
-			"electricity": 88.18316580749493,
-			"power": 0.0,
-			"voltage": 0.0
-		}, {
-			"createTime": "2019-9-23-5-41-1",
-			"electricity": 27.611924328376144,
-			"power": 0.0,
-			"voltage": 0.0
-		}, {
-			"createTime": "2019-9-24-19-47-21",
-			"electricity": 30.446782748721446,
-			"power": 0.0,
-			"voltage": 0.0
-		}, {
-			"createTime": "2019-9-26-9-53-40",
-			"electricity": 556.4789419102278,
-			"power": 26590.533078292417,
-			"voltage": 373.10070114440646
-		}, {
-			"createTime": "2019-9-27-23-59-59",
-			"electricity": 0.0,
-			"power": 0.0,
-			"voltage": 0.0
-		}],
-        "powerTotalList": [{
-			"endTime": "2019-8-30-10-6-12",
-			"kwh": 0.0,
-			"power": 0.0,
-			"startTime": "2019-8-28-19-59-52"
-		}, {
-			"endTime": "2019-9-1-0-12-31",
-			"kwh": 0.0,
-			"power": 0.0,
-			"startTime": "2019-8-30-10-6-12"
-		}, {
-			"endTime": "2019-9-2-14-18-50",
-			"kwh": 0.0,
-			"power": 0.0,
-			"startTime": "2019-9-1-0-12-31"
-		}, {
-			"endTime": "2019-9-4-4-25-10",
-			"kwh": 0.0,
-			"power": 0.0,
-			"startTime": "2019-9-2-14-18-50"
-		}, {
-			"endTime": "2019-9-5-18-31-29",
-			"kwh": 0.0,
-			"power": 0.0,
-			"startTime": "2019-9-4-4-25-10"
-		}, {
-			"endTime": "2019-9-7-8-37-48",
-			"kwh": 0.0,
-			"power": 0.0,
-			"startTime": "2019-9-5-18-31-29"
-		}, {
-			"endTime": "2019-9-8-22-44-8",
-			"kwh": 0.0,
-			"power": 0.0,
-			"startTime": "2019-9-7-8-37-48"
-		}, {
-			"endTime": "2019-9-10-12-50-27",
-			"kwh": 0.0,
-			"power": 0.0,
-			"startTime": "2019-9-8-22-44-8"
-		}, {
-			"endTime": "2019-9-12-2-56-46",
-			"kwh": 0.0,
-			"power": 0.0,
-			"startTime": "2019-9-10-12-50-27"
-		}, {
-			"endTime": "2019-9-13-17-3-6",
-			"kwh": 0.0,
-			"power": 0.0,
-			"startTime": "2019-9-12-2-56-46"
-		}, {
-			"endTime": "2019-9-15-7-9-25",
-			"kwh": 0.0,
-			"power": 0.0,
-			"startTime": "2019-9-13-17-3-6"
-		}, {
-			"endTime": "2019-9-16-21-15-44",
-			"kwh": 0.0,
-			"power": 0.0,
-			"startTime": "2019-9-15-7-9-25"
-		}, {
-			"endTime": "2019-9-18-11-22-4",
-			"kwh": 0.0,
-			"power": 0.0,
-			"startTime": "2019-9-16-21-15-44"
-		}, {
-			"endTime": "2019-9-20-1-28-23",
-			"kwh": 0.0,
-			"power": 0.0,
-			"startTime": "2019-9-18-11-22-4"
-		}, {
-			"endTime": "2019-9-21-15-34-42",
-			"kwh": 469545.46537487296,
-			"power": 12322.32102107132,
-			"startTime": "2019-9-20-1-28-23"
-		}, {
-			"endTime": "2019-9-23-5-41-1",
-			"kwh": 567512.948855051,
-			"power": 14893.289905001373,
-			"startTime": "2019-9-21-15-34-42"
-		}, {
-			"endTime": "2019-9-24-19-47-21",
-			"kwh": 204122.89630530003,
-			"power": 5356.775234721389,
-			"startTime": "2019-9-23-5-41-1"
-		}, {
-			"endTime": "2019-9-26-9-53-40",
-			"kwh": 2932749.745355427,
-			"power": 76964.39748999143,
-			"startTime": "2019-9-24-19-47-21"
-		}, {
-			"endTime": "2019-9-27-23-59-59",
-			"kwh": 2826595.8205234255,
-			"power": 74178.5911392001,
-			"startTime": "2019-9-26-9-53-40"
-		}]
+            t1Data : {},
+            t1Data_2Arr : [],
+            t2Data_xArr : [],
+            t2Data_yArr : [],
+            t3Data_xArr : [],
+            t3Data_yArr : [],
         };
     },
 
@@ -353,35 +150,69 @@ export default {
         }
     },
     mounted() {
-        this.drawLine();
+        //获取数据
+        this.getT1Data();
+        this.getT2Data();
+        this.getT3Data();
     },
     methods: {
-        find(str,cha,num){
-            var x=str.indexOf(cha);
-            for(var i=0;i<num;i++){
-                x=str.indexOf(cha,x+1);
-            }
-            return x;
+        //基本情况监控
+        getT1Data(){
+            getBasicInfoTotalForToday().then(res=>{
+                if(res.success){
+                    if(res.object){
+                        this.t1Data = res.object;
+                    }
+                }
+            })
         },
-        drawLine() {
-        let timeArr = [];
-        this.electricityTotalList.forEach(item =>{
-            timeArr.push(item.createTime.substring(0, this.find(item.createTime,'-',3)));
-        });
-        let kwhArr = [];
-        this.powerTotalList.forEach(item =>{
-            kwhArr.push(Number(item.kwh));
-        });
-            // 基于准备好的dom，初始化echarts实例
+        //机构分布
+        getT2Data(){
+            const _this = this;
+            getOrgInZoneTotalList().then(res=>{
+                if(res.success){
+                    if(res.object && res.object.length > 0){
+                        res.object.forEach((item) =>{
+                            _this.t2Data_xArr.push(item.zone.name);  
+                            _this.t2Data_yArr.push(item.orgSum);
+                            //渲染图标
+                            _this.drawT2();
+                        });
+                    }
+                }
+            })
+        },
+        //30天用电量
+        getT3Data(){
+            const _this = this;
+            getPETotalForAll().then(res=>{
+                if(res.success){
+                    if(res.object && res.object.electricityTotalList.length > 0){
+                        res.object.electricityTotalList.forEach(item =>{
+                            _this.t3Data_xArr.push(item.createTime.substring(0, _this.find(item.createTime,'-',2)));
+                        });
+                        res.object.powerTotalList.forEach(item =>{
+                            _this.t3Data_yArr.push(Number(item.kwh/1000).toFixed(2));
+                        });
+                        _this.drawT3();
+                    }
+                }
+            })
+        },
+
+        drawT2(){
             let myChart = this.$echarts.init(document.getElementById('myChart'));
-            let myChart2 = this.$echarts.init(document.getElementById('myChart2'));
             // 绘制图表
             myChart.setOption({
                 //backgroundColor:'#f3f3f3',
                 //title: { text: '机构分布' },
                 tooltip: {},
                 xAxis: {
-                    data: ['安康市', '宝鸡市', '汉中市', '商洛市', '铜川市', '渭南市', '西安市', '延安市']
+                    // axisLabel: {
+                    //     interval: 0,    //强制文字产生间隔
+                    //     rotate: -45,     //文字逆时针旋转45°
+                    // },
+                    data: this.t2Data_xArr
                 },
                 yAxis: {},
                 legend: {
@@ -394,10 +225,14 @@ export default {
                         },
                         name: '机构分布',
                         type: 'bar',
-                        data: [1, 1, 0, 0, 0, 3, 0, 0]
+                        data: this.t2Data_yArr
                     }
                 ]
             });
+        },
+
+        drawT3(){
+            let myChart2 = this.$echarts.init(document.getElementById('myChart2'));
             // 绘制图表
             myChart2.setOption({
                 //backgroundColor:'#f3f3f3',
@@ -419,10 +254,10 @@ export default {
                     {
                         type : 'category',
                         axisLabel: {
-						interval: 0,    //强制文字产生间隔
-					    rotate: -45,     //文字逆时针旋转45°
+                            interval: 0,    //强制文字产生间隔
+                            rotate: -45,     //文字逆时针旋转45°
 					   },
-                        data : timeArr,
+                        data : this.t3Data_xArr,
                         axisTick: {
                             alignWithLabel: true
                         }
@@ -430,7 +265,8 @@ export default {
                 ],
                 yAxis : [
                     {
-                        type : 'value'
+                        type : 'value',
+                        data: this.t3Data_yArr
                     }
                 ],
                 legend: {
@@ -444,11 +280,27 @@ export default {
                         name:'用电量统计',
                         type:'bar',
                         barWidth: '60%',
-                        data:kwhArr
+                        data: this.t3Data_yArr,
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'inside'
+                            }
+                        },
                     }
                 ]
             });
-        }
+        },
+
+        find(str,cha,num){
+            debugger
+            var x=str.indexOf(cha);
+            for(var i=0;i<num;i++){
+                x=str.indexOf(cha,x+1);
+            }
+            debugger
+            return x;
+        },
     }
 };
 </script>
@@ -473,7 +325,7 @@ export default {
 }
 
 .grid-num {
-    font-size: 30px;
+    font-size: 26px;
     font-weight: bold;
     color: #fff;
 }
