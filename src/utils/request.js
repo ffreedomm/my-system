@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const service = axios.create({
-    baseURL: 'https://www.easy-mock.com/mock/592501a391470c0ac1fab128',
+    baseURL: 'https://video1.dushuren123.com/iotserver',
     timeout: 5000
 })
 

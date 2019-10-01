@@ -1,9 +1,16 @@
 import request from '../utils/request';
 
-export const fetchData = (param) => {
+export const getNewCheckCode = () => {
     return request({
-        url: '/ms/table/list',
-        method: 'post',
-        data: param
+        url: '/GetNewCheckCode',
+        method: 'post'
     })
 }
+
+export const checkCodeImage = (sessionId) => {
+    return request({
+        url: '/CheckCodeImage?id='+sessionId,
+        method: 'post'
+    })
+}
+

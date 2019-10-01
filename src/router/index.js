@@ -7,7 +7,7 @@ export default new Router({
     routes: [
         {
             path: '/',
-            redirect: '/dashboard'
+            redirect: '/login'
         },
         {
             path: '/',
@@ -19,11 +19,6 @@ export default new Router({
                     component: () => import('../components/page/Dashboard.vue'),
                     meta: { title: '系统首页' }
                 },
-                // {
-                //     path: '/icon',
-                //     component: () => import('../components/page/Icon.vue'),
-                //     meta: { title: '自定义图标' }
-                // },
                 {
                     path: '/industry',
                     component: () => import('../components/page/baseinfo/industry.vue'),
