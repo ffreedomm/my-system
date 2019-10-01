@@ -19,6 +19,7 @@
                     </el-input>
                 </el-form-item>
                 <el-form-item prop="code">
+                  <div style="display: flex;">
                     <el-input
                         style="width: 50%;"
                         placeholder="请输入验证码"
@@ -26,7 +27,8 @@
                         @keyup.enter.native="submitForm()"
                     >
                     </el-input>
-                    <img :src="codeImg" />
+                    <img @click="changeCode()" :src="codeImg" width="40%" height="30px" style="padding-left: 9%;"/>
+                  </div>
                 </el-form-item>
                 <div class="login-btn">
                     <el-button type="primary" @click="submitForm()">登录</el-button>
@@ -37,7 +39,7 @@
 </template>
 
 <script>
-import { getNewCheckCode,checkCodeImage} from '@/api/index';
+import { getNewCheckCode,loginForUser} from '@/api/index';
 export default {
     data: function() {
         return {
@@ -59,30 +61,35 @@ export default {
       this.GetNewCheckCode()
     },
     methods: {
+      changeCode(){
+        this.GetNewCheckCode()
+      },
       //存储sessionId
         GetNewCheckCode(){
           getNewCheckCode().then(res=>{
             if(res.success){
               localStorage.setItem('sessionId', res.object.sessionId);
               this.codeImg = this.imgBaseUrl+ res.object.sessionId;
-              //this.CheckCodeImage()
             }
           })
         },
-        // CheckCodeImage(){
-        //   checkCodeImage(localStorage.getItem('sessionId')).then(res=>{
-        //     //console.log('-------res: ',res);
-        //     //this.codeImg = res.codeImage
-        //   })
-        // },
         submitForm() {
             this.$refs.login.validate(valid => {
-                if (valid) {
-                    this.$message.success('登录成功');
-                    localStorage.setItem('ms_username', this.param.username);
-                    this.$router.push('/dashboard');
+              if (valid) {
+                    this.param.sessionId = localStorage.getItem('sessionId')
+                    loginForUser(this.param).then(res=>{
+                      if(res.success){
+                        this.$message.success('登录成功');
+                        localStorage.setItem('username', res.object.name);
+                        localStorage.setItem('id', res.object.id);
+                        localStorage.setItem('role', res.object.role);
+                        this.$router.push('/');
+                      }else{
+                        //success，error，info，warning
+                         this.$message.warning(res.message);
+                      }
+                    })
                 } else {
-                    this.$message.error('请输入账号和密码');
                     return false;
                 }
             });

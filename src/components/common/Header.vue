@@ -34,18 +34,19 @@
 </template>
 <script>
 import bus from '../common/bus';
+import { log } from 'util';
 export default {
     data() {
         return {
             collapse: false,
             fullscreen: false,
-            name: 'linxin',
+            name: '无',
             message: 2
         };
     },
     computed: {
         username() {
-            let username = localStorage.getItem('ms_username');
+            let username = localStorage.getItem('username');
             return username ? username : this.name;
         }
     },
@@ -53,8 +54,10 @@ export default {
         // 用户名下拉菜单选择事件
         handleCommand(command) {
             if (command == 'loginout') {
-                localStorage.removeItem('ms_username');
-                this.$router.push('/login');
+              localStorage.removeItem('username');
+              localStorage.removeItem('id');
+              localStorage.removeItem('role');
+              this.$router.push('/login');
             }
         },
         // 侧边栏折叠
