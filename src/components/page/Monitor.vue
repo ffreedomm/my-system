@@ -14,17 +14,28 @@
             <el-row :gutter="40">
                 <el-col :span="12">
                     <el-row>
-                        <div id="myChart" :style="{width: '100%', height: '50&'}"></div>
+                        <div id="myChart" :style="{width: '100%', height: '50%'}"></div>
                     </el-row>
                     <el-row>
                         <div class="table"></div>
                     </el-row>
                 </el-col>
                 <el-col :span="12">
-                <div class="map"></div>
+                    <div class="map"></div>
                 </el-col>
             </el-row>
             <el-row>
+                <el-col :span="12">
+                    <el-row>
+                        <div id="myChart" :style="{width: '100%', height: '50%'}"></div>
+                    </el-row>
+                    <el-row>
+                        <div class="table"></div>
+                    </el-row>
+                </el-col>
+                <el-col :span="12">
+                    <div class="map"></div>
+                </el-col>
             </el-row>
         </div>
     </div>
@@ -111,13 +122,13 @@ export default {
 
 <style scoped>
 .map{
-    height:500px;
+    height:200px;
     width:100%;
     background:red
 }
 .table{
-    height:500px;
-    width:50%;
+    height:100%;
+    width:100%;
     background:red
 
 }

@@ -119,10 +119,16 @@
                 <div id="myChart" :style="{width: '800', height: '290px'}"></div>
             </el-col>
         </el-row>
+        <el-divider content-position="left">故障统计</el-divider>
+        <el-row :gutter="20">
+            <el-col :span="24">
+                <div id="myChartNew" :style="{width: '800', height: '380px'}"></div>
+            </el-col>
+        </el-row>
         <el-divider content-position="left">用电量统计</el-divider>
         <el-row :gutter="20">
             <el-col :span="24">
-                <div id="myChart2" :style="{width: '500', height: '380px'}"></div>
+                <div id="myChart2" :style="{width: '800', height: '380px'}"></div>
             </el-col>
         </el-row>
     </div>
@@ -130,7 +136,7 @@
 </template>
 
 <script>
-import { getBasicInfoTotalForToday,getOrgInZoneTotalList,getPETotalForAll} from '@/api/homepage';
+import { getBasicInfoTotalForToday,getOrgInZoneTotalList,getPETotalForAll,getTotalListForAllZones} from '@/api/homepage';
 export default {
     name: 'dashboard',
     data() {
@@ -141,6 +147,15 @@ export default {
             t2Data_yArr : [],
             t3Data_xArr : [],
             t3Data_yArr : [],
+            tNewDataName:[],
+            tNewData1Arr:[],
+            tNewData2Arr:[],
+            tNewData3Arr:[],
+            tNewData4Arr:[],
+            tNewData5Arr:[],
+            tNewData6Arr:[],
+            tNewData7Arr:[],
+            tNewData8Arr:[],
         };
     },
 
@@ -154,6 +169,7 @@ export default {
         this.getT1Data();
         this.getT2Data();
         this.getT3Data();
+        this.getTNewData();
     },
     methods: {
         //基本情况监控
@@ -195,6 +211,31 @@ export default {
                             _this.t3Data_yArr.push(Number(item.kwh/1000).toFixed(2));
                         });
                         _this.drawT3();
+                    }
+                }
+            })
+        },
+
+        //故障统计
+        getTNewData(){
+            const _this = this;
+            getTotalListForAllZones().then(res=>{
+                if(res.success){
+                    if(res.object && res.object.length > 0){
+                        res.object.forEach((item) =>{
+                            delete item.id;
+                            delete item.category;
+                            _this.tNewDataName.push(item.name);
+                            _this.tNewData1Arr.push(item.deviceSum);
+                            _this.tNewData2Arr.push(item.fault1Sum);
+                            _this.tNewData3Arr.push(item.fault2Sum);
+                            _this.tNewData4Arr.push(item.fault3Sum);
+                            _this.tNewData5Arr.push(item.fault4Sum);
+                            _this.tNewData6Arr.push(item.fault5Sum);
+                            _this.tNewData7Arr.push(item.faultSum);
+                            _this.tNewData8Arr.push(item.handledSum);
+                        })
+                        _this.drawTNew();
                     }
                 }
             })
@@ -293,14 +334,93 @@ export default {
         },
 
         find(str,cha,num){
-            debugger
             var x=str.indexOf(cha);
             for(var i=0;i<num;i++){
                 x=str.indexOf(cha,x+1);
             }
-            debugger
             return x;
         },
+
+        drawTNew(){
+            let myChartNew = this.$echarts.init(document.getElementById('myChartNew'));
+            myChartNew.setOption({
+    title : {
+        //text: '某地区蒸发量和降水量',
+        //subtext: '纯属虚构'
+    },
+    tooltip : {
+        trigger: 'axis'
+    },
+    legend: {
+        data: ['设备总数量','功率轻度超标总次数','功率中度超标总次数',
+        '功率重度超标总次数','非法关机总次数','非法开机总次数','故障总次数','处理故障总次数']
+    },
+    calculable : true,
+    xAxis : [
+        {
+            type : 'category',
+            data : this.tNewDataName
+        }
+    ],
+    yAxis : [
+        {
+            type : 'value'
+        }
+    ],
+    series : [
+        {
+            name:'设备总数量',
+            type:'bar',
+            data:this.tNewData1Arr,
+        
+        },
+        {
+            name:'功率轻度超标总次数',
+            type:'bar',
+            data:this.tNewData2Arr,
+        
+        },
+        {
+            name:'功率中度超标总次数',
+            type:'bar',
+            data:this.tNewData3Arr,
+        
+        },
+        {
+            name:'功率重度超标总次数',
+            type:'bar',
+            data:this.tNewData4Arr,
+        
+        },
+        {
+            name:'非法关机总次数',
+            type:'bar',
+            data:this.tNewData5Arr,
+        
+        },
+        {
+            name:'非法开机总次数',
+            type:'bar',
+            data:this.tNewData6Arr,
+        
+        },
+        {
+            name:'故障总次数',
+            type:'bar',
+            data:this.tNewData7Arr,
+        
+        },
+        {
+            name:'处理故障总次数',
+            type:'bar',
+            data:this.tNewData8Arr,
+        
+        },
+    ]
+});
+
+        }
+
     }
 };
 </script>

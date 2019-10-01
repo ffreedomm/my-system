@@ -30,14 +30,3 @@ export const getPETotalForAll = () => {
     })
 }
 
-/**
- * 故障统计
- */
-export const getTotalListForAllZones = () => {
-    return request({
-        url: '/TotalListForAllZones',
-        method: 'post'
-    })
-}
-
-
