@@ -41,6 +41,7 @@ import { getNewCheckCode,checkCodeImage} from '@/api/index';
 export default {
     data: function() {
         return {
+            imgBaseUrl:'https://video1.dushuren123.com/iotserver/CheckCodeImage?id=',
             codeImg: '',
             param: {
                 name: '',
@@ -63,16 +64,17 @@ export default {
           getNewCheckCode().then(res=>{
             if(res.success){
               localStorage.setItem('sessionId', res.object.sessionId);
-              this.CheckCodeImage()
+              this.codeImg = this.imgBaseUrl+ res.object.sessionId;
+              //this.CheckCodeImage()
             }
           })
         },
-        CheckCodeImage(){
-          checkCodeImage(localStorage.getItem('sessionId')).then(res=>{
-            console.log('-------res: ',res);
-            this.codeImg = res
-          })
-        },
+        // CheckCodeImage(){
+        //   checkCodeImage(localStorage.getItem('sessionId')).then(res=>{
+        //     //console.log('-------res: ',res);
+        //     //this.codeImg = res.codeImage
+        //   })
+        // },
         submitForm() {
             this.$refs.login.validate(valid => {
                 if (valid) {
