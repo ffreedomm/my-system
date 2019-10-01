@@ -77,7 +77,7 @@ export default new Router({
                 },
                 {
                     path: '/industryStatistics',
-                    component: () => import('../components/page/industryStatistics.vue'),
+                    component: () => import('../components/page/statistics/industryStatistics.vue'),
                     meta: { title: '按行业统计' }
                 },
                 
