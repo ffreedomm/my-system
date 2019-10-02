@@ -53,4 +53,24 @@ export const getTerminalAlertTotalInFaultStatus = () => {
     })
 }
 
+/**
+ * 点击地图时统计
+ */
+export const getTerminalRecordListForDevice = (data) => {
+    return request({
+        url: '/TerminalRecordListForDevice?deviceId='+data.deviceId+'&start=1&end=10',
+        method: 'post'
+    })
+}
+
+export const getTotalListForDeviceList = (ids) => {
+    return request({
+        url: '/TotalListForDeviceList?ids='+ids,
+        method: 'post'
+    })
+}
+
+
+
+
 

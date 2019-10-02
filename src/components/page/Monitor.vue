@@ -33,10 +33,10 @@
                                 :zoom="zoom" :center="center"
                                 @ready="handler" 
                                 :scroll-wheel-zoom="true"
-                                @click="clickEvent"
                                 ak="%E6%82%A8%E7%9A%84%E5%AF%86%E9%92%A5">
                                 <bm-marker 
                                 v-for="marker in markers" :key="marker.id"
+                                    @click="getDeviceInfo(marker.id)"
                                     :position="{lng: marker.longitude, lat: marker.latitude}" 
                                     animation="BMAP_ANIMATION_BOUNCE">
                                 <bm-label 
@@ -126,10 +126,10 @@
                             </el-table>
                         </el-tabs>
                 </el-col>
-                <el-col :span="10">
+                <el-col :span="9">
                     <div id="myChart2" :style="{width: '100%', height: '400px'}"></div>
                 </el-col>
-                <el-col :span="5">
+                <el-col :span="6">
                     <div id="myChart3" :style="{width: '100%', height: '400px'}"></div>
                 </el-col>
             </el-row>
@@ -142,7 +142,7 @@ import {BaiduMap,BmNavigation,BmView,BmGeolocation,BmCityList,BmMarker,BmLabel} 
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import {getQueryOrgList,getAllTerminalTotalListForOrg,getAllDeviceListForOrg,getTerminalTotalListForOrgOrChild,
-getTerminalAlertTotalInFaultStatus} from '@/api/monitor';
+getTerminalAlertTotalInFaultStatus, getTerminalRecordListForDevice,getTotalListForDeviceList} from '@/api/monitor';
 
 export default {
     name: 'monitor',
@@ -168,7 +168,11 @@ export default {
             warningData:{},
             tData:[],
             cData:[],
-            timeId:{}
+            timeId:{},
+            lastTDLArr:[],
+            lastTGLArr:[],
+            lastTYArr:[],
+            lastCData:[]
         };
     },
     watch: {
@@ -209,8 +213,6 @@ export default {
             this.getWarningData();
             //饼图数据
             this.getCircelData();
-            //
-            this.initZXChart();
         },
         //下拉框数据
         getOrgList(){
@@ -244,7 +246,6 @@ export default {
                        }else{
                             this.center={lng: 108.89, lat: 34.34};
                        }
-                        //this.handler()
                     }
                 }
             })
@@ -312,10 +313,6 @@ export default {
         handler ({BMap, map}) {
             window.map = map;
         },
-        //点击地图监听
-        clickEvent(e){
-            
-        },
         initChart(){
             let myChart = this.$echarts.init(document.getElementById('myChart'));
             myChart.setOption({
@@ -356,6 +353,7 @@ export default {
             });
         },
 
+        //最后的饼图
         initCChart(){
             let myChart3 = this.$echarts.init(document.getElementById('myChart3'));
             myChart3.setOption({
@@ -373,7 +371,7 @@ export default {
                         type: 'pie',
                         radius : '75%',
                         center: ['45%', '50%'],
-                        data:this.cData,
+                        data:this.lastCData,
                         itemStyle: {
                             emphasis: {
                                 shadowBlur: 10,
@@ -389,9 +387,9 @@ export default {
                             }
                         },
                         label: {
-                            normal: {
-                                position: 'inner'
-                            }
+                            // normal: {
+                            //     position: 'inner'
+                            // }
                         },
                         labelLine :{show:true} 
                     }
@@ -399,6 +397,74 @@ export default {
             });
         },
 
+        //点击地图的点获取折线图和饼图数据
+        getDeviceInfo(id){
+            debugger
+            let req = {
+                deviceId:id,
+                start:1,
+                end:10
+            }
+            getTerminalRecordListForDevice(req).then(res=>{
+                if(res.success){
+                    if(res.object && res.object.length > 0){
+                        this.lastTDLArr = []
+                        this.lastTGLArr = []
+                        this.lastTYArr = []
+                        res.object.forEach((item) =>{
+                            this.lastTDLArr.push(Number(item.electricity))
+                            this.lastTGLArr.push(Number(item.power/1000).toFixed(2))
+                            this.lastTYArr.push('')
+                        })
+                        this.initZXChart();
+                    }
+                }
+            });
+            getTotalListForDeviceList(id).then(res=>{
+                if(res.success){
+                    if(res.object && res.object.length > 0){
+                        this.lastCData = [];
+                        let temp = res.object[0];
+                        this.lastCData.push(
+                            {
+                                value:temp.deviceSum,
+                                name:'设备总数量'
+                            },
+                            {
+                                value:temp.fault1Sum,
+                                name:'功率轻度超标总次数'
+                            },
+                            {
+                                value:temp.fault2Sum,
+                                name:'功率中度超标总次数'
+                            },
+                            {
+                                value:temp.fault3Sum,
+                                name:'功率重度超标总次数'
+                            },
+                            {
+                                value:temp.fault4Sum,
+                                name:'非法关机总次数'
+                            },
+                            {
+                                value:temp.fault5Sum,
+                                name:'非法开机总次数'
+                            },
+                            {
+                                value:temp.faultSum,
+                                name:'故障总次数'
+                            },
+                            {
+                                value:temp.handledSum,
+                                name:'处理故障总次数'
+                            },
+                        );
+                        this.initCChart();
+                    }
+                }
+            });
+            
+        },
         //折线图
         initZXChart(){
             let myChart2 = this.$echarts.init(document.getElementById('myChart2'));
@@ -419,7 +485,7 @@ export default {
                 xAxis: {
                     type: 'category',
                     boundaryGap: false,
-                    data: ['周一','周二','周三','周四','周五','周六','周日']
+                    data: this.lastTYArr
                 },
                 yAxis: {
                     type: 'value'
@@ -428,12 +494,12 @@ export default {
                     {
                         name:'电流值',
                         type:'line',
-                        data:[120, 132, 101, 134, 90, 230, 210]
+                        data: this.lastTDLArr
                     },
                     {
                         name:'功率值',
                         type:'line',
-                        data:[820, 932, 901, 934, 1290, 1330, 1320]
+                        data: this.lastTGLArr
                     }
                 ]
             });
