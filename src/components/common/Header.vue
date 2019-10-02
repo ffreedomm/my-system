@@ -57,6 +57,7 @@ export default {
               localStorage.removeItem('username');
               localStorage.removeItem('id');
               localStorage.removeItem('role');
+              localStorage.removeItem('loginPassword');
               this.$router.push('/login');
             }
         },

@@ -80,6 +80,11 @@ export default new Router({
                     component: () => import('../components/page/statistics/industryStatistics.vue'),
                     meta: { title: '按行业统计' }
                 },
+                {
+                    path: '/editPassword',
+                    component: () => import('../components/page/editPassword.vue'),
+                    meta: { title: '修改密码' }
+                },
                 
             ]
         },

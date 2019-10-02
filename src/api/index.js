@@ -14,3 +14,10 @@ export const loginForUser = (data) => {
     })
 }
 
+export const updatePassword = (userId, oldPassword, newPassword) => {
+    return request({
+        url: `/UpdatePasswordForUser?userId=${userId}&oldPassword=${oldPassword}&newPassword=${newPassword}`,
+        method: 'post',
+    })
+}
+

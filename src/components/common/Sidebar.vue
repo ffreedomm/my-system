@@ -187,7 +187,7 @@ export default {
                           title: '操作日志管理'
                       },
                       {
-                          index: 'form',
+                          index: 'editPassword',
                           title: '修改密码'
                       },
                     ]
