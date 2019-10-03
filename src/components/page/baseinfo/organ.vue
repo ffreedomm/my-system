@@ -24,12 +24,12 @@
             icon="el-icon-share"
             @click="handleDetail"
         >详情</el-button>-->
-        <el-button
+        <!-- <el-button
             style="margin-bottom: 10px;"
             type="primary"
             icon="el-icon-suitcase"
             @click="handleEquip"
-        >设备信息</el-button>
+        >设备信息</el-button> -->
         <el-tree :data="orgList" @node-click="handleNodeClick"></el-tree>
         <el-dialog :title="title" :visible.sync="addVisible" width="60%">
             <div class="container">
@@ -46,7 +46,7 @@
                                     <el-input v-model="addForm.name"></el-input>
                                 </el-form-item>
                                 <el-form-item label="所属行业">
-                                    <el-select v-model="addForm.tradeId" placeholder="请选择">
+                                    <el-select v-model="tradeId" placeholder="请选择">
                                         <el-option
                                             v-for="(item, index) in tradeList"
                                             :key="index"
@@ -118,7 +118,11 @@ export default {
       orgList: [],
       selectRow: {},
       addVisible: false,
-      addForm: {},
+      addForm: {
+        //tradeId:0
+      },
+
+      tradeId:0,
       tradeList: [],
       zoneList: [],
       title: ''
@@ -130,6 +134,10 @@ export default {
     this.queryZoneList()
   },
   methods: {
+
+    initData(){
+
+    },
     handleEdit() {
       if (JSON.stringify(this.selectRow) == '{}') {
         this.$message.warning('请首先选定一个机构！')
@@ -179,11 +187,12 @@ export default {
         this.$message.warning('请首先选定一个上级机构！')
       } else {
         this.title = '新增'
-        this.addForm = {}
+        //this.addForm = {}
         this.addForm.parentOrgId = this.selectRow.id
         this.addForm.parentOrgName = this.selectRow.name
         if (this.tradeList[0].id) {
-          this.addForm.tradeId = this.tradeList[0].id
+          let tId = this.tradeList[0].id
+          this.tradeId = tId
         }
         if (this.zoneList[0].id) {
           this.addForm.zoneId = this.zoneList[0].id
