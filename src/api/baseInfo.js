@@ -105,6 +105,20 @@ export const queryOrgList = (name, start, end) => {
     })
 }
 
+export const allDeviceListForOrg = (orgId, start, end) => {
+    return request({
+        url: `/AllDeviceListForOrg?orgId=${orgId}&start=${start}&end=${end}`,
+        method: 'post'
+    })
+}
+
+export const allDeviceListSumForOrg = (orgId) => {
+  return request({
+      url: `/AllDeviceListSumForOrg?orgId=${orgId}`,
+      method: 'post'
+  })
+}
+
 export const removeOrg = (orgId) => {
     return request({
         url: `/RemoveOrg?orgId=${orgId}`,

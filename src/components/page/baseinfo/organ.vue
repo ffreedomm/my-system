@@ -18,18 +18,12 @@
             icon="el-icon-delete"
             @click="handleDel"
         >删除</el-button>
-        <!-- <el-button
-            style="margin-bottom: 10px;"
-            type="primary"
-            icon="el-icon-share"
-            @click="handleDetail"
-        >详情</el-button>-->
-        <!-- <el-button
+        <el-button
             style="margin-bottom: 10px;"
             type="primary"
             icon="el-icon-suitcase"
             @click="handleEquip"
-        >设备信息</el-button> -->
+        >设备信息</el-button>
         <el-tree :data="orgList" @node-click="handleNodeClick"></el-tree>
         <el-dialog :title="title" :visible.sync="addVisible" width="60%">
             <div class="container">
@@ -46,7 +40,7 @@
                                     <el-input v-model="addForm.name"></el-input>
                                 </el-form-item>
                                 <el-form-item label="所属行业">
-                                    <el-select v-model="tradeId" placeholder="请选择">
+                                    <el-select v-model="addForm.tradeId" placeholder="请选择">
                                         <el-option
                                             v-for="(item, index) in tradeList"
                                             :key="index"
@@ -106,11 +100,58 @@
                 </div>
             </div>
         </el-dialog>
+        <!-- 设备信息 -->
+        <el-dialog title="设备信息" :visible.sync="detailVisible" width="90%">
+            <div class="container">
+                <el-table
+                    :data="orgData"
+                    border
+                    class="table"
+                    ref="multipleTable"
+                    header-cell-class-name="table-header"
+                >
+                    <el-table-column prop="number" label="设备编号"></el-table-column>
+                    <el-table-column prop="name" label="设备名称"></el-table-column>
+                    <el-table-column prop="voltage" label="额定电压"></el-table-column>
+                    <el-table-column prop="power" label="额定功率"></el-table-column>
+                    <el-table-column prop="longitude" label="经度位置"></el-table-column>
+                    <el-table-column prop="latitude" label="纬度位置"></el-table-column>
+                    <el-table-column prop="memo" label="备注说明"></el-table-column>
+                    <el-table-column prop="terminalNumber" label="连接的终端"></el-table-column>
+                    <el-table-column prop="org.name" label="所属机构"></el-table-column>
+                    <el-table-column prop="type" label="设备类型">
+                      <template scope="scope">
+                         {{format(scope.row.type)}}
+                      </template>
+                      </el-table-column>
+                    <el-table-column prop="productDevice.name" label="关联的产污设备"></el-table-column>
+                    <el-table-column label="操作" align="center">
+                        <template slot-scope="scope">
+                            <el-button
+                                type="text"
+                                icon="el-icon-search"
+                                @click="handleHistory(scope.row)"
+                            >查看历史数据</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <div class="pagination">
+                    <el-pagination
+                        background
+                        layout="total, prev, pager, next"
+                        :current-page="currentPageOrg"
+                        :page-size="pageSizeOrg"
+                        :total="sumTradeOrg"
+                        @current-change="handlePageChangeOrg"
+                    ></el-pagination>
+                </div>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
 <script>
-import { queryOrgList, queryTradeList, queryZoneList, addOrg, removeOrg, updateOrg } from '@/api/baseInfo';
+import { queryOrgList, queryTradeList, queryZoneList, addOrg, removeOrg, updateOrg, allDeviceListForOrg, allDeviceListSumForOrg } from '@/api/baseInfo';
 import { log } from 'util';
 export default {
   data() {
@@ -118,14 +159,17 @@ export default {
       orgList: [],
       selectRow: {},
       addVisible: false,
-      addForm: {
-        //tradeId:0
-      },
-
-      tradeId:0,
+      addForm: {},
       tradeList: [],
       zoneList: [],
-      title: ''
+      title: '',
+      startOrg: 1,
+      endOrg: 3,
+      pageSizeOrg: 3,
+      sumTradeOrg: '',
+      currentPageOrg: 1,
+      orgData: [],
+      detailVisible: false
     };
   },
   created() {
@@ -134,19 +178,60 @@ export default {
     this.queryZoneList()
   },
   methods: {
+    handleHistory(row){
 
-    initData(){
-
+    },
+    format(type){
+      console.log('-----type', type);
+      
+       return type == 1 ? '治污设备':'产污设备'
+    },
+    handleEquip() {
+      if (JSON.stringify(this.selectRow) == '{}') {
+        this.$message.warning('请首先选定一个机构！')
+      } else {
+        allDeviceListForOrg(this.selectRow.id, this.startOrg, this.endOrg).then(res => {
+          if (res.success) {
+            this.orgData = res.object
+            this.allDeviceListSumForOrg()
+            this.detailVisible = true
+          }
+        })
+      }
+    },
+    allDeviceListSumForOrg() {
+      allDeviceListSumForOrg(this.selectRow.id).then(res => {
+        if (res.success) {
+          this.sumTradeOrg = res.object
+        }
+      })
+    },
+    // 分页导航
+    handlePageChangeOrg(val) {
+      this.startOrg = this.pageSizeOrg * (val - 1) + 1
+      this.endOrg = this.pageSizeOrg * val
+      this.currentPageOrg = val
+      this.handleEquip()
     },
     handleEdit() {
       if (JSON.stringify(this.selectRow) == '{}') {
         this.$message.warning('请首先选定一个机构！')
       } else {
         this.title = '编辑'
-        this.addForm = {}
-        this.addForm = this.selectRow
-        this.addForm.tradeId = this.selectRow.trade.id
-        this.addForm.zoneId = this.selectRow.zone.id
+        this.addForm = {
+          id: this.selectRow.id,
+          tradeId: this.selectRow.trade.id,
+          zoneId: this.selectRow.zone.id,
+          parentOrgId: this.selectRow.id,
+          name: this.selectRow.name == 'undefined' ? "" : this.selectRow.name,
+          legalPerson: this.selectRow.legalPerson == 'undefined' ? "" : this.selectRow.legalPerson,
+          property: this.selectRow.property == 'undefined' ? "" : this.selectRow.property,
+          legalCode: this.selectRow.legalCode == 'undefined' ? "" : this.selectRow.legalCode,
+          address: this.selectRow.address == 'undefined' ? "" : this.selectRow.address,
+          population: this.selectRow.population == 'undefined' ? "" : this.selectRow.population,
+          contact: this.selectRow.contact == 'undefined' ? "" : this.selectRow.contact,
+          phone: this.selectRow.phone == 'undefined' ? "" : this.selectRow.phone,
+        }
         this.addVisible = true
       }
     },
@@ -187,15 +272,18 @@ export default {
         this.$message.warning('请首先选定一个上级机构！')
       } else {
         this.title = '新增'
-        //this.addForm = {}
-        this.addForm.parentOrgId = this.selectRow.id
-        this.addForm.parentOrgName = this.selectRow.name
-        if (this.tradeList[0].id) {
-          let tId = this.tradeList[0].id
-          this.tradeId = tId
+        this.addForm = {}
+        let tradeId = ''
+        let zoneId = ''
+        if (this.tradeList[0].id && this.zoneList[0].id) {
+          tradeId = this.tradeList[0].id
+          zoneId = this.zoneList[0].id
         }
-        if (this.zoneList[0].id) {
-          this.addForm.zoneId = this.zoneList[0].id
+        this.addForm = {
+          parentOrgId: this.selectRow.id,
+          parentOrgName: this.selectRow.name,
+          tradeId: tradeId,
+          zoneId: zoneId
         }
         this.addVisible = true
       }
