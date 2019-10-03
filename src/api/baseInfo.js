@@ -97,3 +97,37 @@ export const removeZone = (id) => {
         method: 'post'
     })
 }
+
+export const queryOrgList = (name, start, end) => {
+    return request({
+        url: `/QueryOrgList?name=${name}&start=${start}&end=${end}`,
+        method: 'post'
+    })
+}
+
+export const removeOrg = (orgId) => {
+    return request({
+        url: `/RemoveOrg?orgId=${orgId}`,
+        method: 'post'
+    })
+}
+
+export const addOrg = (param) => {
+    return request({
+        url: `/AddOrg?name=${param.name}&parentOrgId=${param.parentOrgId}&property=${param.property}&
+              legalPerson=${param.legalPerson}&legalCode=${param.legalCode}&address=${param.address}&
+              population=${param.population}&contact=${param.contact}&phone=${param.phone}&
+              tradeId=${param.tradeId}&zoneId=${param.zoneId}`,
+        method: 'post'
+    })
+}
+
+export const updateOrg = (param) => {
+    return request({
+        url: `/UpdateOrg?orgId=${param.id}&name=${param.name}&parentOrgId=${param.parentOrgId}&property=${param.property}&
+              legalPerson=${param.legalPerson}&legalCode=${param.legalCode}&address=${param.address}&
+              population=${param.population}&contact=${param.contact}&phone=${param.phone}&
+              tradeId=${param.tradeId}&zoneId=${param.zoneId}`,
+        method: 'post'
+    })
+}
