@@ -126,6 +126,13 @@ export const removeOrg = (orgId) => {
     })
 }
 
+export const totalListForTradeList = (ids, tradeTime) => {
+    return request({
+        url: `/TotalListForTradeList?ids=${ids}&startTime=${tradeTime[0]}&endTime=${tradeTime[1]}`,
+        method: 'post'
+    })
+}
+
 export const addOrg = (param) => {
     return request({
         url: `/AddOrg?name=${param.name}&parentOrgId=${param.parentOrgId}&property=${param.property}&

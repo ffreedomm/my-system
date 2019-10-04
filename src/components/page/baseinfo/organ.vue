@@ -152,7 +152,6 @@
 
 <script>
 import { queryOrgList, queryTradeList, queryZoneList, addOrg, removeOrg, updateOrg, allDeviceListForOrg, allDeviceListSumForOrg } from '@/api/baseInfo';
-import { log } from 'util';
 export default {
   data() {
     return {
@@ -182,8 +181,6 @@ export default {
 
     },
     format(type){
-      console.log('-----type', type);
-      
        return type == 1 ? '治污设备':'产污设备'
     },
     handleEquip() {
