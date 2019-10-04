@@ -24,7 +24,7 @@
             icon="el-icon-suitcase"
             @click="handleEquip"
         >设备信息</el-button>
-        <el-tree :data="orgList" @node-click="handleNodeClick"></el-tree>
+        <el-tree :data="orgList" @node-click="handleNodeClick" node-key="parentId" default-expand-all></el-tree>
         <el-dialog :title="title" :visible.sync="addVisible" width="60%">
             <div class="container">
                 <div class="form-box">
