@@ -38,7 +38,7 @@
                 @selection-change="handleSelectionChange"
             >
                 <el-table-column type="index" width="50" label="序号"></el-table-column>
-                <el-table-column prop="name" label="名称"></el-table-column>、
+                <el-table-column prop="name" label="名称"></el-table-column>
                 <el-table-column prop="deviceSum" label="设备总数"></el-table-column>
                 <el-table-column prop="faultSum" label="故障总次数（次）"></el-table-column>
                 <el-table-column prop="fault1Sum" label="功率轻度超标次数（次）"></el-table-column>
