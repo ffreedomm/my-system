@@ -80,6 +80,33 @@ export default new Router({
                     component: () => import('../components/page/statistics/industryStatistics.vue'),
                     meta: { title: '按行业统计' }
                 },
+                /*********用电情况统计开始****************************************************** */
+                {
+                    path: '/statisticalfortrade',
+                    component: () => import('../components/page/electricity/statisticalfortrade.vue'),
+                    meta: { title: '按行业统计' }
+                },
+                {
+                    path: '/statisticalforzone',
+                    component: () => import('../components/page/electricity/statisticalforzone.vue'),
+                    meta: { title: '按地区统计' }
+                },
+                {
+                    path: '/statisticalfororg',
+                    component: () => import('../components/page/electricity/statisticalfororg.vue'),
+                    meta: { title: '按机构统计' }
+                },
+                {
+                    path: '/statisticalfordevice',
+                    component: () => import('../components/page/electricity/statisticalfordevice.vue'),
+                    meta: { title: '按设备统计' }
+                },
+                {
+                    path: '/statisticalforcontrast',
+                    component: () => import('../components/page/electricity/statisticalforcontrast.vue'),
+                    meta: { title: '按关联设备对比统计' }
+                },
+                /*************用电情况统计结束***************************************************** */
                 {
                     path: '/editPassword',
                     component: () => import('../components/page/editPassword.vue'),

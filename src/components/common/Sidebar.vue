@@ -152,23 +152,23 @@ export default {
                     title: '用电情况统计',
                     subs: [
                         {
-                          index: 'form',
+                          index: 'statisticalfortrade',
                           title: '按行业统计'
                       },
                       {
-                          index: 'form',
+                          index: 'statisticalforzone',
                           title: '按地区统计'
                       },
                       {
-                          index: 'form',
+                          index: 'statisticalfororg',
                           title: '按机构统计'
                       },
                       {
-                          index: 'form',
+                          index: 'statisticalfordevice',
                           title: '按设备统计'
                       },
                       {
-                          index: 'form',
+                          index: 'statisticalforcontrast',
                           title: '按关联设备对比统计'
                       },
                     ]
