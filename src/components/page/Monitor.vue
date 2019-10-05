@@ -6,7 +6,7 @@
                 <treeselect style="width:90%" 
                     v-model="orgId" 
                     :options="orgList"
-                    default-expand-all="true"
+                    :default-expand-level="2"
                     placeholder="机构信息" />
                 </el-col>
                 <el-col :span="15">
