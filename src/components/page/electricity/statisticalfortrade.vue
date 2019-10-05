@@ -28,7 +28,7 @@
             </div>
             <el-divider content-position="left" v-if="resultInfo.name">行业：{{resultInfo.name}}</el-divider>
             <el-divider content-position="left" v-if="resultInfo.name">时间：{{this.qTime[0]}} 0:0 到 {{this.qTime[1]}} 23:59</el-divider>
-            <el-divider content-position="left" v-if="resultInfo.name">总功耗：{{kwhSum}}</el-divider>
+            <el-divider content-position="left" v-if="resultInfo.name">总功耗：{{kwhSum}} KWH</el-divider>
             <el-row :gutter="20">
                 <el-col :span="24">
                     <div id="myChart1" :style="{width: '100%', height: '380px'}"></div>
@@ -56,7 +56,7 @@ export default {
   data() {
     return {
         selName:"",
-        qId: [],
+        qId: null,
         qTime: [],
         tradeList:[],
         kwhSum: 0,
