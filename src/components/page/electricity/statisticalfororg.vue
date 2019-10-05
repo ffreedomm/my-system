@@ -10,7 +10,7 @@
                         :default-expand-level="2"
                         placeholder="请选择机构" />
                     </el-col>
-                    <el-col :span="12">
+                    <el-col :span="19">
                         <el-date-picker
                             value-format="yyyy-MM-dd"
                             style="margin-left: 10px;"
@@ -27,7 +27,6 @@
                             @click="handleSearch"
                         >统计结果</el-button>
                     </el-col>
-                    <el-col :span="4"></el-col>
                 </el-row>
             </div>
             <el-divider content-position="left" v-if="resultInfo.name">机构：{{resultInfo.name}}</el-divider>
