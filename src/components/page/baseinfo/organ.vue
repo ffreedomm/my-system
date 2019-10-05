@@ -24,7 +24,7 @@
             icon="el-icon-suitcase"
             @click="handleEquip"
         >设备信息</el-button>
-        <el-tree :data="orgList" @node-click="handleNodeClick"></el-tree>
+        <el-tree :data="orgList" @node-click="handleNodeClick" node-key="parentId" default-expand-all></el-tree>
         <el-dialog :title="title" :visible.sync="addVisible" width="60%">
             <div class="container">
                 <div class="form-box">
@@ -152,7 +152,6 @@
 
 <script>
 import { queryOrgList, queryTradeList, queryZoneList, addOrg, removeOrg, updateOrg, allDeviceListForOrg, allDeviceListSumForOrg } from '@/api/baseInfo';
-import { log } from 'util';
 export default {
   data() {
     return {
@@ -182,8 +181,6 @@ export default {
 
     },
     format(type){
-      console.log('-----type', type);
-      
        return type == 1 ? '治污设备':'产污设备'
     },
     handleEquip() {
