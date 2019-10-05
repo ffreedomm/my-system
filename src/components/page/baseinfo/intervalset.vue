@@ -2,49 +2,33 @@
     <div>
         <div class="container">
             <div class="handle-box">
-                <el-input v-model="query.name" placeholder="行业名称" class="handle-input mr10"></el-input>
+                <el-input v-model="name" placeholder="名称" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
             </div>
+            <el-button style="margin-bottom: 10px;" type="primary" icon="el-icon-plus" @click="handleAdd">新增</el-button>
             <el-table
-                :data="list" 
+                :data="tableData" 
                 border
                 class="table"
                 ref="multipleTable"
                 header-cell-class-name="table-header"
-                @selection-change="handleSelectionChange"
             >
-                <el-table-column type="selection" width="55" align="center"></el-table-column>
-                 <el-table-column type="index" width="50"  label="序号"></el-table-column>
-                <el-table-column prop="name" label="用户名"></el-table-column>
-                <!-- <el-table-column label="账户余额">
-                    <template slot-scope="scope">￥{{scope.row.money}}</template>
-                </el-table-column> -->
-           
-                <el-table-column prop="address" label="地址"></el-table-column>
-                <!-- <el-table-column label="状态" align="center">
-                    <template slot-scope="scope">
-                        <el-tag
-                            :type="scope.row.state==='成功'?'success':(scope.row.state==='失败'?'danger':'')"
-                        >{{scope.row.state}}</el-tag>
-                    </template>
-                </el-table-column> -->
+                <el-table-column type="index" width="70"  label="序号" align="center"></el-table-column>
+                <el-table-column prop="name" label="名称" width="185"></el-table-column>
+                <el-table-column prop="periods" label="时段设置" width="280"></el-table-column>
+                <el-table-column prop="memo" label="备注" width="300"></el-table-column>
                 <el-table-column label="操作" width="280" align="center">
                     <template slot-scope="scope">
                         <el-button
                             type="text"
-                            icon="el-icon-share"
-                            @click="handleDetail(scope.$index, scope.row)"
-                        >下属机构详情</el-button>
-                        <el-button
-                            type="text"
                             icon="el-icon-edit"
-                            @click="handleEdit(scope.$index, scope.row)"
+                            @click="handleEdit(scope.row)"
                         >编辑</el-button>
                         <el-button
                             type="text"
                             icon="el-icon-delete"
                             class="red"
-                            @click="handleDelete(scope.$index, scope.row)"
+                            @click="handleDelete(scope.row)"
                         >删除</el-button>
                     </template>
                 </el-table-column>
@@ -53,22 +37,25 @@
                 <el-pagination
                     background
                     layout="total, prev, pager, next"
-                    :current-page="query.pageIndex"
-                    :page-size="query.pageSize"
-                    :total="pageTotal"
+                    :current-page="currentPage"
+                    :total="dTotal"
+                    :page-size="pageSize"
                     @current-change="handlePageChange"
                 ></el-pagination>
             </div>
         </div>
 
-        <!-- 编辑弹出框 -->
-        <el-dialog title="编辑" :visible.sync="editVisible" width="30%">
-            <el-form ref="form" :model="form" label-width="70px">
-                <el-form-item label="用户名">
-                    <el-input v-model="form.name"></el-input>
+        <!-- 新增/编辑弹出框 -->
+        <el-dialog :title="title" :visible.sync="editVisible" width="40%">
+            <el-form :model="dForm" ref="dForm" :rules="rules" label-width="90px">
+                <el-form-item prop="name" label="名称">
+                    <el-input v-model="dForm.name"></el-input>
                 </el-form-item>
-                <el-form-item label="地址">
-                    <el-input v-model="form.address"></el-input>
+                <el-form-item prop="periods" label="时段设置">
+                    <el-input v-model="dForm.periods"></el-input>
+                </el-form-item>
+                <el-form-item prop="memo" label="备注">
+                    <el-input v-model="dForm.memo"></el-input>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -76,153 +63,141 @@
                 <el-button type="primary" @click="saveEdit">确 定</el-button>
             </span>
         </el-dialog>
-        <!-- 下属机构详情 -->
-        <el-dialog title="下属机构详情" :visible.sync="detailVisible" width="70%">
-           <div class="container">
-            <el-table
-                :data="list" 
-                border
-                class="table"
-                ref="multipleTable"
-                header-cell-class-name="table-header"
-                @selection-change="handleSelectionChange"
-            >
-                <el-table-column type="selection" width="55" align="center"></el-table-column>
-                 <el-table-column type="index" width="50"  label="序号"></el-table-column>
-                <el-table-column prop="name" label="用户名"></el-table-column>
-                <!-- <el-table-column label="账户余额">
-                    <template slot-scope="scope">￥{{scope.row.money}}</template>
-                </el-table-column> -->
-           
-                <el-table-column prop="address" label="地址"></el-table-column>
-                <!-- <el-table-column label="状态" align="center">
-                    <template slot-scope="scope">
-                        <el-tag
-                            :type="scope.row.state==='成功'?'success':(scope.row.state==='失败'?'danger':'')"
-                        >{{scope.row.state}}</el-tag>
-                    </template>
-                </el-table-column> -->
-                <el-table-column label="操作" width="280" align="center">
-                    <template slot-scope="scope">
-                        <el-button
-                            type="text"
-                            icon="el-icon-edit"
-                            @click="handleEdit(scope.$index, scope.row)"
-                        >编辑</el-button>
-                    </template>
-                </el-table-column>
-            </el-table>
-            <div class="pagination">
-                <el-pagination
-                    background
-                    layout="total, prev, pager, next"
-                    :current-page="query.pageIndex"
-                    :page-size="query.pageSize"
-                    :total="pageTotal"
-                    @current-change="handlePageChange"
-                ></el-pagination>
-            </div>
-        </div>
-        </el-dialog>
     </div>
 </template>
 
 <script>
-import { fetchData } from '@/api/index';
+import {queryList,queryTotal,add, update, remove } from '@/api/intervalset';
 export default {
     name: 'industry',
     data() {
         return {
-            query: {
-                address: '',
-                name: '',
-                pageIndex: 1,
-                pageSize: 10
-            },
+            title: '新增',
+            dForm: {},
+            name: '',
+            start: 1,
+            end: 10,
+            pageSize: 10,
+            dTotal: 0,
+            currentPage: 1,
             tableData: [],
-            multipleSelection: [],
-            delList: [],
+            startOrg: 1,
+            endOrg: 3,
+            pageSizeOrg: 3,
+            currentPageOrg: 1,
             editVisible: false,
-            detailVisible: false,
-            pageTotal: 0,
-            form: {},
-            idx: -1,
-            id: -1,
-            list:[
-              {
-                 name: '环保制造业',
-                 address: '天谷六路'
-              }
-            ]
+
+            rules: {
+                name: [
+                    { required: true, message: '请输入名称', trigger: 'blur' },
+                ],
+                periods: [
+                    { required: true, message: '请输入时段设置', trigger: 'blur' },
+                ]
+            }
         };
     },
     created() {
-        this.getData();
+        this.getData()
     },
     methods: {
-        // 获取 easy-mock 的模拟数据
         getData() {
-            fetchData(this.query).then(res => {
-                this.tableData = res.list;
-                this.pageTotal = res.pageTotal || 50;
+            queryList(this.name, this.start, this.end).then(res => {
+              if(res.success){
+                this.tableData = res.object
+                this.queryTotal()
+              }
             });
-        },
-        // 触发搜索按钮
-        handleSearch() {
-            this.$set(this.query, 'pageIndex', 1);
-            this.getData();
-        },
-        // 删除操作
-        handleDelete(index, row) {
-            // 二次确认删除
-            this.$confirm('确定要删除吗？', '提示', {
-                type: 'warning'
-            })
-                .then(() => {
-                    this.$message.success('删除成功');
-                    this.tableData.splice(index, 1);
-                })
-                .catch(() => {});
-        },
-        // 多选操作
-        handleSelectionChange(val) {
-            this.multipleSelection = val;
-        },
-        delAllSelection() {
-            const length = this.multipleSelection.length;
-            let str = '';
-            this.delList = this.delList.concat(this.multipleSelection);
-            for (let i = 0; i < length; i++) {
-                str += this.multipleSelection[i].name + ' ';
-            }
-            this.$message.error(`删除了${str}`);
-            this.multipleSelection = [];
-        },
-        // 编辑操作
-        handleEdit(index, row) {
-            this.idx = index;
-            this.form = row;
-            this.editVisible = true;
-        },
-        // 下属机构详情操作
-        handleDetail(index, row) {
-            // this.idx = index;
-            // this.form = row;
-            this.detailVisible = true;
-        },
-        // 保存编辑
-        saveEdit() {
-            this.editVisible = false;
-            this.$message.success(`修改第 ${this.idx + 1} 行成功`);
-            this.$set(this.tableData, this.idx, this.form);
         },
         // 分页导航
         handlePageChange(val) {
-            this.$set(this.query, 'pageIndex', val);
+          this.start = this.pageSize * (val - 1) + 1
+          this.end = this.pageSize * val
+          this.currentPage = val
+          this.getData()
+        },
+        queryTotal(){
+          queryTotal(this.name).then(res=>{
+            if(res.success){
+              this.dTotal = res.object
+            }
+          })
+        },
+
+        // 触发搜索按钮
+        handleSearch() {
             this.getData();
-        }
+        },
+        // 新增操作
+        handleAdd() {
+            this.title = '新增'
+            this.dForm = {}
+            this.editVisible = true;
+        },
+        handleEdit(row){
+            this.title = '编辑'
+            this.dForm = {
+                workPeriodId: row.id,
+                name: row.name,
+                periods: row.periods,
+                memo: row.memo,
+            }
+            this.editVisible = true;
+        },
+        saveEdit() {
+            this.$refs['dForm'].validate((valid) => {
+                if (valid) {
+                    //编辑保存
+                    if(this.dForm.workPeriodId){
+                        update(this.dForm).then(res=>{
+                        if(res.success){
+                            this.$message.success('修改成功')
+                            this.editVisible = false
+                            this.getData()
+                        }else{
+                            this.$message.error(res.message)
+                        }
+                        })
+                    }else{// 新增保存
+                        add(this.dForm).then(res=>{
+                        if(res.success){
+                            this.$message.success('保存成功')
+                            this.editVisible = false
+                            this.getData()
+                        }else{
+                            this.$message.error(res.message)
+                        }
+                        })
+                    }
+                } else {
+                    return false;
+                }
+        });
+              
+        },
+         // 删除操作
+        handleDelete(row) {
+            this.$confirm('确定要删除吗？', '提示', {
+                type: 'warning'
+            }).then(() => {
+              remove(row.id).then(res=>{
+                if(res.success){
+                  this.$message.success('删除成功')
+                  this.getData()
+                }else{
+                   this.$message.error(res.message)
+                }
+              })
+            }).catch(() => {});
+        },
+           // 分页导航
+        handlePageChangeOrg(val) {
+          this.startOrg = this.pageSizeOrg * (val - 1) + 1
+          this.endOrg = this.pageSizeOrg * val
+          this.currentPageOrg = val
+        },
     }
-};
+}
 </script>
 
 <style scoped>
@@ -253,5 +228,8 @@ export default {
     margin: auto;
     width: 40px;
     height: 40px;
+}
+.el-select{
+    width: 100%
 }
 </style>
