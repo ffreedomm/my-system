@@ -71,8 +71,22 @@ export const  orgListForZone = (id, startOrg, endOrg) => {
 }
 
 export const orgListSumForZone = (zoneId) => {
+  return request({
+      url: `/OrgListSumForZone?zoneId=${zoneId}`,
+      method: 'post'
+  })
+}
+
+export const  queryUserList = (name, role, startOrg, endOrg) => {
     return request({
-        url: `/OrgListSumForZone?zoneId=${zoneId}`,
+        url: `/QueryUserList?name=${name}&role=${role}&start=${startOrg}&end=${endOrg}`,
+        method: 'post'
+    })
+}
+
+export const queryUserListSum = (name, role) => {
+    return request({
+        url: `/QueryUserListSum?name=${name}&role=${role}`,
         method: 'post'
     })
 }
@@ -151,4 +165,27 @@ export const updateOrg = (param) => {
               tradeId=${param.tradeId}&zoneId=${param.zoneId}`,
         method: 'post'
     })
+}
+
+export const addUser = (param) => {
+  return request({
+      url: `/AddUser?name=${param.name}&loginPassword=${param.loginPassword}&role=${param.role}&
+      loginName=${param.loginName}&gender=${param.gender}&orgId=${param.orgId}`,
+      method: 'post'
+  })
+}
+
+export const updateUser = (param) => {
+  return request({
+      url: `/UpdateUser?userId=${param.id}&name=${param.name}&loginPassword=${param.loginPassword}&role=${param.role}&
+      loginName=${param.loginName}&gender=${param.gender}&orgId=${param.orgId}`,
+      method: 'post'
+  })
+}
+
+export const removeUser = (id) => {
+  return request({
+      url: `/RemoveUser?id=${id}`,
+      method: 'post'
+  })
 }
