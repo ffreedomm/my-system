@@ -80,6 +80,21 @@ export default new Router({
                     component: () => import('../components/page/statistics/industryStatistics.vue'),
                     meta: { title: '按行业统计' }
                 },
+                {
+                    path: '/zoneStatistics',
+                    component: () => import('../components/page/statistics/zoneStatistics.vue'),
+                    meta: { title: '按地区统计' }
+                },
+                {
+                    path: '/organStatistics',
+                    component: () => import('../components/page/statistics/organStatistics.vue'),
+                    meta: { title: '按机构统计' }
+                },
+                {
+                    path: '/equipmentStatistics',
+                    component: () => import('../components/page/statistics/equipmentStatistics.vue'),
+                    meta: { title: '按设备统计' }
+                },
                 /*********用电情况统计开始****************************************************** */
                 {
                     path: '/statisticalfortrade',

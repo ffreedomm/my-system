@@ -147,6 +147,27 @@ export const totalListForTradeList = (ids, tradeTime) => {
     })
 }
 
+export const totalListForZoneList = (ids, zoneTime) => {
+    return request({
+        url: `/TotalListForZoneList?ids=${ids}&startTime=${zoneTime[0]}&endTime=${zoneTime[1]}`,
+        method: 'post'
+    })
+}
+
+export const totalListForOrgList = (ids, organTime) => {
+    return request({
+        url: `/TotalListForOrgList?ids=${ids}&startTime=${organTime[0]}&endTime=${organTime[1]}`,
+        method: 'post'
+    })
+}
+
+export const totalListForDeviceList = (ids, equipTime) => {
+    return request({
+        url: `/TotalListForDeviceList?ids=${ids}&startTime=${equipTime[0]}&endTime=${equipTime[1]}`,
+        method: 'post'
+    })
+}
+
 export const addOrg = (param) => {
     return request({
         url: `/AddOrg?name=${param.name}&parentOrgId=${param.parentOrgId}&property=${param.property}&

@@ -129,15 +129,15 @@ export default {
                           title: '按行业统计'
                       },
                       {
-                          index: 'form',
+                          index: 'zoneStatistics',
                           title: '按地区统计'
                       },
                       {
-                          index: 'form',
+                          index: 'organStatistics',
                           title: '按机构统计'
                       },
                       {
-                          index: 'form',
+                          index: 'equipmentStatistics',
                           title: '按设备统计'
                       },
                       {
