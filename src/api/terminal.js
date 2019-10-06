@@ -1,30 +1,30 @@
 import request from '../utils/request';
 
-export const queryTerminalList = (name, start, end) => {
+export const queryTerminalList = (number, start, end) => {
     return request({
-        url: `/QueryTerminalList?name=${name}&start=${start}&end=${end}`,
+        url: `/QueryTerminalList?number=${number}&start=${start}&end=${end}`,
         method: 'post'
     })
 }
 
 
-export const queryTerminalListSum = (name) => {
+export const queryTerminalListSum = (number) => {
     return request({
-        url: `/QueryTerminalListSum?name=${name}`,
+        url: `/QueryTerminalListSum?number=${number}`,
         method: 'post'
     })
 }
 
-export const addTerminal = (name) => {
+export const addTerminal = (param) => {
     return request({
-        url: `/AddTerminal?name=${name}`,
+        url: `/AddTerminal?number=${param.number}&memo=${param.memo}&name=${param.name}&sendInterval=${param.sendInterval}`,
         method: 'post'
     })
 }
 
 export const updateTerminal = (param) => {
     return request({
-        url: `/UpdateTerminal?tradeId=${param.id}&name=${param.name}`,
+        url: `/UpdateTerminal?terminalId=${param.id}&number=${param.number}&memo=${param.memo}&name=${param.name}&sendInterval=${param.sendInterval}`,
         method: 'post'
     })
 }
