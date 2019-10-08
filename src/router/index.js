@@ -95,6 +95,11 @@ export default new Router({
                     component: () => import('../components/page/statistics/equipmentStatistics.vue'),
                     meta: { title: '按设备统计' }
                 },
+                {
+                    path: '/totalDeviceStatistics',
+                    component: () => import('../components/page/statistics/totalDeviceStatistics.vue'),
+                    meta: { title: '设备故障现场分析' }
+                },
                 /*********用电情况统计开始****************************************************** */
                 {
                     path: '/statisticalfortrade',

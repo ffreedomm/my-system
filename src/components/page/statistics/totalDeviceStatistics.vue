@@ -2,9 +2,17 @@
     <div>
         <div class="container">
             <div class="handle-box">
-                <el-select v-model="organId" multiple placeholder="请选择机构">
+                <el-select v-model="organId" placeholder="请选择机构" @change="changeHandle">
                     <el-option
                         v-for="item in organList"
+                        :key="item.id"
+                        :label="item.name"
+                        :value="item.id"
+                    ></el-option>
+                </el-select>
+                <el-select v-model="deviceId" placeholder="请选择设备"  style="margin-left: 10px;">
+                    <el-option
+                        v-for="item in deviceData"
                         :key="item.id"
                         :label="item.name"
                         :value="item.id"
@@ -26,11 +34,11 @@
                     @click="handleSearch"
                 >统计结果</el-button>
             </div>
-             <el-divider v-if="organInfoList.length > 0" content-position="left">统计结果（明细对比）</el-divider>
+              <el-divider v-if="equipInfoList.length > 0" content-position="left">统计结果（明细对比）</el-divider>
             <el-table
-                v-if="organInfoList.length > 0"
+                v-if="equipInfoList.length > 0"
                 style="margin-bottom: 50px;"
-                :data="organInfoList"
+                :data="equipInfoList"
                 border
                 class="table"
                 ref="multipleTable"
@@ -48,7 +56,7 @@
                 <el-table-column prop="fault5Sum" label="异常开机次数（次）"></el-table-column>
                 <el-table-column prop="handledSum" label="处理故障次数（次）"></el-table-column>
             </el-table>
-            <el-divider v-if="organInfoList.length > 0" content-position="left">统计结果（图表对比）</el-divider>
+            <el-divider v-if="equipInfoList.length > 0" content-position="left">统计结果（图表对比）</el-divider>
             <el-row :gutter="20">
                 <el-col :span="24">
                     <div id="myChart2" :style="{width: '90%', height: '380px'}"></div>
@@ -59,16 +67,18 @@
 </template>
 
 <script>
-import { queryOrgList, totalListForOrgList } from '@/api/baseInfo'
+import { queryOrgList, allDeviceListForOrg, totalListForDeviceList } from '@/api/baseInfo'
 import { log } from 'util';
 export default {
   name: 'industryStatistics',
   data() {
     return {
       organList: [],
-      organId: [],
+      deviceData: [],
+      organId: '',
+      deviceId: '',
       organTime: [],
-      organInfoList: []
+      equipInfoList:[]
     };
   },
   mounted() {
@@ -76,13 +86,13 @@ export default {
   },
   methods: {
     handleSearch() {
-      if (this.organId && this.organTime && this.organTime.length == 2) {
+      if (this.deviceId && this.organTime && this.organTime.length == 2) {
         this.organTime[0] = this.organTime[0] + '-0-0-1'
         this.organTime[1] = this.organTime[1] + '-23-59-59'
-        totalListForOrgList(this.organId.join(), this.organTime).then(res => {
+        totalListForDeviceList(this.deviceId, this.organTime).then(res => {
           if (res.success) {
-            this.organInfoList = res.object
-            this.drawLine(this.organInfoList)
+            this.equipInfoList = res.object
+            this.drawLine(this.equipInfoList)
           }
         })
       }
@@ -95,10 +105,17 @@ export default {
         }
       })
     },
-    drawLine(organInfoList) {
+    changeHandle(e){
+       allDeviceListForOrg(e, '', '').then(res => {
+          if (res.success) {
+            this.deviceData = res.object
+          }
+        })
+    },
+    drawLine(equipInfoList) {
       let myChart2 = this.$echarts.init(document.getElementById('myChart2'))
       let seriesData = []
-      organInfoList.forEach(e => {
+      equipInfoList.forEach(e => {
         let data = {
             // name: e.name,
             type: 'bar',

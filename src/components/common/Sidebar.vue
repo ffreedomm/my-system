@@ -141,7 +141,7 @@ export default {
                           title: '按设备统计'
                       },
                       {
-                          index: 'form',
+                          index: 'totalDeviceStatistics',
                           title: '设备故障现场分析'
                       },
                     ]
