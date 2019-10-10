@@ -177,7 +177,7 @@ export const pETotalForDevice = (deviceId, pointSum, equipTime) => {
 
 export const terminalAlertListInFaultStatusForDevice = (deviceId, equipTime) => {
     return request({
-        url: `/TerminalAlertListInFaultStatusForDevice?deviceId=${deviceId}&startTime=${equipTime[0]}&endTime=${equipTime[1]}`,
+        url: `/TerminalAlertListInFaultStatusForDevice?startTime=${equipTime[0]}&endTime=${equipTime[1]}&deviceId=${deviceId}`,
         method: 'post'
     })
 }

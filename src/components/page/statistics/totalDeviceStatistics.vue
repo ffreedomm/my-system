@@ -62,10 +62,16 @@
                     <div id="myChart2" :style="{width: '90%', height: '380px'}"></div>
                 </el-col>
             </el-row>
-            <el-divider v-if="electricityList.length > 0" content-position="left">故障现场分析</el-divider>
+            <el-divider v-if="electricityList.length > 0" content-position="left">功率分析图</el-divider>
             <el-row :gutter="20">
                 <el-col :span="24">
                     <div id="myChart1" :style="{width: '95%', height: '380px'}"></div>
+                </el-col>
+            </el-row>
+            <el-divider v-if="terminalList.length > 0" content-position="left">故障分析图</el-divider>
+            <el-row :gutter="20">
+                <el-col :span="24">
+                    <div id="myChart3" :style="{width: '95%', height: '380px'}"></div>
                 </el-col>
             </el-row>
         </div>
@@ -73,7 +79,7 @@
 </template>
 
 <script>
-import { queryOrgList, allDeviceListForOrg, totalListForDeviceList, pETotalForDevice,terminalAlertListInFaultStatusForDevice } from '@/api/baseInfo'
+import { queryOrgList, allDeviceListForOrg, totalListForDeviceList, pETotalForDevice, terminalAlertListInFaultStatusForDevice } from '@/api/baseInfo'
 import { log } from 'util';
 export default {
   data() {
@@ -84,7 +90,8 @@ export default {
       deviceId: '',
       organTime: [],
       equipInfoList: [],
-      electricityList: []
+      electricityList: [],
+      terminalList: []
     };
   },
   mounted() {
@@ -107,13 +114,65 @@ export default {
             this.drawElectricityLine(this.electricityList)
           }
         })
-        terminalAlertListInFaultStatusForDevice(this.deviceId ,this.organTime).then(res=>{
-
+        terminalAlertListInFaultStatusForDevice(this.deviceId, this.organTime).then(res => {
+          if (res.success) {
+            this.terminalList = res.object
+            this.drawTerminalLine(this.terminalList)
+          }
         })
-
-
       }
+    },
+    drawTerminalLine(terminalList) {
+      let myChart3 = this.$echarts.init(document.getElementById('myChart3'))
+      let yData = []
+      let xData = []
+      terminalList.forEach(e => {
+        xData.push(e.startTime)
+        yData.push(e.status)
 
+      });
+      // 绘制图表
+      myChart3.setOption({
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+            type: 'line'        // 默认为直线，可选为：'line' | 'shadow'
+          }
+        },
+        // color : ['#ffb400', '#00ff4e', '#ff0000', '#00ddff', '#baff00', '#00ff06'],
+        legend: {
+          data: ['0-正常', '1-超标1级警报', '2-超标2级警报', '3-超标3级警报', '4-工作时段停机', '5-非工作时段启动']
+        },
+        grid: {
+          left: '8%',
+          bottom: '3%',
+          containLabel: true
+        },
+        xAxis: [
+          {
+            type: 'category',
+            data: xData,
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value'
+          }
+        ],
+        series: [{
+          type: 'bar',
+          data: yData,
+          itemStyle: {
+            normal: {
+              //每根柱子颜色设置
+              color: function (params) {
+                let colorList = ['#ffb400', '#00ff4e', '#ff0000', '#00ddff', '#baff00', '#00ff06'];
+                return colorList[params.value];
+              }
+            }
+          },
+        }]
+      });
     },
     queryOrgList() {
       queryOrgList('', 1, 9999).then(res => {
