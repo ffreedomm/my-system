@@ -168,6 +168,20 @@ export const totalListForDeviceList = (ids, equipTime) => {
     })
 }
 
+export const pETotalForDevice = (deviceId, pointSum, equipTime) => {
+    return request({
+        url: `/PETotalForDevice?deviceId=${deviceId}&pointSum=${pointSum}&startTime=${equipTime[0]}&endTime=${equipTime[1]}`,
+        method: 'post'
+    })
+}
+
+export const terminalAlertListInFaultStatusForDevice = (deviceId, equipTime) => {
+    return request({
+        url: `/TerminalAlertListInFaultStatusForDevice?deviceId=${deviceId}&startTime=${equipTime[0]}&endTime=${equipTime[1]}`,
+        method: 'post'
+    })
+}
+
 export const addOrg = (param) => {
     return request({
         url: `/AddOrg?name=${param.name}&parentOrgId=${param.parentOrgId}&property=${param.property}&

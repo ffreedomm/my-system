@@ -10,7 +10,7 @@
                         :value="item.id"
                     ></el-option>
                 </el-select>
-                <el-select v-model="deviceId" placeholder="请选择设备"  style="margin-left: 10px;">
+                <el-select v-model="deviceId" placeholder="请选择设备" style="margin-left: 10px;">
                     <el-option
                         v-for="item in deviceData"
                         :key="item.id"
@@ -34,7 +34,7 @@
                     @click="handleSearch"
                 >统计结果</el-button>
             </div>
-              <el-divider v-if="equipInfoList.length > 0" content-position="left">统计结果（明细对比）</el-divider>
+            <el-divider v-if="equipInfoList.length > 0" content-position="left">统计结果（明细对比）</el-divider>
             <el-table
                 v-if="equipInfoList.length > 0"
                 style="margin-bottom: 50px;"
@@ -62,15 +62,20 @@
                     <div id="myChart2" :style="{width: '90%', height: '380px'}"></div>
                 </el-col>
             </el-row>
+            <el-divider v-if="electricityList.length > 0" content-position="left">故障现场分析</el-divider>
+            <el-row :gutter="20">
+                <el-col :span="24">
+                    <div id="myChart1" :style="{width: '95%', height: '380px'}"></div>
+                </el-col>
+            </el-row>
         </div>
     </div>
 </template>
 
 <script>
-import { queryOrgList, allDeviceListForOrg, totalListForDeviceList } from '@/api/baseInfo'
+import { queryOrgList, allDeviceListForOrg, totalListForDeviceList, pETotalForDevice,terminalAlertListInFaultStatusForDevice } from '@/api/baseInfo'
 import { log } from 'util';
 export default {
-  name: 'industryStatistics',
   data() {
     return {
       organList: [],
@@ -78,7 +83,8 @@ export default {
       organId: '',
       deviceId: '',
       organTime: [],
-      equipInfoList:[]
+      equipInfoList: [],
+      electricityList: []
     };
   },
   mounted() {
@@ -95,6 +101,17 @@ export default {
             this.drawLine(this.equipInfoList)
           }
         })
+        pETotalForDevice(this.deviceId, 25, this.organTime).then(res => {
+          if (res.success) {
+            this.electricityList = res.object.electricityTotalList
+            this.drawElectricityLine(this.electricityList)
+          }
+        })
+        terminalAlertListInFaultStatusForDevice(this.deviceId ,this.organTime).then(res=>{
+
+        })
+
+
       }
 
     },
@@ -105,21 +122,98 @@ export default {
         }
       })
     },
-    changeHandle(e){
-       allDeviceListForOrg(e, '', '').then(res => {
-          if (res.success) {
-            this.deviceData = res.object
-          }
+    changeHandle(e) {
+      allDeviceListForOrg(e, '', '').then(res => {
+        if (res.success) {
+          this.deviceData = res.object
+        }
+      })
+    },
+    formatDate(dateString) {
+      var ss = dateString.split("-");
+      return ss[0] + "-" + ss[1] + "-" + ss[2] + " " + ss[3] + ":" + ss[4]
+    },
+    drawElectricityLine(list) {
+      let myChart1 = this.$echarts.init(document.getElementById('myChart1'))
+      let xArr = [], yArr = [], tArr = [], bArr = [];
+      if (list && list.length > 0) {
+        list.forEach((item, index) => {
+          tArr.push(5500);
+          bArr.push(4500);
+          yArr.push(Number(item.power).toFixed(2));
+          xArr.push(this.formatDate(item.createTime))
         })
+      }
+      // 绘制图表
+      myChart1.setOption({
+        title: {
+          text: '功率统计'
+        },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'cross',
+            label: {
+              backgroundColor: '#6a7985'
+            }
+          }
+        },
+        legend: {
+          data: ['实际功率值', '合法功率上限', '合法功率下限']
+        },
+        grid: {
+          left: '3%',
+          right: '9%',
+          bottom: '3%',
+          containLabel: true
+        },
+        xAxis: [
+          {
+            type: 'category',
+            boundaryGap: false,
+            data: xArr,
+            axisLabel: {
+              interval: 0,    //强制文字产生间隔
+              rotate: -45,
+              interval: 1     //文字逆时针旋转45°
+            },
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value'
+          }
+        ],
+        series: [
+          {
+            name: '实际功率值',
+            type: 'line',
+            stack: '总量',
+            data: yArr
+          },
+          {
+            name: '合法功率上限',
+            type: 'line',
+            stack: '',
+            data: tArr
+          },
+          {
+            name: '合法功率下限',
+            type: 'line',
+            stack: '',
+            data: bArr
+          }
+        ]
+      });
     },
     drawLine(equipInfoList) {
       let myChart2 = this.$echarts.init(document.getElementById('myChart2'))
       let seriesData = []
       equipInfoList.forEach(e => {
         let data = {
-            // name: e.name,
-            type: 'bar',
-            data: [e.deviceSum, e.faultSum, e.fault1Sum, e.fault2Sum, e.fault3Sum, e.fault4Sum, e.fault5Sum, e.handledSum]
+          // name: e.name,
+          type: 'bar',
+          data: [e.deviceSum, e.faultSum, e.fault1Sum, e.fault2Sum, e.fault3Sum, e.fault4Sum, e.fault5Sum, e.handledSum]
         }
         seriesData.push(data)
       });
@@ -139,7 +233,7 @@ export default {
         xAxis: [
           {
             type: 'category',
-            data: ['设备总数', '故障总次数', '功率轻度超标次数', '功率中度超标次数','功率重度超标次数', '异常停机次数', '异常开机次数', '处理故障次数'],
+            data: ['设备总数', '故障总次数', '功率轻度超标次数', '功率中度超标次数', '功率重度超标次数', '异常停机次数', '异常开机次数', '处理故障次数'],
           }
         ],
         yAxis: [
