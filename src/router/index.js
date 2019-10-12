@@ -132,6 +132,11 @@ export default new Router({
                     component: () => import('../components/page/editPassword.vue'),
                     meta: { title: '修改密码' }
                 },
+                {
+                    path: '/constructionPlan',
+                    component: () => import('../components/page/constructionPlan.vue'),
+                    meta: { title: '施工方案管理' }
+                },
                 
             ]
         },
