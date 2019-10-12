@@ -69,6 +69,14 @@
                 </el-col>
             </el-row>
             <el-divider v-if="terminalList.length > 0" content-position="left">故障分析图</el-divider>
+            <div v-if="terminalList.length > 0" style="font-size: 12px;margin-left: 10%;display: flex;">
+              <span>0-正常</span>
+              <span style="margin-left: 10px;">1-超标1级警报</span>
+              <span style="margin-left: 10px;">2-超标2级警报</span>
+              <span style="margin-left: 10px;">3-超标3级警报</span>
+              <span style="margin-left: 10px;">4-工作时段停机</span>
+              <span style="margin-left: 10px;">5-非工作时段启动</span>
+            </div>
             <el-row :gutter="20">
                 <el-col :span="24">
                     <div id="myChart3" :style="{width: '95%', height: '380px'}"></div>
@@ -140,9 +148,9 @@ export default {
           }
         },
         // color : ['#ffb400', '#00ff4e', '#ff0000', '#00ddff', '#baff00', '#00ff06'],
-        legend: {
-          data: ['0-正常', '1-超标1级警报', '2-超标2级警报', '3-超标3级警报', '4-工作时段停机', '5-非工作时段启动']
-        },
+        // legend: {
+        //   data: ['0-正常', '1-超标1级警报', '2-超标2级警报', '3-超标3级警报', '4-工作时段停机', '5-非工作时段启动']
+        // },
         grid: {
           left: '8%',
           bottom: '3%',
