@@ -22,6 +22,63 @@ export const queryTotal = (name) => {
     })
 }
 
+
+/**
+ * 设备分页查询
+ * @param {} data 
+ */
+export const queryList1 = (alertParamId, start, end) => {
+    return request({
+        url: `/DeviceListForAlertParam?alertParamId=${alertParamId}&start=${start}&end=${end}`,
+        method: 'post'
+    })
+}
+
+/**
+ * 查询设备总数
+ * @param {} name 
+ */
+export const queryTotal1 = (alertParamId) => {
+    return request({
+        url: `/DeviceListSumForAlertParam?alertParamId=${alertParamId}`,
+        method: 'post'
+    })
+}
+
+/**
+ * 查询设备
+ */
+export const queryDeviceList = () => {
+    return request({
+        url: '/QueryDeviceList',
+        method: 'post'
+    })
+}
+
+
+
+/**
+ * 设置到设备
+ * @param {} name 
+ */
+export const setDevice = (data) => {
+    return request({
+        url: '/SetAlertParamForDeviceList',
+        method: 'post',
+        data,
+        transformRequest: [function (data) {
+            let ret = ''
+            for (let it in data) {
+              ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+            }
+            return ret
+        }],
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+        }
+    })
+}
+
 /**
  * 新增
  * @param {} data 
@@ -75,3 +132,4 @@ export const remove = (id) => {
         method: 'post'
     })
 }
+

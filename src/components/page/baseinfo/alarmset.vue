@@ -12,6 +12,7 @@
                 class="table"
                 ref="multipleTable"
                 header-cell-class-name="table-header"
+                @row-click="getDevices"
             >
                 <el-table-column type="index" width="70"  label="序号" align="center"></el-table-column>
                 <el-table-column prop="name" label="名称"></el-table-column>
@@ -48,6 +49,11 @@
                             class="red"
                             @click="handleDelete(scope.row)"
                         >删除</el-button>
+                        <el-button
+                            type="text"
+                            icon="el-icon-setting"
+                            @click="queryDeviceList(scope.row.id)"
+                        >设置到设备</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -61,6 +67,41 @@
                     @current-change="handlePageChange"
                 ></el-pagination>
             </div>
+            <el-divider content-position="left">包含的设备信息</el-divider>
+            <el-table
+                :data="tableData1" 
+                border
+                class="table"
+                ref="multipleTable"
+                header-cell-class-name="table-header"
+            >
+                <el-table-column type="index" width="70"  label="序号" align="center"></el-table-column>
+                <el-table-column prop="number" label="设备编号"></el-table-column>
+                <el-table-column prop="name" label="设备名称"></el-table-column>
+                <el-table-column prop="voltage" label="额定电压"></el-table-column>
+                <el-table-column prop="power" label="额定功率"></el-table-column>
+                <el-table-column prop="longitude" label="经度位置"></el-table-column>
+                <el-table-column prop="latitude" label="纬度位置"></el-table-column>
+                <el-table-column prop="terminalNumber" label="连接的终端"></el-table-column>
+                <el-table-column prop="org.name" label="所属机构"></el-table-column>
+                <el-table-column prop="" label="设备类型">
+                    <template scope="scope">
+                        {{scope.row.type  == 1 ? "治污设备" :"产污设备" }}
+                    </template>
+                </el-table-column>
+                <el-table-column prop="productDevice.name" label="关联的产污设备"></el-table-column>
+            </el-table>
+            <div class="pagination">
+                <el-pagination
+                    background
+                    layout="total, prev, pager, next"
+                    :current-page="currentPage1"
+                    :total="dTotal1"
+                    :page-size="pageSize"
+                    @current-change="handlePageChange1"
+                ></el-pagination>
+            </div>
+
         </div>
 
         <!-- 新增/编辑弹出框 -->
@@ -127,11 +168,43 @@
                 <el-button type="primary" @click="saveEdit">确 定</el-button>
             </span>
         </el-dialog>
+
+        <!-- 选择设备弹出框 -->
+        <el-dialog title="设备列表" :visible.sync="editVisible1" width="60%">
+            <el-table
+                :data="devices" 
+                border
+                class="table"
+                ref="multipleTable"
+                header-cell-class-name="table-header"
+                @selection-change="handleSelectionChange"
+            >
+                <el-table-column type="selection" width="70" align="center"></el-table-column>
+                <el-table-column prop="number" label="设备编号"></el-table-column>
+                <el-table-column prop="name" label="设备名称"></el-table-column>
+                <el-table-column prop="voltage" label="额定电压"></el-table-column>
+                <el-table-column prop="power" label="额定功率"></el-table-column>
+                <el-table-column prop="longitude" label="经度位置"></el-table-column>
+                <el-table-column prop="latitude" label="纬度位置"></el-table-column>
+                <el-table-column prop="terminalNumber" label="连接的终端"></el-table-column>
+                <el-table-column prop="org.name" label="所属机构"></el-table-column>
+                <el-table-column prop="" label="设备类型">
+                    <template scope="scope">
+                        {{scope.row.type  == 1 ? "治污设备" :"产污设备" }}
+                    </template>
+                </el-table-column>
+                <el-table-column prop="productDevice.name" label="关联的产污设备"></el-table-column>
+            </el-table>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="editVisible1 = false">取 消</el-button>
+                <el-button type="primary" @click="sedDataDevice">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
 <script>
-import {queryList,queryTotal,add, update, remove } from '@/api/alarmset';
+import {queryList,queryTotal,add, update, remove, queryList1, queryTotal1, queryDeviceList, setDevice } from '@/api/alarmset';
 export default {
     name: 'industry',
     data() {
@@ -140,8 +213,8 @@ export default {
             dForm: {},
             name: '',
             start: 1,
-            end: 10,
-            pageSize: 10,
+            end: 5,
+            pageSize: 5,
             dTotal: 0,
             currentPage: 1,
             tableData: [],
@@ -150,6 +223,17 @@ export default {
             pageSizeOrg: 3,
             currentPageOrg: 1,
             editVisible: false,
+
+            deviceId:0,
+            start1: 1,
+            end1: 5,
+            dTotal1: 0,
+            currentPage1: 1,
+            tableData1: [],
+            editVisible1:[],
+            devices:[],
+            deviceIdArr:[],
+            editVisible1:false,
 
             rules: {
                 name: [
@@ -194,6 +278,14 @@ export default {
               }
             });
         },
+        getData1() {
+            queryList1(this.deviceId, this.start1, this.end1).then(res => {
+              if(res.success){
+                this.tableData1 = res.object
+                this.queryTotal1()
+              }
+            });
+        },
         // 分页导航
         handlePageChange(val) {
           this.start = this.pageSize * (val - 1) + 1
@@ -201,10 +293,24 @@ export default {
           this.currentPage = val
           this.getData()
         },
+        // 分页导航
+        handlePageChange1(val) {
+          this.start1 = this.pageSize * (val - 1) + 1
+          this.end1 = this.pageSize * val
+          this.currentPage1 = val
+          this.getData1()
+        },
         queryTotal(){
           queryTotal(this.name).then(res=>{
             if(res.success){
               this.dTotal = res.object
+            }
+          })
+        },
+        queryTotal1(){
+          queryTotal1(this.deviceId).then(res=>{
+            if(res.success){
+              this.dTotal1 = res.object
             }
           })
         },
@@ -281,12 +387,52 @@ export default {
               })
             }).catch(() => {});
         },
-           // 分页导航
-        handlePageChangeOrg(val) {
-          this.startOrg = this.pageSizeOrg * (val - 1) + 1
-          this.endOrg = this.pageSizeOrg * val
-          this.currentPageOrg = val
+
+        //设备弹窗
+        queryDeviceList(id){
+            this.editVisible1 = true;
+            this.deviceId = id;
+              queryDeviceList().then(res=>{
+                if(res.success){
+                    this.devices = res.object;
+                }else{
+                   this.$message.error(res.message)
+                }
+              })
         },
+
+        sedDataDevice(){
+            const req = {
+                ids : this.deviceIdArr.join(","),
+                alertParamId : this.deviceId
+            }
+            setDevice(req).then(res=>{
+                if(res.success){
+                  this.$message.success('设置成功')
+                  this.editVisible1 = false
+                  this.getData1()
+                }else{
+                   this.$message.error(res.message)
+                }
+            })
+        },
+
+        handleSelectionChange(val) {
+            this.deviceIdArr = [];
+            val.forEach(item =>{
+                this.deviceIdArr.push(item.id);
+            })
+        },
+
+        getDevices(row, column, event){
+            this.deviceId = row.id;
+            this.start1= 1;
+            this.end1= 5;
+            this.dTotal1= 0;
+            this.currentPage1= 1;
+            this.tableData1= [];
+            this.getData1();
+        }
     }
 }
 </script>
