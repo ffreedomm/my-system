@@ -137,6 +137,16 @@ export default new Router({
                     component: () => import('../components/page/constructionPlan.vue'),
                     meta: { title: '施工方案管理' }
                 },
+                {
+                    path: '/uploadata',
+                    component: () => import('../components/page/uploadata.vue'),
+                    meta: { title: '上传数据查看' }
+                },
+                {
+                    path: '/logsmanage',
+                    component: () => import('../components/page/logsmanage.vue'),
+                    meta: { title: '操作日志管理' }
+                },
                 
             ]
         },

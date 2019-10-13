@@ -179,11 +179,11 @@ export default {
           title: '其他',
           subs: [
             {
-              index: 'form',
+              index: 'uploadata',
               title: '上传数据查看'
             },
             {
-              index: 'form',
+              index: 'logsmanage',
               title: '操作日志管理'
             },
             {
