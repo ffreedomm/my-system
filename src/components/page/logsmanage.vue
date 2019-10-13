@@ -83,7 +83,8 @@ export default {
     };
   },
   created() {
-    this.showAdminAccount();
+    this.getData()
+    //this.showAdminAccount();
   },
   methods: {
     getData() {
@@ -98,11 +99,11 @@ export default {
       this.start = this.pageSize * (val - 1) + 1
       this.end = this.pageSize * val
       this.currentPage = val
-      if(this.flag === true){
+      //if(this.flag === true){
          this.getData()
-      }else{
-        this.showAdminAccount()
-      }
+      //}else{
+      //  this.showAdminAccount()
+      //}
     },
     queryLogsmanageListSum() {
       queryLogsmanageListSum(this.userName, this.operation, this.start, this.end).then(res => {
@@ -113,11 +114,11 @@ export default {
     },
     // 触发搜索按钮
     handleSearch() {
-      if(this.flag === true){
+      //if(this.flag === true){
         this.getData()
-      }else{
-        this.showAdminAccount()
-      }
+      //}else{
+      //  this.showAdminAccount()
+      //}
     },
     // 删除操作
     handleDelete(row) {

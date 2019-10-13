@@ -23,12 +23,6 @@ export const removeLogsmanage = (id) => {
     })
 }
 
-// export const checkAdminAccount = (password,name) => {
-//     return request({
-//         url: `/CheckAdminAccount?password=${password}&name=${name}`,
-//         method: 'post'
-//     })
-// }
 
 export const checkAdminAccount = (data) => {
     return request({
