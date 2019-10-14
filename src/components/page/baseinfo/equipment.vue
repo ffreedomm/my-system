@@ -24,18 +24,19 @@
                 <el-table-column prop="org.name" label="所属机构"></el-table-column>
                 <el-table-column prop="type" label="设备类型" :formatter = "stateFormat"></el-table-column>
                 <el-table-column prop="productDevice.name" label="关联的产污设备" width="130"></el-table-column>
-                <el-table-column label="操作" width="580" align="center">
+                <el-table-column label="操作" width="490" align="center">
                     <template slot-scope="scope">
                         <el-button
                             type="text"
                             icon="el-icon-share"
                             @click="handleDetail(scope.row)"
                         >下属机构详情</el-button>
-                        <el-button
+                        <!--<el-button
                             type="text"
                             icon="el-icon-more"
                             @click="handleHistory(scope.row)"
-                        >查看历史数据</el-button><el-button
+                        >查看历史数据</el-button>-->
+                        <el-button
                             type="text"
                             icon="el-icon-setting"
                             @click="handleConnect(scope.row)"
