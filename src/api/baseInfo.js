@@ -147,6 +147,20 @@ export const totalListForTradeList = (ids, tradeTime) => {
     })
 }
 
+export const queryConstructionPlanList = (name, status, orgName, startTime, endTime, start, end) => {
+    return request({
+        url: `/QueryConstructionPlanList?name=${name}&status=${status}&orgName=${orgName}&startTime=${startTime}&endTime=${endTime}&start=${start}&end=${end}`,
+        method: 'post'
+    })
+}
+
+export const queryConstructionPlanListSum = (name, status, orgName, startTime, endTime) => {
+    return request({
+        url: `/QueryConstructionPlanListSum?name=${name}&status=${status}&orgName=${orgName}&startTime=${startTime}&endTime=${endTime}`,
+        method: 'post'
+    })
+}
+
 export const totalListForZoneList = (ids, zoneTime) => {
     return request({
         url: `/TotalListForZoneList?ids=${ids}&startTime=${zoneTime[0]}&endTime=${zoneTime[1]}`,

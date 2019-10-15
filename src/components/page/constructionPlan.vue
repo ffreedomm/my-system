@@ -2,26 +2,49 @@
     <div>
         <div class="container">
             <div class="handle-box">
-                <el-input v-model="name" placeholder="方案名称" class="handle-input mr10"></el-input>
-                <el-input v-model="orgName" placeholder="企业名称" class="handle-input mr10"></el-input>
-                <el-select v-model="status" placeholder="请选择状态">
-                    <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
-                    ></el-option>
-                </el-select>
-                <el-date-picker
-                    value-format="yyyy-MM-dd"
-                    style="margin-top: 10px;margin-right: 10px;"
-                    v-model="organTime"
-                    type="daterange"
-                    range-separator="至"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                ></el-date-picker>
-                <el-button type="primary" icon="el-icon-search" @click="handleSearch">查询</el-button>
+                <el-row :gutter="20">
+                    <el-col :span="8">
+                        <el-input v-model="name" placeholder="方案名称" class="handle-input mr10"></el-input>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-input v-model="orgName" placeholder="企业名称" class="handle-input mr10"></el-input>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="20">
+                    <el-col :span="8">
+                        <el-select
+                            style="margin-top: 10px;width: 300px;"
+                            v-model="status"
+                            placeholder="请选择状态"
+                        >
+                            <el-option
+                                v-for="item in options"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value"
+                            ></el-option>
+                        </el-select>
+                    </el-col>
+                    <el-col :span="8">
+                        <el-date-picker
+                            value-format="yyyy-MM-dd"
+                            style="margin-top: 10px;"
+                            v-model="organTime"
+                            type="daterange"
+                            range-separator="至"
+                            start-placeholder="开始日期"
+                            end-placeholder="结束日期"
+                        ></el-date-picker>
+                    </el-col>
+                    <el-col :span="3">
+                        <el-button
+                            style="margin-top: 10px;margin-left: 10px;"
+                            type="primary"
+                            icon="el-icon-search"
+                            @click="handleSearch"
+                        >查询</el-button>
+                    </el-col>
+                </el-row>
             </div>
             <el-button
                 style="margin-bottom: 10px;"
@@ -29,7 +52,7 @@
                 icon="el-icon-plus"
                 @click="handleAdd"
             >新增</el-button>
-            <!-- <el-table
+            <el-table
                 :data="tableData"
                 border
                 class="table"
@@ -37,7 +60,14 @@
                 header-cell-class-name="table-header"
             >
                 <el-table-column type="index" width="70" label="序号"></el-table-column>
-                <el-table-column prop="name" label="行业名称"></el-table-column>
+                <el-table-column prop="name" label="方案名称"></el-table-column>
+                <el-table-column prop="org" label="所属企业"></el-table-column>
+                <el-table-column prop="status" label="审核状态"></el-table-column>
+                <el-table-column prop="checker" label="审核人"></el-table-column>
+                <el-table-column prop="checkTime" label="审核时间"></el-table-column>
+                <el-table-column prop="memo" label="审核意见"></el-table-column>
+                <el-table-column prop="createTime" label="创建时间"></el-table-column>
+                <el-table-column prop="creator" label="创建人"></el-table-column>
                 <el-table-column label="操作" width="280" align="center">
                     <template slot-scope="scope">
                         <el-button
@@ -54,8 +84,8 @@
                         >删除</el-button>
                     </template>
                 </el-table-column>
-            </el-table> -->
-            <!-- <div class="pagination">
+            </el-table>
+            <div class="pagination">
                 <el-pagination
                     background
                     layout="total, prev, pager, next"
@@ -64,30 +94,60 @@
                     :page-size="pageSize"
                     @current-change="handlePageChange"
                 ></el-pagination>
-            </div> -->
+            </div>
         </div>
 
         <!-- 新增/编辑弹出框 -->
-        <!-- <el-dialog :title="title" :visible.sync="editVisible" width="30%">
+        <el-dialog :title="title" :visible.sync="editVisible" width="40%">
             <el-form :model="tradeForm" label-width="70px">
-                <el-form-item label="行业名称">
-                    <el-input v-model="tradeForm.name"></el-input>
+                <el-form-item label="方案名称" style="padding-left: 50px;">
+                    <el-input style="width: 60%;" v-model="tradeForm.name"></el-input>
+                </el-form-item>
+                <el-form-item label="所属企业" style="padding-left: 50px;">
+                    <el-select
+                        style="width: 60%;"
+                        v-model="tradeForm.orgId"
+                        multiple
+                        placeholder="请选择企业"
+                    >
+                        <el-option
+                            v-for="item in organList"
+                            :key="item.id"
+                            :label="item.name"
+                            :value="item.id"
+                        ></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="方案文件" style="padding-left: 50px;">
+                    <el-upload
+                        class="upload-demo"
+                        action="https://video1.dushuren123.com/iotserver/UploadAccessoryFile/"
+                        :before-remove="beforeRemove"
+                        multiple
+                        :limit="3"
+                        :on-exceed="handleExceed"
+                        :file-list="fileList"
+                    >
+                        <el-button size="small" type="primary">点击上传</el-button>
+                    </el-upload>
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="editVisible = false">取 消</el-button>
                 <el-button type="primary" @click="saveEdit">确 定</el-button>
             </span>
-        </el-dialog> -->
+        </el-dialog>
     </div>
 </template>
 
 <script>
-import { queryOrgList } from '@/api/baseInfo'
+import { queryOrgList, queryConstructionPlanList, queryConstructionPlanListSum } from '@/api/baseInfo'
 export default {
   name: 'industry',
   data() {
     return {
+      fileList: [],
+      tradeForm: {},
       title: '新增',
       name: '',
       status: '',
@@ -111,19 +171,40 @@ export default {
       currentPage: 1,
       tableData: [],
       editVisible: false,
+      organList: [],
     };
   },
   created() {
     this.getData()
+    this.queryOrgList()
   },
   methods: {
+    handleExceed(files, fileList) {
+      this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+    },
+    beforeRemove(file, fileList) {
+      return this.$confirm(`确定移除 ${file.name}？`);
+    },
+    queryOrgList() {
+      queryOrgList('', 1, 9999).then(res => {
+        if (res.success) {
+          this.organList = res.object
+        }
+      })
+    },
     getData() {
-      // queryConstructionPlanList(this.name, this.start, this.end).then(res => {
-      //   if (res.success) {
-      //     this.tableData = res.object
-      //     this.queryTradeListSum()
-      //   }
-      // });
+      let startTime = ''
+      let endTime = ''
+      if (this.organTime && this.organTime.length == 2) {
+        startTime = this.organTime[0]
+        endTime = this.organTime[1]
+      }
+      queryConstructionPlanList(this.name, this.status, this.orgName, startTime, endTime, this.start, this.end).then(res => {
+        if (res.success) {
+          this.tableData = res.object
+          this.queryConstructionPlanListSum()
+        }
+      });
     },
     // 分页导航
     handlePageChange(val) {
@@ -132,8 +213,14 @@ export default {
       this.currentPage = val
       this.getData()
     },
-    queryTradeListSum() {
-      queryTradeListSum(this.name).then(res => {
+    queryConstructionPlanListSum() {
+      let startTime = ''
+      let endTime = ''
+      if (this.organTime && this.organTime.length == 2) {
+        startTime = this.organTime[0]
+        endTime = this.organTime[1]
+      }
+      queryConstructionPlanListSum(this.name, this.status, this.orgName, startTime, endTime).then(res => {
         if (res.success) {
           this.sumTrade = res.object
         }
@@ -200,13 +287,6 @@ export default {
           }
         })
       }).catch(() => { });
-    },
-    orgListSumForTrade(row) {
-      orgListSumForTrade(row.id).then(res => {
-        if (res.success) {
-          this.sumTradeOrg = res.object
-        }
-      })
     },
   }
 }

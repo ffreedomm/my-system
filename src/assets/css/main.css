@@ -128,11 +128,11 @@ a {
 
 .el-upload--text {
     background-color: #fff;
-    border: 1px dashed #d9d9d9;
+    /* border: 1px dashed #d9d9d9; */
     border-radius: 6px;
     box-sizing: border-box;
-    width: 360px;
-    height: 180px;
+    width: 100px;
+    height: 40px;
     text-align: center;
     cursor: pointer;
     position: relative;
