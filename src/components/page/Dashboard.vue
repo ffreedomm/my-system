@@ -119,17 +119,17 @@
                 <div id="myChart" :style="{width: '800', height: '290px'}"></div>
             </el-col>
         </el-row>
-        <el-divider content-position="left">故障统计</el-divider>
         <el-row :gutter="20">
-            <el-col :span="24">
-                <div id="myChartNew" :style="{width: '800', height: '380px'}"></div>
+            <el-col :span="12">
+            <el-divider content-position="left">故障统计</el-divider>
+                <div id="myChartNew" :style="{width: '400', height: '380px'}"></div>
+            </el-col>
+            <el-col :span="12">
+        <el-divider content-position="left">用电量统计</el-divider>
+                <div id="myChart2" :style="{width: '400', height: '380px'}"></div>
             </el-col>
         </el-row>
-        <el-divider content-position="left">用电量统计</el-divider>
         <el-row :gutter="20">
-            <el-col :span="24">
-                <div id="myChart2" :style="{width: '800', height: '380px'}"></div>
-            </el-col>
         </el-row>
     </div>
     </div>
