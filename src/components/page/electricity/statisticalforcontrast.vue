@@ -79,7 +79,7 @@
                 </el-col>
             </el-row>
             <el-divider v-if="equipInfoList.length > 0" content-position="left">功耗对比统计：</el-divider>
-            <el-row :gutter="20">
+            <el-row :gutter="20" style="margin-bottom:'20px';">
                 <el-col :span="24">
                     <div id="myChart4" :style="{width: '100%', height: '380px'}"></div>
                 </el-col>
@@ -117,12 +117,17 @@ export default {
         getDevices(this.deviceId).then(res => {
           if (res.success) {
             this.equipInfoList = res.object
+            this.getChartsDataForDevice(this.equipInfoList,startTime,endTime);
           }
         })
-        if(this.equipInfoList && this.equipInfoList.length > 0){
+
+      }
+    },
+    getChartsDataForDevice(equipInfoList,startTime,endTime){
+        if(equipInfoList && equipInfoList.length > 0){
           let ids = [];
-          this.equipInfoList.forEach(item =>{
-            ids.push(item.id)
+          equipInfoList.forEach(item =>{
+          ids.push(item.id)
           })
           const req ={
             startTime: startTime,
@@ -138,8 +143,8 @@ export default {
           })
         }
 
-      }
     },
+
     queryOrgList() {
       queryOrgList('', 1, 9999).then(res => {
         if (res.success) {
@@ -225,7 +230,7 @@ export default {
             type: 'value'
         },
         series: yArr
-      });
+      }, {notMerge: true});
     },
     drawLine2(dataList) {
       let legendArr = []; let xArr = []; let yArr = [];
@@ -287,7 +292,7 @@ export default {
             type: 'value'
         },
         series: yArr
-      });
+      }, {notMerge: true});
 
     },
     drawLine3(dataList) {
@@ -350,11 +355,69 @@ export default {
             type: 'value'
         },
         series: yArr
-      });
+      }, {notMerge: true});
 
     },
-    drawLine4(equipInfoList) {
-
+    drawLine4(dataList) {
+      let legendArr = []; let xArr = []; let yArr = [];
+        dataList.forEach((item,index) =>{
+          legendArr.push(item.name)
+          let temp = [];
+          item.powerTotalList.forEach(item1=>{
+            if(item1.power){
+              temp.push(Number(item1.power).toFixed(2))
+            }else{
+              temp.push(0.00)
+            }
+            if(index == 0){
+              xArr.push(this.formatDate(item1.startTime))
+            }
+          })
+          yArr.push({
+              name: item.name,
+              type: 'bar',
+              stack: '功率',
+              data: temp
+          })
+        })
+          let myChart4 = this.$echarts.init(document.getElementById('myChart4'));
+          myChart4.setOption({
+        title : {
+            //text: '某地区蒸发量和降水量',
+            //subtext: '纯属虚构'
+        },
+        tooltip : {
+            trigger: 'axis'
+        },
+        legend: {
+            data: legendArr
+        },
+        grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+        calculable : true,
+        xAxis : [
+            {
+                type : 'category',
+                data : xArr,
+                axisLabel: {
+                  interval: 0,    //强制文字产生间隔
+                  rotate: -45,
+                  interval: 1     //文字逆时针旋转45°
+                },
+            }
+        ],
+        yAxis : [
+            {
+                type : 'value'
+            }
+        ],
+        series : yArr
+    }, {notMerge: true});
+          
     },
 
   }
