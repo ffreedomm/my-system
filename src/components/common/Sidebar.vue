@@ -194,6 +194,10 @@ export default {
               index: 'editPassword',
               title: '修改密码'
             },
+            {
+              index: 'userNotice',
+              title: '用户通知管理'
+            },
 
           ]
         },

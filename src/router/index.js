@@ -147,6 +147,11 @@ export default new Router({
                     component: () => import('../components/page/logsmanage.vue'),
                     meta: { title: '操作日志管理' }
                 },
+                {
+                    path: '/userNotice',
+                    component: () => import('../components/page/userNotice.vue'),
+                    meta: { title: '用户通知管理' }
+                },
                 
             ]
         },
