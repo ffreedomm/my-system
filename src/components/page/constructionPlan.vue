@@ -107,7 +107,6 @@
                     <el-select
                         style="width: 60%;"
                         v-model="tradeForm.orgId"
-                        multiple
                         placeholder="请选择企业"
                     >
                         <el-option
@@ -158,7 +157,7 @@ export default {
       start: 1,
       end: 10,
       pageSize: 10,
-      sumTrade: '',
+      sumTrade: 0,
       currentPage: 1,
       tableData: [],
       editVisible: false,
@@ -171,12 +170,6 @@ export default {
     this.queryOrgList()
   },
   methods: {
-    handleExceed(files, fileList) {
-      this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
-    },
-    beforeRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${file.name}？`);
-    },
     queryOrgList() {
       queryOrgList('', 1, 9999).then(res => {
         if (res.success) {
@@ -229,6 +222,8 @@ export default {
       this.editVisible = true;
     },
     handleEdit(row) {
+      console.log('-----33', row);
+      
       this.title = '编辑'
       this.tradeForm = {
         id: row.id,
@@ -246,7 +241,6 @@ export default {
       }
     },
     saveEdit() {
-      if (this.tradeForm.name) {
         //编辑保存
         if (this.tradeForm.id) {
           updateTrade(this.tradeForm).then(res => {
@@ -260,7 +254,7 @@ export default {
           })
         } else {// 新增保存
         let param = new FormData()
-            param.append('creatorId',1)
+            param.append('creatorId', localStorage.getItem('id'))
             param.append('Filedata', this.file, this.file.name)
 		        param.append('name', this.tradeForm.name)
             param.append('orgId', this.tradeForm.orgId)
@@ -274,10 +268,6 @@ export default {
             }
           })
         }
-
-      } else {
-        this.$message.warning('行业名称不能为空')
-      }
     },
     // 删除操作
     handleDelete(row) {
