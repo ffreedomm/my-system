@@ -80,6 +80,26 @@
                         </el-form-item>
                     </el-col>
                 </el-row>
+                <el-upload
+                    name="Filedata"
+                    :action="imageUploadUrl"
+                    list-type="picture-card"
+                    :on-success="handleAvatarSuccess"
+                    :on-remove="handleRemove">
+                    <i class="el-icon-plus"></i>
+                </el-upload>
+                    <el-dialog :visible.sync="dialogVisible">
+                    <img width="100%" :src="dialogImageUrl" alt="">
+                </el-dialog>
+
+                <el-upload
+                    name="Filedata"
+                    class="upload-demo"
+                    :action="fileUploadUrl"
+                    :on-success="handleFileSuccess"
+                    :file-list="fileList">
+                    <el-button size="small" type="primary">选择附件上传</el-button>
+                    </el-upload>
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="editVisible = false">取 消</el-button>
@@ -96,6 +116,8 @@ export default {
     name: 'industry',
     data() {
         return {
+            imageUploadUrl: 'https://video1.dushuren123.com/iotserver/UploadImageFile?width=800&FiledataFileName=Filedata',
+            fileUploadUrl: 'https://video1.dushuren123.com/iotserver/UploadAccessoryFile?width=800&FiledataFileName=Filedata',
             users:[],
             qTime:[],
             title: '新增',
@@ -115,7 +137,9 @@ export default {
             editVisible: false,
 
             rules: {
-            }
+            },
+            dialogImageUrl: '',
+            dialogVisible: false
         };
     },
     created() {
@@ -236,6 +260,12 @@ export default {
               })
             }).catch(() => {});
         },
+        handleAvatarSuccess(res, file) {
+            this.dForm.content = this.dForm.content +"</br><img src='"+"https://video1.dushuren123.com/iotnewclient/" +res.object.src+"' width='800px'/>";
+        },
+        handleFileSuccess(res, file){
+            this.dForm.content = this.dForm.content +"</br><a href='"+"https://video1.dushuren123.com/iotnewclient/" +res.object.href+"'>"+res.object.name+"</a>"
+        }
     }
 }
 </script>

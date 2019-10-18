@@ -119,17 +119,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="方案文件" style="padding-left: 50px;">
-                    <el-upload
-                        class="upload-demo"
-                        action="https://video1.dushuren123.com/iotserver/UploadAccessoryFile/"
-                        :before-remove="beforeRemove"
-                        multiple
-                        :limit="3"
-                        :on-exceed="handleExceed"
-                        :file-list="fileList"
-                    >
-                        <el-button size="small" type="primary">点击上传</el-button>
-                    </el-upload>
+                  <input style="width: 60%;"  type="file" @change="tirggerFile($event)" />
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -142,6 +132,7 @@
 
 <script>
 import { queryOrgList, queryConstructionPlanList, queryConstructionPlanListSum } from '@/api/baseInfo'
+import { add } from '@/api/constructionPlan'
 export default {
   name: 'industry',
   data() {
@@ -172,6 +163,7 @@ export default {
       tableData: [],
       editVisible: false,
       organList: [],
+      file:{}
     };
   },
   created() {
@@ -244,6 +236,15 @@ export default {
       }
       this.editVisible = true;
     },
+    httpRequest (data) {
+      let _this = this
+      let rd = new FileReader() 
+      let file = data.file
+      rd.readAsDataURL(file)
+      rd.onloadend = function (e) {
+        _this.tradeForm.Filedata = this.result
+      }
+    },
     saveEdit() {
       if (this.tradeForm.name) {
         //编辑保存
@@ -258,7 +259,12 @@ export default {
             }
           })
         } else {// 新增保存
-          addTrade(this.tradeForm.name).then(res => {
+        let param = new FormData()
+            param.append('creatorId',1)
+            param.append('Filedata', this.file, this.file.name)
+		        param.append('name', this.tradeForm.name)
+            param.append('orgId', this.tradeForm.orgId)
+          add(param).then(res => {
             if (res.success) {
               this.$message.success('保存成功')
               this.editVisible = false
@@ -288,6 +294,9 @@ export default {
         })
       }).catch(() => { });
     },
+    tirggerFile(event){
+      this.file = event.target.files[0]
+    }
   }
 }
 </script>
