@@ -26,7 +26,7 @@
             >
                 <el-table-column type="index" width="70"  label="序号" align="center"></el-table-column>
                 <el-table-column prop="user.name" label="用户名称"></el-table-column>
-                <el-table-column prop="content" label="内容"></el-table-column>
+                <el-table-column prop="content" label="内容" :show-overflow-tooltip="true"></el-table-column>
                 <el-table-column prop="createTime" label="创建时间"></el-table-column>
                 <el-table-column label="操作" align="center">
                     <template slot-scope="scope">
@@ -41,6 +41,11 @@
                             class="red"
                             @click="handleDelete(scope.row)"
                         >删除</el-button>
+                        <el-button
+                            type="text"
+                            icon="el-icon-info"
+                            @click="showDetail(scope.row.content)"
+                        >查看</el-button>
                     </template>
                 </el-table-column>
             </el-table>
@@ -56,6 +61,10 @@
             </div>
         </div>
 
+
+    <el-dialog title="title" :visible.sync="detailVisible" width="60%">
+        <div id="detail"></div>
+    </el-dialog>
         <!-- 新增/编辑弹出框 -->
         <el-dialog :title="title" :visible.sync="editVisible" width="60%">
             <el-form :model="dForm" ref="dForm" :rules="rules" label-width="170px">
@@ -135,6 +144,7 @@ export default {
             pageSizeOrg: 3,
             currentPageOrg: 1,
             editVisible: false,
+            detailVisible: false,
 
             rules: {
             },
@@ -265,6 +275,10 @@ export default {
         },
         handleFileSuccess(res, file){
             this.dForm.content = this.dForm.content +"</br><a href='"+"https://video1.dushuren123.com/iotnewclient/" +res.object.href+"'>"+res.object.name+"</a>"
+        },
+        showDetail(d){
+            this.detailVisible = true;
+            document.getElementById("detail").innerHTML = d;
         }
     }
 }
