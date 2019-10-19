@@ -35,6 +35,21 @@ export const addTrade = (name) => {
     })
 }
 
+export const removeConstructionPlan = (id) => {
+    return request({
+        url: `/RemoveConstructionPlan?id=${id}`,
+        method: 'post'
+    })
+}
+
+export const checkConstructionPlan = (param) => {
+    return request({
+        url: `/CheckConstructionPlan`,
+        method: 'post',
+        data: param
+    })
+}
+
 export const updateTrade = (param) => {
     return request({
         url: `/UpdateTrade?tradeId=${param.id}&name=${param.name}`,

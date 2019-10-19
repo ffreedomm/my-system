@@ -61,19 +61,24 @@
             >
                 <el-table-column type="index" width="70" label="序号"></el-table-column>
                 <el-table-column prop="name" label="方案名称"></el-table-column>
-                <el-table-column prop="org" label="所属企业"></el-table-column>
-                <el-table-column prop="status" label="审核状态"></el-table-column>
+                <el-table-column prop="org.name" label="所属企业"></el-table-column>
+                <el-table-column prop="status" label="审核状态">
+                     <template scope="scope">
+                         {{formatStatus(scope.row.status)}}
+                      </template>
+                </el-table-column>
                 <el-table-column prop="checker" label="审核人"></el-table-column>
                 <el-table-column prop="checkTime" label="审核时间"></el-table-column>
                 <el-table-column prop="memo" label="审核意见"></el-table-column>
                 <el-table-column prop="createTime" label="创建时间"></el-table-column>
-                <el-table-column prop="creator" label="创建人"></el-table-column>
+                <el-table-column prop="creator.name" label="创建人"></el-table-column>
                 <el-table-column label="操作" width="280" align="center">
                     <template slot-scope="scope">
                         <el-button
+                            v-if="scope.row.status !== '2'"
                             type="text"
                             icon="el-icon-share"
-                            @click="handleDetail(scope.row)"
+                            @click="handleCheck(scope.row)"
                         >审核</el-button>
                         <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
                         <el-button
@@ -126,17 +131,29 @@
                 <el-button type="primary" @click="saveEdit">确 定</el-button>
             </span>
         </el-dialog>
+        <!-- 审核 -->
+           <el-dialog title="审核" :visible.sync="checkFlag" width="40%">
+            <el-form label-width="70px">
+               <el-input type="textarea" v-model="memo"></el-input>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="checkFlag = false">取 消</el-button>
+                <el-button type="primary" @click="checkPass(1)">审核通过</el-button>
+                <el-button type="primary" @click="checkPass(0)">审核不通过</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
 <script>
-import { queryOrgList, queryConstructionPlanList, queryConstructionPlanListSum } from '@/api/baseInfo'
+import { queryOrgList, queryConstructionPlanList, queryConstructionPlanListSum, removeConstructionPlan,checkConstructionPlan } from '@/api/baseInfo'
 import { add } from '@/api/constructionPlan'
 export default {
   name: 'industry',
   data() {
     return {
-      fileList: [],
+      memo: '',
+      checkFlag: false,
       tradeForm: {},
       title: '新增',
       name: '',
@@ -170,6 +187,17 @@ export default {
     this.queryOrgList()
   },
   methods: {
+    formatStatus(status){
+      if(status === '1'){
+        return '未审核'
+      }else if (status === '2'){
+        return '审核通过'
+      }else if (status === '3'){
+        return '审核未通过'
+      }else {
+        return ''
+      }
+    },
     queryOrgList() {
       queryOrgList('', 1, 9999).then(res => {
         if (res.success) {
@@ -221,9 +249,30 @@ export default {
       this.tradeForm = {}
       this.editVisible = true;
     },
+    handleCheck(row){
+      this.checkId = row.id
+      this.memo = ''
+      this.checkFlag = true
+    },
+    checkPass(status){
+      let param = {
+        constructionPlanId: this.checkId, 
+        memo: this.memo,
+        checkerId: 1, 
+        // checkerId: localStorage.getItem('id'), 
+        result:status
+      }
+      checkConstructionPlan(param).then(res=>{
+         if (res.success) {
+             this.$message.success('审核成功')
+              this.checkFlag = false
+              this.getData()
+         }else {
+            this.$message.error('审核失败')
+          }
+      })
+    },
     handleEdit(row) {
-      console.log('-----33', row);
-      
       this.title = '编辑'
       this.tradeForm = {
         id: row.id,
@@ -255,8 +304,8 @@ export default {
         } else {// 新增保存
         let param = new FormData()
             param.append('creatorId', localStorage.getItem('id'))
-            param.append('Filedata', this.file)
-            param.append('FiledataFileName', this.file.name)
+            param.append('Filedata', this.file, this.file.name)
+            // param.append('FiledataFileName', this.file.name)
 		        param.append('name', this.tradeForm.name)
             param.append('orgId', this.tradeForm.orgId)
           add(param).then(res => {
@@ -275,7 +324,7 @@ export default {
       this.$confirm('确定要删除吗？', '提示', {
         type: 'warning'
       }).then(() => {
-        removeTrade(row.id).then(res => {
+        removeConstructionPlan(row.id).then(res => {
           if (res.success) {
             this.$message.success('删除成功')
             this.getData()
