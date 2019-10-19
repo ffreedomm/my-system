@@ -63,11 +63,9 @@
                 <el-table-column prop="name" label="方案名称"></el-table-column>
                 <el-table-column prop="org.name" label="所属企业"></el-table-column>
                 <el-table-column prop="status" label="审核状态">
-                     <template scope="scope">
-                         {{formatStatus(scope.row.status)}}
-                      </template>
+                    <template scope="scope">{{formatStatus(scope.row.status)}}</template>
                 </el-table-column>
-                <el-table-column prop="checker" label="审核人"></el-table-column>
+                <el-table-column prop="checker.loginName" label="审核人"></el-table-column>
                 <el-table-column prop="checkTime" label="审核时间"></el-table-column>
                 <el-table-column prop="memo" label="审核意见"></el-table-column>
                 <el-table-column prop="createTime" label="创建时间"></el-table-column>
@@ -109,11 +107,7 @@
                     <el-input style="width: 60%;" v-model="tradeForm.name"></el-input>
                 </el-form-item>
                 <el-form-item label="所属企业" style="padding-left: 50px;">
-                    <el-select
-                        style="width: 60%;"
-                        v-model="tradeForm.orgId"
-                        placeholder="请选择企业"
-                    >
+                    <el-select style="width: 60%;" v-model="tradeForm.orgId" placeholder="请选择企业">
                         <el-option
                             v-for="item in organList"
                             :key="item.id"
@@ -123,7 +117,7 @@
                     </el-select>
                 </el-form-item>
                 <el-form-item label="方案文件" style="padding-left: 50px;">
-                  <input style="width: 60%;"  type="file" @change="tirggerFile($event)" />
+                    <input style="width: 60%;" type="file" @change="tirggerFile($event)" />
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
@@ -132,9 +126,9 @@
             </span>
         </el-dialog>
         <!-- 审核 -->
-           <el-dialog title="审核" :visible.sync="checkFlag" width="40%">
+        <el-dialog title="审核" :visible.sync="checkFlag" width="40%">
             <el-form label-width="70px">
-               <el-input type="textarea" v-model="memo"></el-input>
+                <el-input type="textarea" v-model="memo" placeholder="审核意见"></el-input>
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="checkFlag = false">取 消</el-button>
@@ -146,8 +140,8 @@
 </template>
 
 <script>
-import { queryOrgList, queryConstructionPlanList, queryConstructionPlanListSum, removeConstructionPlan,checkConstructionPlan } from '@/api/baseInfo'
-import { add } from '@/api/constructionPlan'
+import { queryOrgList, queryConstructionPlanList, queryConstructionPlanListSum, removeConstructionPlan, checkConstructionPlan } from '@/api/baseInfo'
+import { add, updateConstructionPlan } from '@/api/constructionPlan'
 export default {
   name: 'industry',
   data() {
@@ -179,7 +173,7 @@ export default {
       tableData: [],
       editVisible: false,
       organList: [],
-      file:{}
+      file: {}
     };
   },
   created() {
@@ -187,14 +181,14 @@ export default {
     this.queryOrgList()
   },
   methods: {
-    formatStatus(status){
-      if(status === '1'){
+    formatStatus(status) {
+      if (status === '1') {
         return '未审核'
-      }else if (status === '2'){
+      } else if (status === '2') {
         return '审核通过'
-      }else if (status === '3'){
+      } else if (status === '3') {
         return '审核未通过'
-      }else {
+      } else {
         return ''
       }
     },
@@ -249,75 +243,85 @@ export default {
       this.tradeForm = {}
       this.editVisible = true;
     },
-    handleCheck(row){
+    handleCheck(row) {
       this.checkId = row.id
       this.memo = ''
       this.checkFlag = true
     },
-    checkPass(status){
-      let param = {
-        constructionPlanId: this.checkId, 
-        memo: this.memo,
-        checkerId: 1, 
-        // checkerId: localStorage.getItem('id'), 
-        result:status
-      }
-      checkConstructionPlan(param).then(res=>{
-         if (res.success) {
-             this.$message.success('审核成功')
-              this.checkFlag = false
-              this.getData()
-         }else {
-            this.$message.error('审核失败')
-          }
+    checkPass(status) {
+      let param = new FormData()
+      param.append('constructionPlanId', this.checkId)
+      param.append('memo', this.memo)
+      param.append('result', status == 1 ? true : false)
+      param.append('checkerId', localStorage.getItem('id'))
+      // checkerId: localStorage.getItem('id'), 
+      checkConstructionPlan(param).then(res => {
+        if (res.success) {
+          this.$message.success('审核成功')
+          this.checkFlag = false
+          this.getData()
+        } else {
+          this.$message.error('审核失败')
+        }
       })
     },
     handleEdit(row) {
       this.title = '编辑'
       this.tradeForm = {
         id: row.id,
-        name: row.name
+        name: row.name,
+        orgId: row.org.id
       }
+      // this.file = row.url
       this.editVisible = true;
     },
-    httpRequest (data) {
-      let _this = this
-      let rd = new FileReader() 
-      let file = data.file
-      rd.readAsDataURL(file)
-      rd.onloadend = function (e) {
-        _this.tradeForm.Filedata = this.result
-      }
-    },
+    // httpRequest(data) {
+    //   let _this = this
+    //   let rd = new FileReader()
+    //   let file = data.file
+    //   rd.readAsDataURL(file)
+    //   rd.onloadend = function (e) {
+    //     _this.tradeForm.Filedata = this.result
+    //   }
+    // },
     saveEdit() {
-        //编辑保存
-        if (this.tradeForm.id) {
-          updateTrade(this.tradeForm).then(res => {
-            if (res.success) {
-              this.$message.success('保存成功')
-              this.editVisible = false
-              this.getData()
-            } else {
-              this.$message.error(res.message)
-            }
-          })
-        } else {// 新增保存
+      //编辑保存
+      if (this.tradeForm.id) {
         let param = new FormData()
-            param.append('creatorId', localStorage.getItem('id'))
-            param.append('Filedata', this.file, this.file.name)
-            // param.append('FiledataFileName', this.file.name)
-		        param.append('name', this.tradeForm.name)
-            param.append('orgId', this.tradeForm.orgId)
-          add(param).then(res => {
-            if (res.success) {
-              this.$message.success('保存成功')
-              this.editVisible = false
-              this.getData()
-            } else {
-              this.$message.error(res.message)
-            }
-          })
+        param.append('constructionPlanId', this.tradeForm.id)
+        if (this.file) {
+          param.append('Filedata', this.file)
+          param.append('FiledataFileName', this.file.name)
         }
+        param.append('name', this.tradeForm.name)
+        param.append('orgId', this.tradeForm.orgId)
+        param.append('creatorId', localStorage.getItem('id'))
+        updateConstructionPlan(param).then(res => {
+          if (res.success) {
+            this.$message.success('保存成功')
+            this.editVisible = false
+            this.getData()
+          } else {
+            this.$message.error(res.message)
+          }
+        })
+      } else {// 新增保存
+        let param = new FormData()
+        param.append('Filedata', this.file)
+        param.append('FiledataFileName', this.file.name)
+        param.append('name', this.tradeForm.name)
+        param.append('orgId', this.tradeForm.orgId)
+        param.append('creatorId', localStorage.getItem('id'))
+        add(param).then(res => {
+          if (res.success) {
+            this.$message.success('保存成功')
+            this.editVisible = false
+            this.getData()
+          } else {
+            this.$message.error(res.message)
+          }
+        })
+      }
     },
     // 删除操作
     handleDelete(row) {
@@ -334,7 +338,7 @@ export default {
         })
       }).catch(() => { });
     },
-    tirggerFile(event){
+    tirggerFile(event) {
       this.file = event.target.files[0]
     }
   }

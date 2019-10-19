@@ -14,3 +14,14 @@ export const add = (data) => {
         }
     })
 }
+
+export const updateConstructionPlan = (data) => {
+    return request({
+        url: '/UpdateConstructionPlan',
+        method: 'post',
+        data,
+        headers: {
+            'Content-Type': 'multipart/form-data'
+        }
+    })
+}

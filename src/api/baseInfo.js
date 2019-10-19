@@ -46,7 +46,10 @@ export const checkConstructionPlan = (param) => {
     return request({
         url: `/CheckConstructionPlan`,
         method: 'post',
-        data: param
+        data: param,
+        headers: {
+          'Content-Type': 'multipart/form-data'
+      }
     })
 }
 
