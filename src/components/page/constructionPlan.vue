@@ -255,7 +255,8 @@ export default {
         } else {// 新增保存
         let param = new FormData()
             param.append('creatorId', localStorage.getItem('id'))
-            param.append('Filedata', this.file, this.file.name)
+            param.append('Filedata', this.file)
+            param.append('FiledataFileName', this.file.name)
 		        param.append('name', this.tradeForm.name)
             param.append('orgId', this.tradeForm.orgId)
           add(param).then(res => {
