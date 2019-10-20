@@ -241,6 +241,7 @@ export default {
     handleAdd() {
       this.title = '新增'
       this.tradeForm = {}
+      this.file = {}
       this.editVisible = true;
     },
     handleCheck(row) {
@@ -267,6 +268,7 @@ export default {
     },
     handleEdit(row) {
       this.title = '编辑'
+      this.file = {}
       this.tradeForm = {
         id: row.id,
         name: row.name,
@@ -289,10 +291,8 @@ export default {
       if (this.tradeForm.id) {
         let param = new FormData()
         param.append('constructionPlanId', this.tradeForm.id)
-        if (this.file) {
-          param.append('Filedata', this.file)
-          param.append('FiledataFileName', this.file.name)
-        }
+        param.append('Filedata', this.file)
+        param.append('FiledataFileName', this.file.name)
         param.append('name', this.tradeForm.name)
         param.append('orgId', this.tradeForm.orgId)
         param.append('creatorId', localStorage.getItem('id'))
