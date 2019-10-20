@@ -26,6 +26,7 @@
             >
                 <el-table-column type="index" width="70"  label="序号" align="center"></el-table-column>
                 <el-table-column prop="user.name" label="用户名称"></el-table-column>
+                <el-table-column prop="title" label="标题" :show-overflow-tooltip="true"></el-table-column>
                 <el-table-column prop="content" label="内容" :show-overflow-tooltip="true"></el-table-column>
                 <el-table-column prop="createTime" label="创建时间"></el-table-column>
                 <el-table-column label="操作" align="center">
@@ -84,11 +85,19 @@
                 </el-row>
                 <el-row :gutter="0"> 
                     <el-col :span="20">
+                        <el-form-item prop="title" label="标题">
+                            <el-input v-model="dForm.title"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="0"> 
+                    <el-col :span="20">
                         <el-form-item prop="normalPowerLowLimit" label="内容">
                             <el-input type="textarea" :rows="10" v-model="dForm.content"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
+                <el-form-item label="图片">
                 <el-upload
                     name="Filedata"
                     :action="imageUploadUrl"
@@ -99,8 +108,9 @@
                 </el-upload>
                     <el-dialog :visible.sync="dialogVisible">
                     <img width="100%" :src="dialogImageUrl" alt="">
-                </el-dialog>
-
+                    </el-dialog>
+                </el-form-item>
+                <el-form-item label="附件">
                 <el-upload
                     name="Filedata"
                     class="upload-demo"
@@ -109,6 +119,7 @@
                     :file-list="fileList">
                     <el-button size="small" type="primary">选择附件上传</el-button>
                     </el-upload>
+                </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="editVisible = false">取 消</el-button>
@@ -278,7 +289,9 @@ export default {
         },
         showDetail(d){
             this.detailVisible = true;
-            document.getElementById("detail").innerHTML = d;
+            this.$nextTick(()=>{
+                document.getElementById("detail").innerHTML = d;
+            })
         }
     }
 }
