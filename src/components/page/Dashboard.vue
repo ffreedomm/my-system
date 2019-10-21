@@ -2,7 +2,7 @@
     <div>
     <div class="container">
       <el-row :gutter="40">
-            <el-col :span="10">
+            <el-col :span="12">
         <el-divider content-position="left">整体情况监控</el-divider>
                 <el-row :gutter="20" class="mgb20">
                     <el-col :span="8">
@@ -13,7 +13,7 @@
                             <div slot="header" class="clearfix">
                                 <div
                                     style="font-size:14px;font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #f3f3f3;"
-                                >机构总数</div>
+                                >企业总数</div>
                             </div>
                             <div class="grid-content grid-con-1">
                                 <div class="grid-cont-right">
@@ -84,7 +84,7 @@
                             <div slot="header" class="clearfix">
                                 <div
                                     style="font-size:14px;font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #f3f3f3;"
-                                >产污异常机构数</div>
+                                >产污异常企业数</div>
                             </div>
                             <div class="grid-content grid-con-3">
                                 <div class="grid-cont-right">
@@ -102,7 +102,7 @@
                             <div slot="header" style="{color:#f3704b}" class="clearfix">
                                 <div
                                     style="font-size:14px;font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #f3f3f3;"
-                                >治污异常机构数</div>
+                                >治污异常企业数</div>
                             </div>
                             <div class="grid-content grid-con-3">
                                 <div class="grid-cont-right">
@@ -114,8 +114,8 @@
                 </el-row>
             </el-col>
 
-            <el-col :span="14">
-        <el-divider content-position="left">机构分布</el-divider>
+            <el-col :span="12">
+        <el-divider content-position="left">企业分布</el-divider>
                 <div id="myChart" :style="{width: '800', height: '290px'}"></div>
             </el-col>
         </el-row>
@@ -128,8 +128,6 @@
         <el-divider content-position="left">用电量统计</el-divider>
                 <div id="myChart2" :style="{width: '400', height: '380px'}"></div>
             </el-col>
-        </el-row>
-        <el-row :gutter="20">
         </el-row>
     </div>
     </div>
@@ -182,7 +180,7 @@ export default {
                 }
             })
         },
-        //机构分布
+        //企业分布
         getT2Data(){
             const _this = this;
             getOrgInZoneTotalList().then(res=>{
@@ -246,7 +244,7 @@ export default {
             // 绘制图表
             myChart.setOption({
                 //backgroundColor:'#f3f3f3',
-                //title: { text: '机构分布' },
+                //title: { text: '企业分布' },
                 tooltip: {},
                 xAxis: {
                     // axisLabel: {
@@ -257,14 +255,14 @@ export default {
                 },
                 yAxis: {},
                 legend: {
-                    data:['机构分布']
+                    data:['企业分布']
                 },
                 series: [
                     {
                         itemStyle: {
                             normal: { color: 'rgba(45,140,240,1)' }
                         },
-                        name: '机构分布',
+                        name: '企业分布',
                         type: 'bar',
                         data: this.t2Data_yArr
                     }

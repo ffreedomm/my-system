@@ -47,6 +47,7 @@ export default {
     computed: {
         username() {
             let username = localStorage.getItem('username');
+            username = "欢迎您，"+username +"(系统管理员)"
             return username ? username : this.name;
         }
     },
