@@ -24,7 +24,17 @@
             icon="el-icon-suitcase"
             @click="handleEquip"
         >设备信息</el-button>
-        <el-tree :data="orgList" @node-click="handleNodeClick" node-key="parentId" default-expand-all></el-tree>
+            <!-- :data="orgList" -->
+        <el-tree
+            show-checkbox
+            :data="orgList"
+            :check-strictly="true"
+            ref="tree"
+            highlight-current
+            @check-change="handleCheckChange"
+            node-key="id"
+            default-expand-all
+        ></el-tree>
         <el-dialog :title="title" :visible.sync="addVisible" width="60%">
             <div class="container">
                 <div class="form-box">
@@ -120,10 +130,8 @@
                     <el-table-column prop="terminalNumber" label="连接的终端"></el-table-column>
                     <el-table-column prop="org.name" label="所属机构"></el-table-column>
                     <el-table-column prop="type" label="设备类型">
-                      <template scope="scope">
-                         {{format(scope.row.type)}}
-                      </template>
-                      </el-table-column>
+                        <template scope="scope">{{format(scope.row.type)}}</template>
+                    </el-table-column>
                     <el-table-column prop="productDevice.name" label="关联的产污设备"></el-table-column>
                     <el-table-column label="操作" align="center">
                         <template slot-scope="scope">
@@ -155,6 +163,48 @@ import { queryOrgList, queryTradeList, queryZoneList, addOrg, removeOrg, updateO
 export default {
   data() {
     return {
+ data: [{
+          id: 1,
+          label: '一级 1',
+            icon: 'el-icon-info',
+          children: [{
+            id: 4,
+            label: '二级 1-1',
+            children: [{
+              id: 9,
+              label: '三级 1-1-1',
+              icon: 'el-icon-info'
+            }, {
+              id: 10,
+              label: '三级 1-1-2'
+            }]
+          }]
+        }, {
+          id: 2,
+          label: '一级 2',
+          children: [{
+            id: 5,
+            label: '二级 2-1'
+          }, {
+            id: 6,
+            label: '二级 2-2'
+          }]
+        }, {
+          id: 3,
+          label: '一级 3',
+          children: [{
+            id: 7,
+            label: '二级 3-1'
+          }, {
+            id: 8,
+            label: '二级 3-2'
+          }]
+        }],
+
+
+
+
+
       orgList: [],
       selectRow: {},
       addVisible: false,
@@ -177,11 +227,11 @@ export default {
     this.queryZoneList()
   },
   methods: {
-    handleHistory(row){
+    handleHistory(row) {
 
     },
-    format(type){
-       return type == 1 ? '治污设备':'产污设备'
+    format(type) {
+      return type == 1 ? '治污设备' : '产污设备'
     },
     handleEquip() {
       if (JSON.stringify(this.selectRow) == '{}') {
@@ -335,8 +385,8 @@ export default {
         map[item.id] = item;
       });
       data.forEach(item => {
-        item.label = item.name;
-        let parent = map[item.parentId];
+        item.label = item.name
+        let parent = map[item.parentId]
         if (parent) {
           (parent.children || (parent.children = [])).push(item);
         } else {
@@ -345,9 +395,13 @@ export default {
       });
       return result;
     },
-    handleNodeClick(data) {
-      this.selectRow = data
-    }
+    handleCheckChange(data, checked, indeterminate) {
+      if(checked){
+        this.$refs.tree.setCheckedKeys([])
+        this.$refs.tree.setCheckedKeys([data.id])
+        this.selectRow = data
+      }
+    },
   }
 };
 </script>

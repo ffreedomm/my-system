@@ -84,7 +84,7 @@ export default {
                         localStorage.setItem('id', res.object.id);
                         localStorage.setItem('role', res.object.role);
                         localStorage.setItem('loginPassword', res.object.loginPassword);
-                        this.$router.push('/');
+                        this.$router.push('/dashboard');
                       }else{
                         //success，error，info，warning
                          this.$message.warning(res.message);
