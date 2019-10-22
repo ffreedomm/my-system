@@ -24,7 +24,7 @@
             icon="el-icon-suitcase"
             @click="handleEquip"
         >设备信息</el-button>
-            <!-- :data="orgList" -->
+        <!-- :data="orgList" -->
         <el-tree
             show-checkbox
             :data="orgList"
@@ -35,6 +35,7 @@
             node-key="id"
             default-expand-all
         ></el-tree>
+        <!-- 新增/修改 -->
         <el-dialog :title="title" :visible.sync="addVisible" width="60%">
             <div class="container">
                 <div class="form-box">
@@ -138,8 +139,8 @@
                             <el-button
                                 type="text"
                                 icon="el-icon-search"
-                                @click="handleHistory(scope.row)"
-                            >查看历史数据</el-button>
+                                @click="equipmentDetail(scope.row)"
+                            >设备详情</el-button>
                         </template>
                     </el-table-column>
                 </el-table>
@@ -155,6 +156,62 @@
                 </div>
             </div>
         </el-dialog>
+        <!-- 设备详情 -->
+        <el-dialog title="设备详情" :visible.sync="equipDetail" width="50%">
+            <div class="container">
+                <div class="form-box">
+                    <el-form :model="equipForm" label-width="110px">
+                        <el-row :gutter="20">
+                            <el-col :span="12">
+                                <el-form-item label="设备编号：">
+                                    <label>{{equipForm.number}}</label>
+                                </el-form-item>
+                                <el-form-item label="设备名称：">
+                                    <label>{{equipForm.name}}</label>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="额定电压：">
+                                    <label>{{equipForm.voltage}}</label>
+                                </el-form-item>
+                                <el-form-item label="额定功率：">
+                                    <label>{{equipForm.power}}</label>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="经度位置：">
+                                    <label>{{equipForm.longitude}}</label>
+                                </el-form-item>
+                                <el-form-item label="纬度位置：">
+                                    <label>{{equipForm.latitude}}</label>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="备注说明：">
+                                    <label>{{equipForm.memo}}</label>
+                                </el-form-item>
+                                <el-form-item label="连接的终端：">
+                                    <label>{{equipForm.terminalNumber}}</label>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="所属机构：" v-if="equipForm.org">
+                                    <label>{{equipForm.org.name}}</label>
+                                </el-form-item>
+                                <el-form-item label="产污设备：" v-if="equipForm.productDevice">
+                                    <label>{{equipForm.productDevice.name}}</label>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item label="设备类型：">
+                                    <label>{{format(equipForm.type)}}</label>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                    </el-form>
+                </div>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
@@ -163,48 +220,6 @@ import { queryOrgList, queryTradeList, queryZoneList, addOrg, removeOrg, updateO
 export default {
   data() {
     return {
- data: [{
-          id: 1,
-          label: '一级 1',
-            icon: 'el-icon-info',
-          children: [{
-            id: 4,
-            label: '二级 1-1',
-            children: [{
-              id: 9,
-              label: '三级 1-1-1',
-              icon: 'el-icon-info'
-            }, {
-              id: 10,
-              label: '三级 1-1-2'
-            }]
-          }]
-        }, {
-          id: 2,
-          label: '一级 2',
-          children: [{
-            id: 5,
-            label: '二级 2-1'
-          }, {
-            id: 6,
-            label: '二级 2-2'
-          }]
-        }, {
-          id: 3,
-          label: '一级 3',
-          children: [{
-            id: 7,
-            label: '二级 3-1'
-          }, {
-            id: 8,
-            label: '二级 3-2'
-          }]
-        }],
-
-
-
-
-
       orgList: [],
       selectRow: {},
       addVisible: false,
@@ -215,10 +230,15 @@ export default {
       startOrg: 1,
       endOrg: 5,
       pageSizeOrg: 5,
-      sumTradeOrg: '',
+      sumTradeOrg: 0,
       currentPageOrg: 1,
       orgData: [],
-      detailVisible: false
+      detailVisible: false,
+      equipDetail: false,
+      equipForm: {
+        org: {},
+        productDevice: {}
+      }
     };
   },
   created() {
@@ -227,8 +247,12 @@ export default {
     this.queryZoneList()
   },
   methods: {
-    handleHistory(row) {
-
+    equipmentDetail(row) {
+      console.log('-------', row);
+      
+      this.equipForm = row
+      console.log('---eee----', this.equipForm);
+      this.equipDetail = true
     },
     format(type) {
       return type == 1 ? '治污设备' : '产污设备'
@@ -396,7 +420,7 @@ export default {
       return result;
     },
     handleCheckChange(data, checked, indeterminate) {
-      if(checked){
+      if (checked) {
         this.$refs.tree.setCheckedKeys([])
         this.$refs.tree.setCheckedKeys([data.id])
         this.selectRow = data
