@@ -108,7 +108,14 @@
                     </el-col>
                     <el-col :span="12">
                         <el-form-item label="所属机构" prop="orgId">
-                            <el-select
+                        <treeselect
+                            style="width:90%"
+                            v-model="userForm.orgId"
+                            :options="orgList"
+                            :default-expand-level="2"
+                            placeholder="请选择"
+                        />
+                        <!-- <el-select
                                 v-model="userForm.orgId"
                                 placeholder="请选择"
                                 style="width: 100%"
@@ -119,7 +126,7 @@
                                     :label="item.name"
                                     :value="item.id"
                                 ></el-option>
-                            </el-select>
+                        </el-select>-->
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -133,9 +140,13 @@
 </template>
 
 <script>
-import { queryUserList, queryUserListSum, queryOrgList, addUser, updateUser,removeUser } from '@/api/baseInfo';
+import Treeselect from '@riophae/vue-treeselect'
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
+import { queryUserList, queryUserListSum, queryOrgList, addUser, updateUser, removeUser } from '@/api/baseInfo';
 export default {
-  name: 'basetable',
+  components: {
+    Treeselect
+  },
   data() {
     return {
       options: [{
@@ -153,7 +164,7 @@ export default {
       start: 1,
       end: 3,
       pageSize: 3,
-      sumTrade: '',
+      sumTrade: 0,
       currentPage: 1,
       tableData: [],
       title: '新增',
@@ -191,9 +202,32 @@ export default {
     queryOrgList() {
       queryOrgList('', 1, 9999).then(res => {
         if (res.success) {
-          this.orgList = res.object
+          this.orgList = this.toTree(res.object)
         }
       })
+    },
+    toTree(data) {
+      let result = []
+      if (!Array.isArray(data)) {
+        return result
+      }
+      data.forEach(item => {
+        delete item.children;
+      });
+      let map = {};
+      data.forEach(item => {
+        map[item.id] = item;
+      });
+      data.forEach(item => {
+        item.label = item.name;
+        let parent = map[item.parentId];
+        if (parent) {
+          (parent.children || (parent.children = [])).push(item);
+        } else {
+          result.push(item);
+        }
+      });
+      return result;
     },
     fomart(role) {
       if (role == 1) {
@@ -238,7 +272,7 @@ export default {
       this.$refs.user.validate(valid => {
         if (valid) {
           if (this.userForm.id) {
-             updateUser(this.userForm).then(res => {
+            updateUser(this.userForm).then(res => {
               if (res.success) {
                 this.$message.success('保存成功')
                 this.addVisible = false
@@ -247,7 +281,7 @@ export default {
                 this.$message.warning(res.message)
               }
             })
-          }else{
+          } else {
             addUser(this.userForm).then(res => {
               if (res.success) {
                 this.$message.success('保存成功')
@@ -266,19 +300,19 @@ export default {
 
     // 删除操作
     handleDelete(row) {
-        // 二次确认删除
-        this.$confirm('确定要删除吗？', '提示', {
-            type: 'warning'
-        }).then(() => {
-            removeUser(row.id).then(res=>{
-              if(res.success){
-                this.$message.success('删除成功')
-                this.getData()
-              }else{
-                this.$message.warning(res.message)
-              }
-            })
-       }).catch(() => {});
+      // 二次确认删除
+      this.$confirm('确定要删除吗？', '提示', {
+        type: 'warning'
+      }).then(() => {
+        removeUser(row.id).then(res => {
+          if (res.success) {
+            this.$message.success('删除成功')
+            this.getData()
+          } else {
+            this.$message.warning(res.message)
+          }
+        })
+      }).catch(() => { });
     },
   }
 };
