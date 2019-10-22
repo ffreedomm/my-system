@@ -9,6 +9,7 @@
             <el-table
                 :data="tableData" 
                 border
+                highlight-current-row="true"
                 class="table"
                 ref="multipleTable"
                 header-cell-class-name="table-header"
@@ -18,7 +19,7 @@
                 <el-table-column prop="name" label="报备名称" width="220"></el-table-column>
                 <el-table-column prop="periods" label="时段设置" width="280"></el-table-column>
                 <el-table-column prop="reporter" label="报备人" ></el-table-column>
-                <el-table-column prop="org.name" label="报备机构" width="150"></el-table-column>
+                <el-table-column prop="org.name" label="报备企业" width="150"></el-table-column>
                 <el-table-column prop="memo" label="备注"></el-table-column>
                 <el-table-column label="操作" width="220" align="center">
                     <template slot-scope="scope">
@@ -68,7 +69,7 @@
                 <el-table-column prop="longitude" label="经度位置"></el-table-column>
                 <el-table-column prop="latitude" label="纬度位置"></el-table-column>
                 <el-table-column prop="terminalNumber" label="连接的终端"></el-table-column>
-                <el-table-column prop="org.name" label="所属机构"></el-table-column>
+                <el-table-column prop="org.name" label="所属企业"></el-table-column>
                 <el-table-column prop="" label="设备类型">
                     <template scope="scope">
                         {{scope.row.type  == 1 ? "治污设备" :"产污设备" }}

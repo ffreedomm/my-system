@@ -166,7 +166,7 @@ export default {
           this.getData()
         },
         queryTotal(){
-          queryTotal(this.name).then(res=>{
+          queryTotal(this.deviceNumber).then(res=>{
             if(res.success){
               this.sumTrade = res.object
             }

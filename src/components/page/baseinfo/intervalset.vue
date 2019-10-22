@@ -9,6 +9,7 @@
             <el-table
                 :data="tableData" 
                 border
+                highlight-current-row="true"
                 class="table"
                 ref="multipleTable"
                 header-cell-class-name="table-header"
@@ -66,7 +67,7 @@
                 <el-table-column prop="longitude" label="经度位置"></el-table-column>
                 <el-table-column prop="latitude" label="纬度位置"></el-table-column>
                 <el-table-column prop="terminalNumber" label="连接的终端"></el-table-column>
-                <el-table-column prop="org.name" label="所属机构"></el-table-column>
+                <el-table-column prop="org.name" label="所属企业"></el-table-column>
                 <el-table-column prop="" label="设备类型">
                     <template scope="scope">
                         {{scope.row.type  == 1 ? "治污设备" :"产污设备" }}
@@ -94,6 +95,10 @@
                 </el-form-item>
                 <el-form-item prop="periods" label="时段设置">
                     <el-input v-model="dForm.periods"></el-input>
+                    <el-popover v-model="cronPopover">
+                        <cron @change="changeCron" @close="cronPopover=false" i18n="cn"></cron>
+                        <el-input slot="reference" @click="cronPopover=true" v-model="cron" placeholder="请输入定时策略"></el-input>
+                    </el-popover>
                 </el-form-item>
                 <el-form-item prop="memo" label="备注">
                     <el-input v-model="dForm.memo"></el-input>
@@ -141,10 +146,16 @@
 
 <script>
 import {queryList,queryTotal,add, update, remove, queryList1, queryTotal1, queryDeviceList, setDevice } from '@/api/intervalset';
+import {cron} from 'vue-cron'
 export default {
     name: 'industry',
+    components: {
+        cron
+    },
     data() {
         return {
+            cronPopover:false,
+                cron:'',
             title: '新增',
             dForm: {},
             name: '',
@@ -185,6 +196,9 @@ export default {
         this.getData()
     },
     methods: {
+        changeCron(val){
+                this.cron=val
+            },
         getData() {
             queryList(this.name, this.start, this.end).then(res => {
               if(res.success){
