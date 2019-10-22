@@ -21,21 +21,21 @@
                 <el-table-column prop="latitude" label="纬度位置"></el-table-column>
                 <el-table-column prop="memo" label="备注说明"></el-table-column>
                 <el-table-column prop="terminalNumber" label="连接的终端" width="130"></el-table-column>
-                <el-table-column prop="org.name" label="所属机构"></el-table-column>
+                <el-table-column prop="org.name" label="所属企业"></el-table-column>
                 <el-table-column prop="type" label="设备类型" :formatter = "stateFormat"></el-table-column>
                 <el-table-column prop="productDevice.name" label="关联的产污设备" width="130"></el-table-column>
-                <el-table-column label="操作" width="490" align="center">
+                <el-table-column label="操作" width="520" align="center">
                     <template slot-scope="scope">
                         <el-button
                             type="text"
                             icon="el-icon-share"
                             @click="handleDetail(scope.row)"
-                        >下属机构详情</el-button>
-                        <!--<el-button
+                        >所属企业详情</el-button>
+                        <el-button
                             type="text"
                             icon="el-icon-more"
                             @click="handleHistory(scope.row)"
-                        >查看历史数据</el-button>-->
+                        >设备详情</el-button>  
                         <el-button
                             type="text"
                             icon="el-icon-setting"
@@ -44,6 +44,7 @@
                         <el-button
                             type="text"
                             icon="el-icon-eleme"
+                            :disabled="scope.row.type === 2"
                             @click="handleRelate(scope.row)"
                         >关联产污设备</el-button>
                         <el-button
@@ -96,7 +97,7 @@
                 <el-form-item label="备注说明">
                     <el-input v-model="deviceForm.memo"></el-input>
                 </el-form-item>
-                <el-form-item label="所属机构">
+                <el-form-item label="所属企业">
                     <el-select @click="" v-model="deviceForm.orgId"  placeholder="选择">
                     <el-option
                         v-for="item in OrgList"
@@ -124,7 +125,7 @@
         </el-dialog>
 
         <!-- 下属机构详情 -->
-        <el-dialog title="下属机构详情" :visible.sync="detailVisible" width="90%">
+        <el-dialog title="所属企业详情" :visible.sync="detailVisible" width="90%">
            <div class="container">
             <el-table
                 :data="orgData" 
@@ -133,7 +134,7 @@
                 ref="multipleTable"
                 header-cell-class-name="table-header"
             >
-            <el-table-column label="机构名称" width="180">
+            <el-table-column label="机构名称" width="180"> 
                 <template slot-scope="scope">
                     <span>{{scope.row.orgname}}</span>
                 </template>
@@ -192,34 +193,52 @@
         </div>
         </el-dialog>
 
-        <!-- 查看历史数据 -->
-        <el-dialog title="查看历史数据" :visible.sync="historyVisible" width="90%">
-           <div class="container">
-            <el-table
-                :data="hisData" 
-                border
-                class="table"
-                ref="multipleTable"
-                header-cell-class-name="table-header"
-            >
-                <el-table-column prop="device.terminalNumber" label="所属终端"></el-table-column>
-                <el-table-column prop="device.name" label="所属设备"></el-table-column>
-                <el-table-column prop="electricity" label="电流值"></el-table-column>
-                <el-table-column prop="voltage" label="电压值"></el-table-column>
-                <el-table-column prop="power" label="功率值"></el-table-column>
-                <el-table-column prop="createTime" label="记录时间"></el-table-column>
-            </el-table>
-            <div class="pagination">
-                <el-pagination
-                    background
-                    layout="total, prev, pager, next"
-                    :current-page="currentPagehis"
-                    :page-size="pageSizehis"
-                    :total="sumDevicehis"
-                    @current-change="handlePageChangeHistory"
-                ></el-pagination>
-            </div>
-        </div>
+        <!--  查看设备 -->
+        <el-dialog :title="title" :visible.sync="historyVisible" width="40%" >
+            <el-form :model="tradeFormEqu" label-width="70px" >
+              <el-row :gutter="20">
+                <el-col :span="12">  
+                  <el-form-item label="设备编号">
+                      <label>{{tradeFormEqu.number}}</label>
+                  </el-form-item>
+                  <el-form-item label="设备名称">            
+                    <label>{{tradeFormEqu.name}}</label>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12"> 
+                  <el-form-item label="额定电压">
+                    <label>{{tradeFormEqu.voltage}}</label>
+                  </el-form-item>
+                  <el-form-item label="额定功率">
+                    <label>{{tradeFormEqu.power}}</label>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">  
+                  <el-form-item label="经度位置">
+                    <label>{{tradeFormEqu.longitude}}</label>
+                  </el-form-item>
+                  <el-form-item label="纬度位置">
+                    <label>{{tradeFormEqu.latitude}}</label>
+                  </el-form-item>
+                </el-col> 
+                <el-col :span="12"> 
+                  <el-form-item label="备注说明">
+                    <label>{{tradeFormEqu.memo}}</label>
+                  </el-form-item>
+                    <el-form-item label=" 所属企业">
+                  <label>{{tradeFormEqu.orgId}}</label>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12"> 
+                  <el-form-item label="设备类型">
+                    <label>{{tradeFormEqu.type}}</label>
+                  </el-form-item> 
+                </el-col>
+              </el-row>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="historyVisible = false">关闭</el-button>
+            </span>
         </el-dialog>
 
         <!-- 设置连接终端 -->
@@ -283,7 +302,7 @@
 
 <script>
 import { queryDeviceList,queryDeviceListSum,addDevice,updateDevice,removeDevice,linkTerminalToDevice,linkProductDeviceToTreatDevice,
-        treatDeviceListForOrg,productDeviceListForOrg,device,terminalRecordListForDevice,terminalRecordListSumForDevice,queryTerminals,
+        treatDeviceListForOrg,productDeviceListForOrg,device,queryTerminals,
         queryOrgList} from '@/api/equipment'
 export default {
     name: 'device',
@@ -291,6 +310,7 @@ export default {
         return {
             title: '设备操作',
             deviceForm: {},
+            tradeFormEqu: {},
             name: '',
             start: 1,
             end: 10,
@@ -306,12 +326,6 @@ export default {
             currentPageOrg: 1,
             orgData: [],
 
-            starthis: 1,
-            endhis: 10,
-            pageSizehis: 10,
-            sumDevicehis: '',
-            currentPagehis: 1,
-            hisData: [],
             connData: [],
             relData: [],
             OrgList: [],
@@ -336,7 +350,6 @@ export default {
     created() {
         this.getData();
         this.queryOrgList();
-        //this.init();
     },
     
     methods: {
@@ -465,15 +478,22 @@ export default {
             }
             this.detailVisible = true
         },
-        //查看历史数据
-        handleHistory(row) {
-            terminalRecordListForDevice(row.id, this.starthis, this.endhis).then(res=>{
-             if(res.success){
-                this.hisData = res.object
-                this.terminalRecordListSumForDevice(row)
-                this.historyVisible = true
-              }
-          })
+        //查看设备
+        handleHistory(row){
+            this.title = '设备详情'
+            this.tradeFormEqu = {
+              id: row.id,
+              number: row.number,
+              memo: row.memo,
+              name: row.name,
+              longitude: row.longitude,
+              latitude: row.latitude,
+              voltage: row.voltage,
+              power: row.power,
+              type: row.type == 1 ? '治污设备' : '产污设备',
+              orgId :row.org.id,
+            }
+            this.historyVisible = true;
         },
         //连接终端列表
         handleConnect(row) {
@@ -508,21 +528,6 @@ export default {
           this.handleDetail()
         },
 
-        // 历史数据分页导航
-        handlePageChangeHistory(val) {
-          this.starthis = this.pageSizehis * (val - 1) + 1
-          this.endhis = this.pageSizehis * val
-          this.currentPagehis = val
-          this.handleHistory()
-        },
-
-        terminalRecordListSumForDevice(row){
-          terminalRecordListSumForDevice(row.id).then(res=>{
-            if(res.success){
-              this.sumDevicehis = res.object
-            }
-          })
-        },
 
         //机构列表
         queryOrgList() {
@@ -542,6 +547,7 @@ export default {
              if(res.success){
                 this.$message.success('设置成功')
                 this.connectVisible = false
+                this.getData()
               }
             })
           }
@@ -553,6 +559,7 @@ export default {
              if(res.success){
                 this.$message.success('关联成功')
                 this.relateVisible = false
+                this.getData()
               }
           })
         },

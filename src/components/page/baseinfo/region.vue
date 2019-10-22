@@ -48,6 +48,49 @@
             </div>
         </div>
 
+        <!-- 企业详情弹出框 -->
+        <el-dialog :title="title" :visible.sync="listOrgVisible" width="30%" >
+            <el-form :model="tradeFormOrg" label-width="70px" >
+              <el-row :gutter="20">
+                <el-col :span="12">  
+                  <el-form-item label="机构名称">
+                      <label>{{tradeFormOrg.name}}</label>
+                  </el-form-item>
+                  <el-form-item label="所属地区">            
+                    <label>{{tradeFormOrg.zonename}}</label>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12"> 
+                  <el-form-item label="所属行业">
+                    <label>{{tradeFormOrg.tradename}}</label>
+                  </el-form-item>
+                  <el-form-item label="法人代表">
+                    <label>{{tradeFormOrg.legalPerson}}</label>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="12">  
+                  <el-form-item label="机构性质">
+                    <label>{{tradeFormOrg.property}}</label>
+                  </el-form-item>
+                  <el-form-item label="机构人数">
+                    <label>{{tradeFormOrg.population}}</label>
+                  </el-form-item>
+                </el-col> 
+                <el-col :span="12"> 
+                  <el-form-item label="联系人">
+                    <label>{{tradeFormOrg.contact}}</label>
+                  </el-form-item>
+                    <el-form-item label="联系电话">
+                  <label>{{tradeFormOrg.phone}}</label>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="listOrgVisible = false">关闭</el-button>
+            </span>
+        </el-dialog>
+
         <!-- 新增/编辑弹出框 -->
         <el-dialog :title="title" :visible.sync="editVisible" width="30%">
             <el-form :model="tradeForm" label-width="70px">
@@ -84,9 +127,9 @@
                         <el-button
                             type="text"
                             icon="el-icon-search"
+                            @click="handleDetailOrg(scope.row)"
                         >查看历史数据</el-button>
-                    </template>
-                            <!-- @click="handleHistory(scope.row)" -->
+                    </template> 
                 </el-table-column>
             </el-table>
             <div class="pagination">
@@ -112,6 +155,7 @@ export default {
         return {
             title: '新增',
             tradeForm: {},
+            tradeFormOrg: {},
             name: '',
             start: 1,
             end: 10,
@@ -127,6 +171,7 @@ export default {
             orgData: [],
             editVisible: false,
             detailVisible: false,
+            listOrgVisible: false,
         };
     },
     created() {
@@ -172,6 +217,21 @@ export default {
               name: row.name
             }
             this.editVisible = true;
+        },
+        handleDetailOrg(row){
+            this.title = '企业详情'
+            this.tradeFormOrg = {
+              id: row.id,
+              name: row.name,
+              zonename: row.zone.name,
+              tradename: row.trade.name,
+              legalPerson: row.legalPerson,
+              property: row.property,
+              population: row.population,
+              contact: row.contact,
+              phone: row.phone
+            }
+            this.listOrgVisible = true;
         },
         saveEdit() {
             if(this.tradeForm.name){
