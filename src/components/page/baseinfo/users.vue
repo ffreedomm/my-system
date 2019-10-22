@@ -37,7 +37,7 @@
                 <el-table-column prop="role" label="角色">
                     <template slot-scope="scope">{{ fomart(scope.row.role)}}</template>
                 </el-table-column>
-                <el-table-column prop="org.name" label="所属机构"></el-table-column>
+                <el-table-column prop="org.name" label="所属企业"></el-table-column>
                 <el-table-column label="操作" width="180" align="center">
                     <template slot-scope="scope">
                         <el-button type="text" icon="el-icon-edit" @click="handleEdit(scope.row)">编辑</el-button>
@@ -107,7 +107,7 @@
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
-                        <el-form-item label="所属机构" prop="orgId">
+                        <el-form-item label="所属企业" prop="orgId">
                         <treeselect
                             style="width:90%"
                             v-model="userForm.orgId"
@@ -115,18 +115,6 @@
                             :default-expand-level="2"
                             placeholder="请选择"
                         />
-                        <!-- <el-select
-                                v-model="userForm.orgId"
-                                placeholder="请选择"
-                                style="width: 100%"
-                            >
-                                <el-option
-                                    v-for="item in orgList"
-                                    :key="item.id"
-                                    :label="item.name"
-                                    :value="item.id"
-                                ></el-option>
-                        </el-select>-->
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -175,7 +163,7 @@ export default {
         name: [{ required: true, message: '请输入用户姓名', trigger: 'blur' }],
         role: [{ required: true, message: '请选择用户角色', trigger: 'blur' }],
         gender: [{ required: true, message: '请选择用户性别', trigger: 'blur' }],
-        orgId: [{ required: true, message: '请选择所属机构', trigger: 'blur' }],
+        orgId: [{ required: true, message: '请选择所属企业', trigger: 'blur' }],
         loginName: [{ required: true, message: '请输入登录名', trigger: 'blur' }],
         loginPassword: [{ required: true, message: '请输入登录密码', trigger: 'blur' }],
       },
