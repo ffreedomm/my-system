@@ -49,46 +49,47 @@
         </div>
 
         <!-- 企业详情弹出框 -->
-        <el-dialog :title="title" :visible.sync="listOrgVisible" width="30%" >
-            <el-form :model="tradeFormOrg" label-width="70px" >
-              <el-row :gutter="20">
-                <el-col :span="12">  
-                  <el-form-item label="企业名称">
-                      <label>{{tradeFormOrg.name}}</label>
-                  </el-form-item>
-                  <el-form-item label="所属地区">            
-                    <label>{{tradeFormOrg.zonename}}</label>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12"> 
-                  <el-form-item label="所属行业">
-                    <label>{{tradeFormOrg.tradename}}</label>
-                  </el-form-item>
-                  <el-form-item label="法人代表">
-                    <label>{{tradeFormOrg.legalPerson}}</label>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">  
-                  <el-form-item label="企业性质">
-                    <label>{{tradeFormOrg.property}}</label>
-                  </el-form-item>
-                  <el-form-item label="企业人数">
-                    <label>{{tradeFormOrg.population}}</label>
-                  </el-form-item>
-                </el-col> 
-                <el-col :span="12"> 
-                  <el-form-item label="联系人">
-                    <label>{{tradeFormOrg.contact}}</label>
-                  </el-form-item>
-                    <el-form-item label="联系电话">
-                  <label>{{tradeFormOrg.phone}}</label>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-            </el-form>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="listOrgVisible = false">关闭</el-button>
-            </span>
+        <el-dialog :title="title" :visible.sync="listOrgVisible" width="35%" >
+          <div class="container">
+            <div class="form-box">
+              <el-form :model="tradeFormOrg" label-width="70px" >
+                <el-row :gutter="20">
+                  <el-col :span="12">  
+                    <el-form-item label="企业名称">
+                        <label>{{tradeFormOrg.name}}</label>
+                    </el-form-item>
+                    <el-form-item label="所属地区">            
+                      <label>{{tradeFormOrg.zonename}}</label>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12"> 
+                    <el-form-item label="所属行业">
+                      <label>{{tradeFormOrg.tradename}}</label>
+                    </el-form-item>
+                    <el-form-item label="法人代表">
+                      <label>{{tradeFormOrg.legalPerson}}</label>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">  
+                    <el-form-item label="企业性质">
+                      <label>{{tradeFormOrg.property}}</label>
+                    </el-form-item>
+                    <el-form-item label="企业人数">
+                      <label>{{tradeFormOrg.population}}</label>
+                    </el-form-item>
+                  </el-col> 
+                  <el-col :span="12"> 
+                    <el-form-item label="联系人">
+                      <label>{{tradeFormOrg.contact}}</label>
+                    </el-form-item>
+                      <el-form-item label="联系电话">
+                    <label>{{tradeFormOrg.phone}}</label>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </el-form>
+            </div>  
+          </div>    
         </el-dialog>
 
         <!-- 新增/编辑弹出框 -->
@@ -128,7 +129,7 @@
                             type="text"
                             icon="el-icon-search"
                             @click="handleDetailOrg(scope.row)"
-                        >查看历史数据</el-button>
+                        >企业详情</el-button>
                     </template> 
                 </el-table-column>
             </el-table>

@@ -194,51 +194,52 @@
         </el-dialog>
 
         <!--  查看设备 -->
-        <el-dialog :title="title" :visible.sync="historyVisible" width="40%" >
-            <el-form :model="tradeFormEqu" label-width="70px" >
-              <el-row :gutter="20">
-                <el-col :span="12">  
-                  <el-form-item label="设备编号">
-                      <label>{{tradeFormEqu.number}}</label>
-                  </el-form-item>
-                  <el-form-item label="设备名称">            
-                    <label>{{tradeFormEqu.name}}</label>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12"> 
-                  <el-form-item label="额定电压">
-                    <label>{{tradeFormEqu.voltage}}</label>
-                  </el-form-item>
-                  <el-form-item label="额定功率">
-                    <label>{{tradeFormEqu.power}}</label>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">  
-                  <el-form-item label="经度位置">
-                    <label>{{tradeFormEqu.longitude}}</label>
-                  </el-form-item>
-                  <el-form-item label="纬度位置">
-                    <label>{{tradeFormEqu.latitude}}</label>
-                  </el-form-item>
-                </el-col> 
-                <el-col :span="12"> 
-                  <el-form-item label="备注说明">
-                    <label>{{tradeFormEqu.memo}}</label>
-                  </el-form-item>
-                    <el-form-item label=" 所属企业">
-                  <label>{{tradeFormEqu.orgId}}</label>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12"> 
-                  <el-form-item label="设备类型">
-                    <label>{{tradeFormEqu.type}}</label>
-                  </el-form-item> 
-                </el-col>
-              </el-row>
-            </el-form>
-            <span slot="footer" class="dialog-footer">
-                <el-button @click="historyVisible = false">关闭</el-button>
-            </span>
+        <el-dialog :title="title" :visible.sync="historyVisible" width="35%" >
+          <div class="container">
+            <div class="form-box">  
+              <el-form :model="tradeFormEqu" label-width="70px" >
+                <el-row :gutter="20">
+                  <el-col :span="12">  
+                    <el-form-item label="设备编号">
+                        <label>{{tradeFormEqu.number}}</label>
+                    </el-form-item>
+                    <el-form-item label="设备名称">            
+                      <label>{{tradeFormEqu.name}}</label>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12"> 
+                    <el-form-item label="额定电压">
+                      <label>{{tradeFormEqu.voltage}}</label>
+                    </el-form-item>
+                    <el-form-item label="额定功率">
+                      <label>{{tradeFormEqu.power}}</label>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">  
+                    <el-form-item label="经度位置">
+                      <label>{{tradeFormEqu.longitude}}</label>
+                    </el-form-item>
+                    <el-form-item label="纬度位置">
+                      <label>{{tradeFormEqu.latitude}}</label>
+                    </el-form-item>
+                  </el-col> 
+                  <el-col :span="12"> 
+                    <el-form-item label="备注说明">
+                      <label>{{tradeFormEqu.memo}}</label>
+                    </el-form-item>
+                      <el-form-item label=" 所属企业">
+                    <label>{{tradeFormEqu.orgId}}</label>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12"> 
+                    <el-form-item label="设备类型">
+                      <label>{{tradeFormEqu.type}}</label>
+                    </el-form-item> 
+                  </el-col>
+                </el-row>
+              </el-form>
+            </div>  
+          </div>    
         </el-dialog>
 
         <!-- 设置连接终端 -->
