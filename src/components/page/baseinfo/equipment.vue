@@ -415,7 +415,7 @@ export default {
               power: row.power,
               type: row.type,
               orgId :row.org.id,
-              deviceId :row.productDevice.id
+              deviceId :row.id
             }
             this.editVisible = true;
         },
