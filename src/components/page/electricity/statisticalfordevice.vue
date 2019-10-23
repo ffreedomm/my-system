@@ -6,7 +6,7 @@
                     <el-option
                         v-for="item in deviceList"
                         :key="item.id"
-                        :label="(item.name +'('+ item.number)+')'"
+                        :label="(item.name +'('+ item.org.name)+')'"
                         :value="item.id"
                     ></el-option>
                 </el-select>

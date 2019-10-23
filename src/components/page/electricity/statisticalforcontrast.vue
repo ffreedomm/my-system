@@ -2,15 +2,16 @@
     <div>
         <div class="container">
             <div class="handle-box">
-                <el-select v-model="organId" placeholder="请选择企业" @change="changeHandle">
-                    <el-option
-                        v-for="item in organList"
-                        :key="item.id"
-                        :label="item.name"
-                        :value="item.id"
-                    ></el-option>
-                </el-select>
-                <el-select v-model="deviceId" placeholder="请选择设备" style="margin-left: 10px;">
+            <el-row :gytter="2">
+              <el-col :span="4">
+              <treeselect style="width:90%;heght:90%" 
+                        v-model="organId" 
+                        :options="organList"
+                        :default-expand-level="2"
+                        placeholder="请选择企业"/>
+              </el-col>
+              <el-col :span="3">
+                <el-select v-model="deviceId" placeholder="请选择设备">
                     <el-option
                         v-for="item in deviceData"
                         :key="item.id"
@@ -18,21 +19,26 @@
                         :value="item.id"
                     ></el-option>
                 </el-select>
+              </el-col>
+              <el-col :span="6">
                 <el-date-picker
                     value-format="yyyy-MM-dd"
-                    style="margin-left: 10px;"
                     v-model="organTime"
                     type="daterange"
                     range-separator="至"
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
                 ></el-date-picker>
+              </el-col>
+              <el-col :span="2">
                 <el-button
                     style="margin-left: 10px;"
                     type="primary"
                     icon="el-icon-search"
                     @click="handleSearch"
                 >统计结果</el-button>
+                </el-col>
+            </el-row>
             </div>
             <el-divider v-if="equipInfoList.length > 0" content-position="left">关联设备信息</el-divider>
             <el-table
@@ -43,7 +49,9 @@
                 class="table"
                 ref="multipleTable"
                 header-cell-class-name="table-header"
+                @selection-change="handleSelectionChange"
             >
+                <el-table-column type="selection" width="70" align="center"></el-table-column>
                 <el-table-column type="index" width="70" align="center" label="序号"></el-table-column>
                 <el-table-column prop="number" label="设备编号"></el-table-column>
                 <el-table-column prop="name" label="设备名称"></el-table-column>
@@ -91,25 +99,38 @@
 <script>
 import { queryOrgList, allDeviceListForOrg  } from '@/api/baseInfo'
 import { getChartsData, getDevices  } from '@/api/statisticalforcontrast'
+import Treeselect from '@riophae/vue-treeselect'
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import { log } from 'util';
 export default {
+  components: {
+      Treeselect
+  },
   data() {
     return {
       organList: [],
       deviceData: [],
-      organId: '',
+      organId: null,
       deviceId: '',
       organTime: [],
       equipInfoList: [],
       electricityList: [],
-      terminalList: []
+      terminalList: [],
+      drawData:[]
     };
   },
   mounted() {
     this.queryOrgList()
   },
+    watch: {
+      organId(val) {
+        this.organId = val;
+        this.changeHandle(val);
+      }
+    },
   methods: {
     handleSearch() {
+      const _this = this;
       if (this.deviceId && this.organTime && this.organTime.length == 2) {
         let startTime = this.organTime[0] + '-0-0-1';
         let endTime = this.organTime[1] + '-23-59-59'
@@ -117,6 +138,16 @@ export default {
         getDevices(this.deviceId).then(res => {
           if (res.success) {
             this.equipInfoList = res.object
+            debugger
+            //默认全选
+          this.$nextTick(() => {
+            for (let i = 0; i < this.equipInfoList.length; i++) {
+              this.$refs.multipleTable.toggleRowSelection(
+                this.equipInfoList[i],
+                true
+              );
+            }
+          });
             this.getChartsDataForDevice(this.equipInfoList,startTime,endTime);
           }
         })
@@ -138,6 +169,7 @@ export default {
           }
           getChartsData(req).then(res => {
             if (res.success) {
+              this.drawData = res.object
               this.drawLine(res.object)
             }
           })
@@ -148,13 +180,39 @@ export default {
     queryOrgList() {
       queryOrgList('', 1, 9999).then(res => {
         if (res.success) {
-          this.organList = res.object
+          this.organList = this.toTree(res.object)
         }
       })
+    },
+
+    //转为树
+    toTree(data) {
+        let result = []
+        if(!Array.isArray(data)) {
+            return result
+        }
+        data.forEach(item => {
+            delete item.children;
+        });
+        let map = {};
+        data.forEach(item => {
+            map[item.id] = item;
+        });
+        data.forEach(item => {
+            item.label=item.name;
+            let parent = map[item.parentId];
+            if(parent) {
+                (parent.children || (parent.children = [])).push(item);
+            } else {
+                result.push(item);
+            }
+        });
+        return result;
     },
     changeHandle(e) {
       allDeviceListForOrg(e, '', '').then(res => {
         if (res.success) {
+          this.deviceId = null
           this.deviceData = res.object
         }
       })
@@ -163,6 +221,21 @@ export default {
       var ss = dateString.split("-");
       return ss[0] + "-" + ss[1] + "-" + ss[2] + " " + ss[3] + ":" + ss[4]
     },
+    //选择
+    handleSelectionChange(val){
+      let tempArr = []
+      if(val && val.length > 0){
+        this.drawData.forEach(item =>{
+          val.forEach(item1 =>{
+            if(item.id == item1.id){
+              tempArr.push(item)
+            }
+          })
+        })
+      }
+      this.drawLine(tempArr)
+    },
+
     drawLine(dataList) {
       this.drawLine1(dataList);
       this.drawLine2(dataList);
