@@ -124,7 +124,7 @@
             </span>
         </el-dialog>
 
-        <!-- 下属机构详情 -->
+        <!-- 下属企业详情 -->
         <el-dialog title="所属企业详情" :visible.sync="detailVisible" width="90%">
            <div class="container">
             <el-table
@@ -134,7 +134,7 @@
                 ref="multipleTable"
                 header-cell-class-name="table-header"
             >
-            <el-table-column label="机构名称" width="180"> 
+            <el-table-column label="企业名称" width="180"> 
                 <template slot-scope="scope">
                     <span>{{scope.row.orgname}}</span>
                 </template>
@@ -159,12 +159,12 @@
                     <span>{{scope.row.orglegalCode}}</span>
                 </template>
 	        </el-table-column>
-            <el-table-column label="机构地址" width="180">
+            <el-table-column label="企业地址" width="180">
                 <template slot-scope="scope">
                     <span>{{scope.row.orgaddress}}</span>
                 </template>
 	        </el-table-column>
-            <el-table-column label="机构人数" width="180">
+            <el-table-column label="企业人数" width="180">
                 <template slot-scope="scope">
                     <span>{{scope.row.orgpopulation}}</span>
                 </template>
@@ -257,7 +257,7 @@
                 <el-table-column prop="name" label="终端名称"></el-table-column>
                 <el-table-column prop="memo" label="备注说明"></el-table-column>
                 <el-table-column prop="sendInterval" label="发送数据间隔"></el-table-column>
-                <el-table-column prop="device.org.name" label="所属机构"></el-table-column>
+                <el-table-column prop="device.org.name" label="所属企业"></el-table-column>
                 <el-table-column prop="device.name" label="连接设备"></el-table-column>
             </el-table>
             <br><span style="position:relitive;float:right" >
@@ -287,7 +287,7 @@
                 <el-table-column prop="latitude" label="纬度位置"></el-table-column>
                 <el-table-column prop="memo" label="备注说明"></el-table-column>
                 <el-table-column prop="terminalNumber" label="连接的终端"></el-table-column>
-                <el-table-column prop="org.name" label="所属机构"></el-table-column>
+                <el-table-column prop="org.name" label="所属企业"></el-table-column>
                 <el-table-column prop="type" label="设备类型" :formatter = "stateFormat"></el-table-column>
                 <el-table-column prop="name" label="关联的产污设备"></el-table-column>
             </el-table>
@@ -463,7 +463,7 @@ export default {
               })
             }).catch(() => {});
         },
-       // 下属机构详情操作
+       // 下属企业详情操作
         handleDetail(row) {
              this.orgData[0] = {
                 orgname: row.org.name,
@@ -520,7 +520,7 @@ export default {
               }
           })
         },
-           // 机构分页导航
+           // 企业分页导航
         handlePageChangeOrg(val) {
           this.startOrg = this.pageSizeOrg * (val - 1) + 1
           this.endOrg = this.pageSizeOrg * val
@@ -529,7 +529,7 @@ export default {
         },
 
 
-        //机构列表
+        //企业列表
         queryOrgList() {
             queryOrgList().then(res=>{
              if(res.success){

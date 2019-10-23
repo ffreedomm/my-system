@@ -42,12 +42,12 @@
                     <el-form :model="addForm" label-width="110px">
                         <el-row :gutter="20">
                             <el-col :span="24">
-                                <el-form-item label="上级机构" v-if="!addForm.id">
+                                <el-form-item label="上级企业" v-if="!addForm.id">
                                     <el-input readonly v-model="addForm.parentOrgName"></el-input>
                                 </el-form-item>
                             </el-col>
                             <el-col :span="12">
-                                <el-form-item label="机构名称">
+                                <el-form-item label="企业名称">
                                     <el-input v-model="addForm.name"></el-input>
                                 </el-form-item>
                                 <el-form-item label="所属行业">
@@ -129,7 +129,7 @@
                     <el-table-column prop="latitude" label="纬度位置"></el-table-column>
                     <el-table-column prop="memo" label="备注说明"></el-table-column>
                     <el-table-column prop="terminalNumber" label="连接的终端"></el-table-column>
-                    <el-table-column prop="org.name" label="所属机构"></el-table-column>
+                    <el-table-column prop="org.name" label="所属企业"></el-table-column>
                     <el-table-column prop="type" label="设备类型">
                         <template scope="scope">{{format(scope.row.type)}}</template>
                     </el-table-column>
@@ -195,7 +195,7 @@
                                 </el-form-item>
                             </el-col>
                             <el-col :span="12">
-                                <el-form-item label="所属机构：" v-if="equipForm.org">
+                                <el-form-item label="所属企业：" v-if="equipForm.org">
                                     <label>{{equipForm.org.name}}</label>
                                 </el-form-item>
                                 <el-form-item label="产污设备：" v-if="equipForm.productDevice">
@@ -259,7 +259,7 @@ export default {
     },
     handleEquip() {
       if (JSON.stringify(this.selectRow) == '{}') {
-        this.$message.warning('请首先选定一个机构！')
+        this.$message.warning('请首先选定一个企业！')
       } else {
         allDeviceListForOrg(this.selectRow.id, this.startOrg, this.endOrg).then(res => {
           if (res.success) {
@@ -286,7 +286,7 @@ export default {
     },
     handleEdit() {
       if (JSON.stringify(this.selectRow) == '{}') {
-        this.$message.warning('请首先选定一个机构！')
+        this.$message.warning('请首先选定一个企业！')
       } else {
         this.title = '编辑'
         this.addForm = {
@@ -308,7 +308,7 @@ export default {
     },
     handleDel() {
       if (JSON.stringify(this.selectRow) == '{}') {
-        this.$message.warning('请首先选定一个机构！')
+        this.$message.warning('请首先选定一个企业！')
       } else {
         this.$confirm('确定要删除吗？', '提示', {
           type: 'warning'
@@ -340,7 +340,7 @@ export default {
     },
     handleAdd() {
       if (JSON.stringify(this.selectRow) == '{}') {
-        this.$message.warning('请首先选定一个上级机构！')
+        this.$message.warning('请首先选定一个上级企业！')
       } else {
         this.title = '新增'
         this.addForm = {}
@@ -361,7 +361,7 @@ export default {
     },
     onSubmit() {
       if (!this.addForm.name) {
-        this.$message.warning('机构名称不能为空')
+        this.$message.warning('企业名称不能为空')
         return
       }
       if (this.addForm.id) {

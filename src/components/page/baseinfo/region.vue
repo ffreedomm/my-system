@@ -21,7 +21,7 @@
                             type="text"
                             icon="el-icon-share"
                             @click="handleDetail(scope.row)"
-                        >下属机构详情</el-button>
+                        >下属企业详情</el-button>
                         <el-button
                             type="text"
                             icon="el-icon-edit"
@@ -53,7 +53,7 @@
             <el-form :model="tradeFormOrg" label-width="70px" >
               <el-row :gutter="20">
                 <el-col :span="12">  
-                  <el-form-item label="机构名称">
+                  <el-form-item label="企业名称">
                       <label>{{tradeFormOrg.name}}</label>
                   </el-form-item>
                   <el-form-item label="所属地区">            
@@ -69,10 +69,10 @@
                   </el-form-item>
                 </el-col>
                 <el-col :span="12">  
-                  <el-form-item label="机构性质">
+                  <el-form-item label="企业性质">
                     <label>{{tradeFormOrg.property}}</label>
                   </el-form-item>
-                  <el-form-item label="机构人数">
+                  <el-form-item label="企业人数">
                     <label>{{tradeFormOrg.population}}</label>
                   </el-form-item>
                 </el-col> 
@@ -103,8 +103,8 @@
                 <el-button type="primary" @click="saveEdit">确 定</el-button>
             </span>
         </el-dialog>
-        <!-- 下属机构详情 -->
-        <el-dialog title="下属机构详情" :visible.sync="detailVisible" width="90%">
+        <!-- 下属企业详情 -->
+        <el-dialog title="下属企业详情" :visible.sync="detailVisible" width="90%">
            <div class="container">
             <el-table
                 :data="orgData" 
@@ -114,12 +114,12 @@
                 header-cell-class-name="table-header"
             >
                  <el-table-column type="index" width="50"  label="序号"></el-table-column>
-                <el-table-column prop="name" label="机构名称"></el-table-column>
+                <el-table-column prop="name" label="企业名称"></el-table-column>
                 <el-table-column prop="zone.name" label="所属地区"></el-table-column>
                 <el-table-column prop="trade.name" label="所属行业"></el-table-column>
                 <el-table-column prop="legalPerson" label="法人代表"></el-table-column>
-                <el-table-column prop="property" label="机构性质"></el-table-column>
-                <el-table-column prop="population" label="机构人数"></el-table-column>
+                <el-table-column prop="property" label="企业性质"></el-table-column>
+                <el-table-column prop="population" label="企业人数"></el-table-column>
                 <el-table-column prop="contact" label="联系人"></el-table-column>
                 <el-table-column prop="phone" label="联系电话"></el-table-column>
                 <el-table-column label="操作" align="center">
@@ -277,7 +277,7 @@ export default {
               })
             }).catch(() => {});
         },
-       // 下属机构详情操作
+       // 下属企业详情操作
         handleDetail(row) {
           orgListForZone(row.id, this.startOrg, this.endOrg).then(res=>{
              if(res.success){

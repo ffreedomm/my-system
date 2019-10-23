@@ -7,7 +7,7 @@
                     v-model="orgId" 
                     :options="orgList"
                     :default-expand-level="2"
-                    placeholder="机构信息" />
+                    placeholder="企业信息" />
                 </el-col>
                 <el-col :span="15">
                     {{weather}} &nbsp; &nbsp; &nbsp; {{ date | formaDate }}
@@ -21,7 +21,7 @@
                     <el-row>
                         <el-table :data="tData" height="320">
                             <el-table-column fixed="left" type="index" width="50" label="序号" align="center" />
-                            <el-table-column prop="org.name" label="机构名称"/>
+                            <el-table-column prop="org.name" label="企业名称"/>
                             <el-table-column prop="deviceSum" label="设备数量" width="100"/>
                             <el-table-column prop="terminalSum" label="终端数量" width="100"/>
                         </el-table>
@@ -203,7 +203,7 @@ export default {
         //初始化数据
         initData(){
             this.cData = [];
-            //获取机构
+            //获取企业
             this.getOrgList();
             //列表
             this.getTData();

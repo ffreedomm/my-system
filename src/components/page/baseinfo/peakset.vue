@@ -101,7 +101,7 @@
                 <el-form-item prop="reporter" label="报备人">
                     <el-input v-model="dForm.reporter"></el-input>
                 </el-form-item>
-                <el-form-item prop="orgId" label="报备机构">
+                <el-form-item prop="orgId" label="报备企业">
                     <el-select class="item-choose" v-model="dForm.orgId" size="small">
                         <el-option
                             v-for="(item,index) in orgList"
@@ -139,7 +139,7 @@
                 <el-table-column prop="longitude" label="经度位置"></el-table-column>
                 <el-table-column prop="latitude" label="纬度位置"></el-table-column>
                 <el-table-column prop="terminalNumber" label="连接的终端"></el-table-column>
-                <el-table-column prop="org.name" label="所属机构"></el-table-column>
+                <el-table-column prop="org.name" label="所属企业"></el-table-column>
                 <el-table-column prop="" label="设备类型">
                     <template scope="scope">
                         {{scope.row.type  == 1 ? "治污设备" :"产污设备" }}
@@ -199,7 +199,7 @@ export default {
                     { required: true, message: '请输入报备人', trigger: 'blur' },
                 ],
                 orgId: [
-                    { required: true, message: '请选择报备机构', trigger: 'blur' },
+                    { required: true, message: '请选择报备企业', trigger: 'blur' },
                 ]
             }
         };
@@ -218,7 +218,7 @@ export default {
             });
         },
 
-        //查找机构
+        //查找企业
         getOrgList(){
             getOrgList().then(res => {
               if(res.success){

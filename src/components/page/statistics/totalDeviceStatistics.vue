@@ -2,7 +2,7 @@
     <div>
         <div class="container">
             <div class="handle-box">
-                <el-select v-model="organId" placeholder="请选择机构" @change="changeHandle">
+                <el-select v-model="organId" placeholder="请选择企业" @change="changeHandle">
                     <el-option
                         v-for="item in organList"
                         :key="item.id"

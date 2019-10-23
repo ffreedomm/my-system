@@ -33,7 +33,7 @@ export default new Router({
                 {
                     path: '/organ',
                     component: () => import('../components/page/baseinfo/organ.vue'),
-                    meta: { title: '机构管理' }
+                    meta: { title: '企业管理' }
                 },
                 {
                     path: '/users',
@@ -88,7 +88,7 @@ export default new Router({
                 {
                     path: '/organStatistics',
                     component: () => import('../components/page/statistics/organStatistics.vue'),
-                    meta: { title: '按机构统计' }
+                    meta: { title: '按企业统计' }
                 },
                 {
                     path: '/equipmentStatistics',
@@ -114,7 +114,7 @@ export default new Router({
                 {
                     path: '/statisticalfororg',
                     component: () => import('../components/page/electricity/statisticalfororg.vue'),
-                    meta: { title: '按机构统计' }
+                    meta: { title: '按企业统计' }
                 },
                 {
                     path: '/statisticalfordevice',

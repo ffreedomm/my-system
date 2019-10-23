@@ -1,7 +1,7 @@
 import request from '../utils/request';
 
 /**
- * 机构信息
+ * 企业信息
  */
 export const getQueryOrgList = (data) => {
     return request({

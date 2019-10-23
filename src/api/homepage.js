@@ -11,7 +11,7 @@ export const getBasicInfoTotalForToday = () => {
 }
 
 /**
- * 机构分布
+ * 企业分布
  */
 export const getOrgInZoneTotalList = () => {
     return request({

@@ -109,7 +109,6 @@
                     <el-col :span="12">
                         <el-form-item label="所属企业" prop="orgId">
                         <treeselect
-                            style="width:90%"
                             v-model="userForm.orgId"
                             :options="orgList"
                             :default-expand-level="2"

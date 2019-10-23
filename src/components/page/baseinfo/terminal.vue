@@ -22,7 +22,7 @@
                 <el-table-column prop="name" label="终端名称"></el-table-column>
                 <el-table-column prop="memo" label="备注说明"></el-table-column>
                 <el-table-column prop="sendInterval" label="发送数据间隔"></el-table-column>
-                <el-table-column prop="device.org.legalPerson" label="所属机构"></el-table-column>
+                <el-table-column prop="device.org.legalPerson" label="所属企业"></el-table-column>
                 <el-table-column prop="device.name" label="连接设备"></el-table-column>
                 <el-table-column label="操作" align="center">
                     <template slot-scope="scope">

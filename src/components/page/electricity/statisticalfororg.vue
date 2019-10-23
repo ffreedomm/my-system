@@ -8,7 +8,7 @@
                         v-model="qId" 
                         :options="orgList"
                         :default-expand-level="2"
-                        placeholder="请选择机构" />
+                        placeholder="请选择企业" />
                     </el-col>
                     <el-col :span="19">
                         <el-date-picker
@@ -29,7 +29,7 @@
                     </el-col>
                 </el-row>
             </div>
-            <el-divider content-position="left" v-if="resultInfo.name">机构：{{resultInfo.name}}</el-divider>
+            <el-divider content-position="left" v-if="resultInfo.name">企业：{{resultInfo.name}}</el-divider>
             <el-divider content-position="left" v-if="resultInfo.name">时间：{{this.qTime[0]}} 0:0 到 {{this.qTime[1]}} 23:59</el-divider>
             <el-divider content-position="left" v-if="resultInfo.name">总功耗：{{kwhSum}} KWH</el-divider>
             <el-row :gutter="20">

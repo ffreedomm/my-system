@@ -76,7 +76,7 @@ export default {
             },
             {
               index: 'organ',
-              title: '机构管理'
+              title: '企业管理'
             },
             {
               index: 'users',
@@ -134,7 +134,7 @@ export default {
             },
             {
               index: 'organStatistics',
-              title: '按机构统计'
+              title: '按企业统计'
             },
             {
               index: 'equipmentStatistics',
@@ -161,7 +161,7 @@ export default {
             },
             {
               index: 'statisticalfororg',
-              title: '按机构统计'
+              title: '按企业统计'
             },
             {
               index: 'statisticalfordevice',
