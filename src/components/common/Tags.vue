@@ -30,7 +30,7 @@
                 if (item) {
                     delItem.path === this.$route.fullPath && this.$router.push(item.path);
                 }else{
-                    this.$router.push('/');
+                    this.$router.push('/dashboard');
                 }
             },
             // 设置标签
