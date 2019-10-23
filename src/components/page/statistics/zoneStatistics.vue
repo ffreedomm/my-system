@@ -26,7 +26,7 @@
                     @click="handleSearch"
                 >统计结果</el-button>
             </div>
-             <el-divider v-if="zoneInfoList.length > 0" content-position="left">统计结果（明细对比）</el-divider>
+            <el-divider v-if="zoneInfoList.length > 0" content-position="left">统计结果（明细对比）</el-divider>
             <el-table
                 v-if="zoneInfoList.length > 0"
                 style="margin-bottom: 50px;"
@@ -98,11 +98,13 @@ export default {
     drawLine(zoneInfoList) {
       let myChart2 = this.$echarts.init(document.getElementById('myChart2'))
       let seriesData = []
+      let legendData = []
       zoneInfoList.forEach(e => {
+        legendData.push(e.name)
         let data = {
-            name: e.name,
-            type: 'bar',
-            data: [e.deviceSum, e.faultSum, e.fault1Sum, e.fault2Sum, e.fault3Sum, e.fault4Sum, e.fault5Sum, e.handledSum]
+          name: e.name,
+          type: 'bar',
+          data: [e.deviceSum, e.faultSum, e.fault1Sum, e.fault2Sum, e.fault3Sum, e.fault4Sum, e.fault5Sum, e.handledSum]
         }
         seriesData.push(data)
       });
@@ -114,6 +116,9 @@ export default {
             type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
           }
         },
+        legend: {
+          data: legendData
+        },
         grid: {
           left: '8%',
           bottom: '3%',
@@ -123,7 +128,7 @@ export default {
           {
             type: 'category',
             data: ['设备总数', '故障总次数', '功率轻度超标次数', '功率中度超标次数',
-               '功率重度超标次数', '异常停机次数', '异常开机次数', '处理故障次数'],
+              '功率重度超标次数', '异常停机次数', '异常开机次数', '处理故障次数'],
             axisTick: {
               alignWithLabel: true
             }

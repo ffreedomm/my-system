@@ -2,14 +2,14 @@
     <div>
         <div class="container">
             <div class="handle-box">
-                <el-select v-model="organId" multiple placeholder="请选择企业">
-                    <el-option
-                        v-for="item in organList"
-                        :key="item.id"
-                        :label="item.name"
-                        :value="item.id"
-                    ></el-option>
-                </el-select>
+                <treeselect
+                    v-model="organId"
+                    :options="organList"
+                    multiple
+                    :default-expand-level="3"
+                    placeholder="请选择"
+                    style="width: 300px;"
+                />
                 <el-date-picker
                     value-format="yyyy-MM-dd"
                     style="margin-left: 10px;"
@@ -26,7 +26,7 @@
                     @click="handleSearch"
                 >统计结果</el-button>
             </div>
-             <el-divider v-if="organInfoList.length > 0" content-position="left">统计结果（明细对比）</el-divider>
+            <el-divider v-if="organInfoList.length > 0" content-position="left">统计结果（明细对比）</el-divider>
             <el-table
                 v-if="organInfoList.length > 0"
                 style="margin-bottom: 50px;"
@@ -35,8 +35,8 @@
                 class="table"
                 ref="multipleTable"
                 header-cell-class-name="table-header"
-                @selection-change="handleSelectionChange"
             >
+                <!-- @selection-change="handleSelectionChange" -->
                 <el-table-column type="index" width="50" label="序号"></el-table-column>
                 <el-table-column prop="name" label="名称"></el-table-column>
                 <el-table-column prop="deviceSum" label="设备总数"></el-table-column>
@@ -59,10 +59,14 @@
 </template>
 
 <script>
+import Treeselect from '@riophae/vue-treeselect'
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import { queryOrgList, totalListForOrgList } from '@/api/baseInfo'
-import { log } from 'util';
 export default {
   name: 'industryStatistics',
+  components: {
+    Treeselect
+  },
   data() {
     return {
       organList: [],
@@ -91,18 +95,43 @@ export default {
     queryOrgList() {
       queryOrgList('', 1, 9999).then(res => {
         if (res.success) {
-          this.organList = res.object
+          this.organList = this.toTree(res.object)
         }
       })
+    },
+    toTree(data) {
+      let result = []
+      if (!Array.isArray(data)) {
+        return result
+      }
+      data.forEach(item => {
+        delete item.children;
+      });
+      let map = {};
+      data.forEach(item => {
+        map[item.id] = item;
+      });
+      data.forEach(item => {
+        item.label = item.name;
+        let parent = map[item.parentId];
+        if (parent) {
+          (parent.children || (parent.children = [])).push(item);
+        } else {
+          result.push(item);
+        }
+      });
+      return result;
     },
     drawLine(organInfoList) {
       let myChart2 = this.$echarts.init(document.getElementById('myChart2'))
       let seriesData = []
+      let legendData = []
       organInfoList.forEach(e => {
+        legendData.push(e.name)
         let data = {
-            // name: e.name,
-            type: 'bar',
-            data: [e.deviceSum, e.faultSum, e.fault1Sum, e.fault2Sum, e.fault3Sum, e.fault4Sum, e.fault5Sum, e.handledSum]
+          name: e.name,
+          type: 'bar',
+          data: [e.deviceSum, e.faultSum, e.fault1Sum, e.fault2Sum, e.fault3Sum, e.fault4Sum, e.fault5Sum, e.handledSum]
         }
         seriesData.push(data)
       });
@@ -114,6 +143,9 @@ export default {
             type: 'line'        // 默认为直线，可选为：'line' | 'shadow'
           }
         },
+        legend: {
+          data: legendData
+        },
         grid: {
           left: '8%',
           bottom: '3%',
@@ -122,7 +154,7 @@ export default {
         xAxis: [
           {
             type: 'category',
-            data: ['设备总数', '故障总次数', '功率轻度超标次数', '功率中度超标次数','功率重度超标次数', '异常停机次数', '异常开机次数', '处理故障次数'],
+            data: ['设备总数', '故障总次数', '功率轻度超标次数', '功率中度超标次数', '功率重度超标次数', '异常停机次数', '异常开机次数', '处理故障次数'],
           }
         ],
         yAxis: [
@@ -141,6 +173,8 @@ export default {
 <style scoped>
 .handle-box {
     margin-bottom: 20px;
+    display: flex;
+    flex-direction: row;
 }
 
 .handle-select {
