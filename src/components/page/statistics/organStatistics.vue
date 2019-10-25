@@ -7,7 +7,7 @@
                     :options="organList"
                     multiple
                     :default-expand-level="3"
-                    placeholder="请选择"
+                    placeholder="请选择企业"
                     style="width: 300px;"
                 />
                 <el-date-picker

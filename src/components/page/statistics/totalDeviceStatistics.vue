@@ -2,19 +2,18 @@
     <div>
         <div class="container">
             <div class="handle-box">
-                <el-select v-model="organId" placeholder="请选择企业" @change="changeHandle">
-                    <el-option
-                        v-for="item in organList"
-                        :key="item.id"
-                        :label="item.name"
-                        :value="item.id"
-                    ></el-option>
-                </el-select>
+                <treeselect
+                    :options="organList"
+                    :default-expand-level="3"
+                    placeholder="请选择企业"
+                    style="width: 300px;"
+                    @select="changeHandle"
+                />
                 <el-select v-model="deviceId" placeholder="请选择设备" style="margin-left: 10px;">
                     <el-option
                         v-for="item in deviceData"
                         :key="item.id"
-                        :label="item.name"
+                        :label="(item.name + '('+ format(item.type))+')'"
                         :value="item.id"
                     ></el-option>
                 </el-select>
@@ -43,7 +42,6 @@
                 class="table"
                 ref="multipleTable"
                 header-cell-class-name="table-header"
-                @selection-change="handleSelectionChange"
             >
                 <el-table-column type="index" width="50" label="序号"></el-table-column>
                 <el-table-column prop="name" label="名称"></el-table-column>
@@ -69,14 +67,6 @@
                 </el-col>
             </el-row>
             <el-divider v-if="terminalList.length > 0" content-position="left">故障分析图</el-divider>
-            <div v-if="terminalList.length > 0" style="font-size: 12px;margin-left: 10%;display: flex;">
-              <span>0-正常</span>
-              <span style="margin-left: 10px;">1-超标1级警报</span>
-              <span style="margin-left: 10px;">2-超标2级警报</span>
-              <span style="margin-left: 10px;">3-超标3级警报</span>
-              <span style="margin-left: 10px;">4-工作时段停机</span>
-              <span style="margin-left: 10px;">5-非工作时段启动</span>
-            </div>
             <el-row :gutter="20">
                 <el-col :span="24">
                     <div id="myChart3" :style="{width: '95%', height: '380px'}"></div>
@@ -87,9 +77,13 @@
 </template>
 
 <script>
+import Treeselect from '@riophae/vue-treeselect'
+import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import { queryOrgList, allDeviceListForOrg, totalListForDeviceList, pETotalForDevice, terminalAlertListInFaultStatusForDevice } from '@/api/baseInfo'
-import { log } from 'util';
 export default {
+  components: {
+    Treeselect
+  },
   data() {
     return {
       organList: [],
@@ -106,6 +100,9 @@ export default {
     this.queryOrgList()
   },
   methods: {
+    format(type) {
+      return type == 1 ? '治污设备' : '产污设备'
+    },
     handleSearch() {
       if (this.deviceId && this.organTime && this.organTime.length == 2) {
         this.organTime[0] = this.organTime[0] + '-0-0-1'
@@ -131,13 +128,20 @@ export default {
       }
     },
     drawTerminalLine(terminalList) {
+      let dataName = ['正常', '超标1级警报', '超标2级警报', '超标3级警报', '工作时段停机', '非工作时段启动']
       let myChart3 = this.$echarts.init(document.getElementById('myChart3'))
       let yData = []
       let xData = []
+      let legendData = []
       terminalList.forEach(e => {
+        legendData.push(dataName[e.status])
         xData.push(e.startTime)
-        yData.push(e.status)
-
+        let sData = {
+          name: dataName[e.status],
+          type: 'bar',
+          data: [e.status]
+        }
+        yData.push(sData)
       });
       // 绘制图表
       myChart3.setOption({
@@ -147,10 +151,9 @@ export default {
             type: 'line'        // 默认为直线，可选为：'line' | 'shadow'
           }
         },
-        // color : ['#ffb400', '#00ff4e', '#ff0000', '#00ddff', '#baff00', '#00ff06'],
-        // legend: {
-        //   data: ['0-正常', '1-超标1级警报', '2-超标2级警报', '3-超标3级警报', '4-工作时段停机', '5-非工作时段启动']
-        // },
+        legend: {
+          data: legendData
+        },
         grid: {
           left: '8%',
           bottom: '3%',
@@ -167,30 +170,41 @@ export default {
             type: 'value'
           }
         ],
-        series: [{
-          type: 'bar',
-          data: yData,
-          itemStyle: {
-            normal: {
-              //每根柱子颜色设置
-              color: function (params) {
-                let colorList = ['#ffb400', '#00ff4e', '#ff0000', '#00ddff', '#baff00', '#00ff06'];
-                return colorList[params.value];
-              }
-            }
-          },
-        }]
+        series: yData
       });
     },
     queryOrgList() {
       queryOrgList('', 1, 9999).then(res => {
         if (res.success) {
-          this.organList = res.object
+          this.organList = this.toTree(res.object)
         }
       })
     },
-    changeHandle(e) {
-      allDeviceListForOrg(e, '', '').then(res => {
+    toTree(data) {
+      let result = []
+      if (!Array.isArray(data)) {
+        return result
+      }
+      data.forEach(item => {
+        delete item.children;
+      });
+      let map = {};
+      data.forEach(item => {
+        map[item.id] = item;
+      });
+      data.forEach(item => {
+        item.label = item.name;
+        let parent = map[item.parentId];
+        if (parent) {
+          (parent.children || (parent.children = [])).push(item);
+        } else {
+          result.push(item);
+        }
+      });
+      return result;
+    },
+    changeHandle(e, id) {
+      allDeviceListForOrg(e.id, '', '').then(res => {
         if (res.success) {
           this.deviceData = res.object
         }
@@ -213,9 +227,9 @@ export default {
       }
       // 绘制图表
       myChart1.setOption({
-        title: {
-          text: '功率统计'
-        },
+        // title: {
+        //   text: '功率统计'
+        // },
         tooltip: {
           trigger: 'axis',
           axisPointer: {
@@ -256,6 +270,13 @@ export default {
             name: '实际功率值',
             type: 'line',
             stack: '总量',
+            itemStyle: {
+              normal: {
+                lineStyle: {
+                  width: 4// 0.1的线条是非常细的了
+                }
+              }
+            },
             data: yArr
           },
           {
@@ -276,9 +297,11 @@ export default {
     drawLine(equipInfoList) {
       let myChart2 = this.$echarts.init(document.getElementById('myChart2'))
       let seriesData = []
+      let legendData = []
       equipInfoList.forEach(e => {
+        legendData.push(e.name)
         let data = {
-          // name: e.name,
+          name: e.name,
           type: 'bar',
           data: [e.deviceSum, e.faultSum, e.fault1Sum, e.fault2Sum, e.fault3Sum, e.fault4Sum, e.fault5Sum, e.handledSum]
         }
@@ -291,6 +314,9 @@ export default {
           axisPointer: {            // 坐标轴指示器，坐标轴触发有效
             type: 'line'        // 默认为直线，可选为：'line' | 'shadow'
           }
+        },
+        legend: {
+          data: legendData
         },
         grid: {
           left: '8%',
@@ -319,6 +345,8 @@ export default {
 <style scoped>
 .handle-box {
     margin-bottom: 20px;
+    display: flex;
+    flex-direction: row;
 }
 
 .handle-select {
