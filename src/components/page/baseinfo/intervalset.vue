@@ -97,7 +97,7 @@
                     <el-input v-model="dForm.periods"></el-input>
                     <el-popover v-model="cronPopover">
                         <cron @change="changeCron" @close="cronPopover=false" i18n="cn"></cron>
-                        <el-input slot="reference" @click="cronPopover=true" v-model="cron" placeholder="请输入定时策略"></el-input>
+                        <el-input disabled="true" slot="reference" @click="cronPopover=true"  placeholder="点击选择定时策略"></el-input>
                     </el-popover>
                 </el-form-item>
                 <el-form-item prop="memo" label="备注">
@@ -198,6 +198,7 @@ export default {
     methods: {
         changeCron(val){
                 this.cron=val
+                this.dForm.periods = "["+val+"]";
             },
         getData() {
             queryList(this.name, this.start, this.end).then(res => {

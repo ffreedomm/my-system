@@ -97,6 +97,10 @@
                 </el-form-item>
                 <el-form-item prop="periods" label="时段设置">
                     <el-input v-model="dForm.periods"></el-input>
+                    <el-popover v-model="cronPopover">
+                        <cron @change="changeCron" @close="cronPopover=false" i18n="cn"></cron>
+                        <el-input disabled="true" slot="reference" @click="cronPopover=true"  placeholder="点击选择定时策略"></el-input>
+                    </el-popover>
                 </el-form-item>
                 <el-form-item prop="reporter" label="报备人">
                     <el-input v-model="dForm.reporter"></el-input>
@@ -157,6 +161,7 @@
 
 <script>
 import {queryList, queryTotal, add, update, remove, getOrgList, queryList1, queryTotal1, queryDeviceList, setDevice  } from '@/api/peakset';
+import {cron} from 'vue-cron'
 export default {
     name: 'industry',
     data() {
@@ -208,6 +213,10 @@ export default {
         this.getData()
     },
     methods: {
+        changeCron(val){
+                this.cron=val
+                this.dForm.periods = "["+val+"]";
+            },
         getData() {
             queryList(this.name, this.start, this.end).then(res => {
               if(res.success){
