@@ -67,6 +67,17 @@
                 </el-col>
             </el-row>
             <el-divider v-if="terminalList.length > 0" content-position="left">故障分析图</el-divider>
+             <div v-if="terminalList.length > 0" style="font-size: 12px;margin-left: 25%;display: flex;">
+              <span class="spanDIv">
+                <div class="zero" style="background: #ffb400;"></div>
+                0-正常
+              </span>
+              <span class="spanDIv"> <div class="zero" style="background: #00ff4e;"></div>1-超标1级警报</span>
+              <span class="spanDIv"> <div class="zero" style="background: #ff0000;"></div>2-超标2级警报</span>
+              <span class="spanDIv"> <div class="zero" style="background: #00ddff;"></div>3-超标3级警报</span>
+              <span class="spanDIv"> <div class="zero" style="background: #baff00;"></div>4-工作时段停机</span>
+              <span class="spanDIv"> <div class="zero" style="background: #CD2626;"></div>5-非工作时段启动</span>
+            </div>
             <el-row :gutter="20">
                 <el-col :span="24">
                     <div id="myChart3" :style="{width: '95%', height: '380px'}"></div>
@@ -128,20 +139,13 @@ export default {
       }
     },
     drawTerminalLine(terminalList) {
-      let dataName = ['正常', '超标1级警报', '超标2级警报', '超标3级警报', '工作时段停机', '非工作时段启动']
+      // let dataName = ['正常', '超标1级警报', '超标2级警报', '超标3级警报', '工作时段停机', '非工作时段启动']
       let myChart3 = this.$echarts.init(document.getElementById('myChart3'))
       let yData = []
       let xData = []
-      let legendData = []
       terminalList.forEach(e => {
-        legendData.push(dataName[e.status])
         xData.push(e.startTime)
-        let sData = {
-          name: dataName[e.status],
-          type: 'bar',
-          data: [e.status]
-        }
-        yData.push(sData)
+        yData.push(e.status)
       });
       // 绘制图表
       myChart3.setOption({
@@ -150,9 +154,6 @@ export default {
           axisPointer: {            // 坐标轴指示器，坐标轴触发有效
             type: 'line'        // 默认为直线，可选为：'line' | 'shadow'
           }
-        },
-        legend: {
-          data: legendData
         },
         grid: {
           left: '8%',
@@ -170,7 +171,19 @@ export default {
             type: 'value'
           }
         ],
-        series: yData
+        series:  [{
+          type: 'bar',
+          data: yData,
+          itemStyle: {
+            normal: {
+              //每根柱子颜色设置
+              color: function (params) {
+                let colorList = ['#ffb400', '#00ff4e', '#ff0000', '#00ddff', '#baff00', '#CD2626'];
+                return colorList[params.value];
+              }
+            }
+          },
+        }]
       });
     },
     queryOrgList() {
@@ -343,6 +356,17 @@ export default {
 </script>
 
 <style scoped>
+
+.zero{
+  height: 10px;
+  width: 10px;
+  margin-right: 8px;
+}
+.spanDIv{
+  margin-left: 10px;
+  display: flex;
+  align-items: center;
+}
 .handle-box {
     margin-bottom: 20px;
     display: flex;
