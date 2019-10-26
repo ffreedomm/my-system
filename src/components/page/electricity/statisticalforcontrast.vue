@@ -2,15 +2,11 @@
     <div>
         <div class="container">
             <div class="handle-box">
-            <el-row :gytter="2">
-              <el-col :span="4">
-              <treeselect style="width:90%;heght:90%" 
+              <treeselect style="width:300px" 
                         v-model="organId" 
                         :options="organList"
                         :default-expand-level="2"
                         placeholder="请选择企业"/>
-              </el-col>
-              <el-col :span="3">
                 <el-select v-model="deviceId" placeholder="请选择设备">
                     <el-option
                         v-for="item in deviceData"
@@ -19,8 +15,6 @@
                         :value="item.id"
                     ></el-option>
                 </el-select>
-              </el-col>
-              <el-col :span="6">
                 <el-date-picker
                     value-format="yyyy-MM-dd"
                     v-model="organTime"
@@ -29,16 +23,12 @@
                     start-placeholder="开始日期"
                     end-placeholder="结束日期"
                 ></el-date-picker>
-              </el-col>
-              <el-col :span="2">
                 <el-button
                     style="margin-left: 10px;"
                     type="primary"
                     icon="el-icon-search"
                     @click="handleSearch"
                 >统计结果</el-button>
-                </el-col>
-            </el-row>
             </div>
             <el-divider v-if="equipInfoList.length > 0" content-position="left">关联设备信息</el-divider>
             <el-table
@@ -500,6 +490,8 @@ export default {
 <style scoped>
 .handle-box {
     margin-bottom: 20px;
+    display: flex;
+    flex-direction: row;
 }
 
 .handle-select {
