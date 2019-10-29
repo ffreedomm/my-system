@@ -113,13 +113,13 @@
                         <el-divider>报警条数</el-divider>
                         <el-tabs type="border-card" header-style="font-size: 12px;">
                             <el-tab-pane>
-                                <span slot="label" @click="getWarningDatas(0.1)">1小时内({{msgSize1}}条)</span>
+                                <span slot="label" @click="getWarningDatas(24, false)">1小时内({{msgSize1}}条)</span>
                             </el-tab-pane>
                             <el-tab-pane>
-                                <span slot="label" @click="getWarningDatas(0.3)">8小时内({{msgSize2}}条)</span>
+                                <span slot="label" @click="getWarningDatas(48, false)">8小时内({{msgSize2}}条)</span>
                             </el-tab-pane>
                             <el-tab-pane>
-                                <span slot="label" @click="getWarningDatas(0.6)">24小时内({{msgSize3}}条)</span>
+                                <span slot="label" @click="getWarningDatas(72, false)">24小时内({{msgSize3}}条)</span>
                             </el-tab-pane>
                             <el-table :data="warningMsgs" @row-click="dealWarming">
                                 <el-table-column width="400">
@@ -141,18 +141,28 @@
         </div>
 
                 <!-- 新增/编辑弹出框 -->
-        <el-dialog :title="title" :visible.sync="editVisible" width="60%">
+        <el-dialog title="处理" :visible.sync="editVisible" width="60%">
             <el-form :model="dForm" ref="dForm" :rules="rules" label-width="170px">
                 <el-row :gutter="0"> 
                     <el-col :span="24">
-                        <el-form-item prop="loginPassword" label="名称">
+                        <el-form-item prop="loginPassword" label="密码">
                             <el-input v-model="dForm.loginPassword"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
                 <el-row :gutter="0"> 
+                    <el-col :span="24">
+                        <el-form-item prop="loginName" label="用户名">
+                            <el-input v-model="dForm.loginName"></el-input>
+                        </el-form-item>
+                    </el-col>
                 </el-row>
                 <el-row :gutter="0"> 
+                    <el-col :span="24">
+                        <el-form-item prop="memo" label="备注">
+                            <el-input v-model="dForm.memo"></el-input>
+                        </el-form-item>
+                    </el-col>
                 </el-row>
                 <el-row :gutter="0">
                 </el-row>
@@ -249,9 +259,9 @@ export default {
             this.getWarningData();
             //饼图数据
             this.getCircelData();
-            this.getWarningDatas(0.1);
-            this.getWarningDatas(0.3);
-            this.getWarningDatas(0.6);
+            this.getWarningDatas(24, true);
+            this.getWarningDatas(48, true);
+            this.getWarningDatas(72, true);
         },
         //下拉框数据
         getOrgList(){
@@ -327,22 +337,26 @@ export default {
 
         },
 
+        saveEdit(){},
+
         //报警条数
-        getWarningDatas(hours){
+        getWarningDatas(hours, isfirst){
             QueryUnhandledTerminalAlertListInFaultStatus(hours).then(res=>{
                 if(res.success){
-                    this.warningMsgs = res.object
+                    if(isfirst && hours == 24){
+                        this.warningMsgs = res.object
+                    }
                     let tempMsgSize = 0;
                     if(this.warningMsgs && this.warningMsgs.length > 0){
                         tempMsgSize = this.warningMsgs.length
                     }
-                    if(hours == 0.1){
+                    if(hours == 24){
                         this.msgSize1 = tempMsgSize
                     }
-                    if(hours == 0.3){
+                    if(hours == 48){
                         this.msgSize2 = tempMsgSize
                     }
-                    if(hours == 0.6){
+                    if(hours == 72){
                         this.msgSize3 = tempMsgSize
                     }
                     this.warningMsgs.forEach(item =>{
