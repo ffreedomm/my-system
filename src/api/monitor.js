@@ -70,6 +70,16 @@ export const getTotalListForDeviceList = (ids) => {
     })
 }
 
+export const QueryUnhandledTerminalAlertListInFaultStatus = (hours) => {
+    return request({
+        url: '/QueryUnhandledTerminalAlertListInFaultStatus?hours='+hours,
+        method: 'post'
+    })
+}
+
+
+
+
 
 
 

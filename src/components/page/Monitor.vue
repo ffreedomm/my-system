@@ -38,7 +38,7 @@
                                 v-for="marker in markers" :key="marker.id"
                                     @click="getDeviceInfo(marker.id)"
                                     :position="{lng: marker.longitude, lat: marker.latitude}" 
-                                    animation="BMAP_ANIMATION_BOUNCE">
+                                    >
                                 <bm-label 
                                     :content="marker.name" 
                                     :labelStyle="{color: 'red', fontSize : '15px'}" 
@@ -113,16 +113,21 @@
                         <el-divider>报警条数</el-divider>
                         <el-tabs type="border-card" header-style="font-size: 12px;">
                             <el-tab-pane>
-                                <span slot="label">1小时内(1条)</span>
+                                <span slot="label" @click="getWarningDatas(0.1)">1小时内({{msgSize1}}条)</span>
                             </el-tab-pane>
                             <el-tab-pane>
-                                <span slot="label">8小时内(3条)</span>
+                                <span slot="label" @click="getWarningDatas(0.3)">8小时内({{msgSize2}}条)</span>
                             </el-tab-pane>
                             <el-tab-pane>
-                                <span slot="label">24小时内(6条)</span>
+                                <span slot="label" @click="getWarningDatas(0.6)">24小时内({{msgSize3}}条)</span>
                             </el-tab-pane>
-                            <el-table>
-                                <el-table-column></el-table-column>
+                            <el-table :data="warningMsgs" @row-click="dealWarming">
+                                <el-table-column width="400">
+                                    <template scope="scope">
+                                {{scope.row.device.org.name}}——{{scope.row.device.name}}出现功率中度超标故障，
+                                电流峰值={{scope.row.maxElectricity}}A，功率峰值={{scope.row.maxPower/1000}}KW
+                                </template></el-table-column>
+                                <el-table-column prop="endTime"></el-table-column>
                             </el-table>
                         </el-tabs>
                 </el-col>
@@ -134,6 +139,31 @@
                 </el-col>
             </el-row>
         </div>
+
+                <!-- 新增/编辑弹出框 -->
+        <el-dialog :title="title" :visible.sync="editVisible" width="60%">
+            <el-form :model="dForm" ref="dForm" :rules="rules" label-width="170px">
+                <el-row :gutter="0"> 
+                    <el-col :span="24">
+                        <el-form-item prop="loginPassword" label="名称">
+                            <el-input v-model="dForm.loginPassword"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row :gutter="0"> 
+                </el-row>
+                <el-row :gutter="0"> 
+                </el-row>
+                <el-row :gutter="0">
+                </el-row>
+                <el-row :gutter="0">
+                </el-row>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="editVisible = false">取 消</el-button>
+                <el-button type="primary" @click="saveEdit">确 定</el-button>
+            </span>
+        </el-dialog>
     </div>
 </template>
 
@@ -142,7 +172,7 @@ import {BaiduMap,BmNavigation,BmView,BmGeolocation,BmCityList,BmMarker,BmLabel} 
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import {getQueryOrgList,getAllTerminalTotalListForOrg,getAllDeviceListForOrg,getTerminalTotalListForOrgOrChild,
-getTerminalAlertTotalInFaultStatus, getTerminalRecordListForDevice,getTotalListForDeviceList} from '@/api/monitor';
+getTerminalAlertTotalInFaultStatus, getTerminalRecordListForDevice,getTotalListForDeviceList,QueryUnhandledTerminalAlertListInFaultStatus} from '@/api/monitor';
 
 export default {
     name: 'monitor',
@@ -158,6 +188,11 @@ export default {
 
     data() {
         return {
+            dForm:{},
+            editVisible:false,
+            msgSize1:0,
+            msgSize2:0,
+            msgSize3:0,
             date:new Date(),
             weather:'',
             orgId:1,
@@ -172,7 +207,8 @@ export default {
             lastTDLArr:[],
             lastTGLArr:[],
             lastTYArr:[],
-            lastCData:[]
+            lastCData:[],
+            warningMsgs:[]
         };
     },
     watch: {
@@ -213,6 +249,9 @@ export default {
             this.getWarningData();
             //饼图数据
             this.getCircelData();
+            this.getWarningDatas(0.1);
+            this.getWarningDatas(0.3);
+            this.getWarningDatas(0.6);
         },
         //下拉框数据
         getOrgList(){
@@ -272,7 +311,59 @@ export default {
                 if(res.success){
                     if(res.object){
                         this.warningData = res.object
+                        if(this.warningData.total && this.warningData.unhandled){
+                            this.warningData.unhandledPercent = (this.warningData.unhandled / this.warningData.total).toFixed(6)
+                        }
+                        if(this.warningData.total && this.warningData.handled){
+                            this.warningData.handledPercent = (this.warningData.handled / this.warningData.total).toFixed(6)
+                        }
                     }
+                }
+            })
+        },
+
+        //处理报警
+        dealWarming(row, column, event){
+
+        },
+
+        //报警条数
+        getWarningDatas(hours){
+            QueryUnhandledTerminalAlertListInFaultStatus(hours).then(res=>{
+                if(res.success){
+                    this.warningMsgs = res.object
+                    let tempMsgSize = 0;
+                    if(this.warningMsgs && this.warningMsgs.length > 0){
+                        tempMsgSize = this.warningMsgs.length
+                    }
+                    if(hours == 0.1){
+                        this.msgSize1 = tempMsgSize
+                    }
+                    if(hours == 0.3){
+                        this.msgSize2 = tempMsgSize
+                    }
+                    if(hours == 0.6){
+                        this.msgSize3 = tempMsgSize
+                    }
+                    this.warningMsgs.forEach(item =>{
+                    let temp = item.endTime.split("-")
+                        let tempEndTime = ""
+                        temp.forEach((item1, index) =>{
+                            if(index <= 4){
+                                tempEndTime += item1;
+                                if(index < 2){
+                                    tempEndTime +="-"
+                                }
+                                if(index == 2){
+                                    tempEndTime+=" "
+                                }
+                                if(index == 3){
+                                    tempEndTime+=" : "
+                                }
+                            }
+                        })
+                        item.endTime = tempEndTime
+                    })
                 }
             })
         },
