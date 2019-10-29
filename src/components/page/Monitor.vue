@@ -134,7 +134,7 @@
                             <el-table :data="warningMsgs" @row-click="dealWarming">
                                 <el-table-column width="400">
                                     <template scope="scope">
-                                {{scope.row.device.org.name}}——{{scope.row.device.name}}出现功率中度超标故障，
+                                {{scope.row.device.org.name}}——{{scope.row.device.name}}出现{{dCodeStatus(scope.row.status)}}，
                                 电流峰值={{scope.row.maxElectricity}}A，功率峰值={{scope.row.maxPower/1000}}KW
                                 </template></el-table-column>
                                 <el-table-column prop="endTime"></el-table-column>
@@ -163,26 +163,24 @@
                 <el-row :gutter="0"> 
                     <el-col :span="24">
                         <el-form-item prop="loginName" label="用户名">
-                            <el-input v-model="dForm.loginName"></el-input>
+                            <el-input v-model="dForm.loginName" disabled="true"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
                 <el-row :gutter="0"> 
                     <el-col :span="24">
                         <el-form-item prop="memo" label="备注">
-                            <el-input v-model="dForm.memo"></el-input>
+                            <el-input type="textarea" rows="3" v-model="dForm.memo"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
-                <el-row :gutter="0">
+               <!-- <el-row :gutter="0">
                     <el-col :span="24">
-                        <el-form-item prop="terminalAlertId" label="备注">
+                        <el-form-item prop="terminalAlertId" label="设备ID">
                             <el-input v-model="dForm.terminalAlertId"></el-input>
                         </el-form-item>
                     </el-col>
-                </el-row>
-                <el-row :gutter="0">
-                </el-row>
+                </el-row> -->
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="editVisible = false">取 消</el-button>
@@ -287,6 +285,27 @@ export default {
             this.getWarningDatas(48, true);
             this.getWarningDatas(72, true);
         },
+
+        dCodeStatus(status){
+            if(status == 0){
+                return "正常"
+            }
+            if(status == 1){
+                return "超标1级警报"
+            }
+            if(status == 2){
+                return '超标2级警报'
+            }
+            if(status == 3){
+                return '超标3级警报'
+            }
+            if(status == 4){
+                return '工作时段停机'
+            }
+            if(status == 5){
+                return '非工作时段启动'
+            }
+        },
         showDetail(d){
             this.detailVisible = true;
             this.$nextTick(()=>{
@@ -372,15 +391,23 @@ export default {
 
         //处理报警
         dealWarming(row, column, event){
-
+            this.dForm.loginName=localStorage.getItem('username')
+            this.dForm.terminalAlertId=row.id
+            this.editVisible = true;
         },
 
         saveEdit(){
-            HandleTerminalAlertInFaultStatusForUser(this.form).then(res=>{
+            HandleTerminalAlertInFaultStatusForUser(this.dForm).then(res=>{
                 if(res.success){
-                    
+                    this.getWarningDatas(24, true);
+                    this.getWarningDatas(48, true);
+                    this.getWarningDatas(72, true);
+                    this.dForm.loginPassword=''
+                    this.dForm.memo=''
+                    this.editVisible = false;
                 }
             })
+            this.editVisible = false;
         },
 
         //报警条数
@@ -391,8 +418,8 @@ export default {
                         this.warningMsgs = res.object
                     }
                     let tempMsgSize = 0;
-                    if(this.warningMsgs && this.warningMsgs.length > 0){
-                        tempMsgSize = this.warningMsgs.length
+                    if(res.object && res.object.length > 0){
+                        tempMsgSize = res.object.length
                     }
                     if(hours == 24){
                         this.msgSize1 = tempMsgSize
@@ -403,7 +430,7 @@ export default {
                     if(hours == 72){
                         this.msgSize3 = tempMsgSize
                     }
-                    this.warningMsgs.forEach(item =>{
+                    res.object.forEach(item =>{
                     let temp = item.endTime.split("-")
                         let tempEndTime = ""
                         temp.forEach((item1, index) =>{
@@ -548,7 +575,6 @@ export default {
 
         //点击地图的点获取折线图和饼图数据
         getDeviceInfo(id){
-            debugger
             let req = {
                 deviceId:id,
                 start:1,
