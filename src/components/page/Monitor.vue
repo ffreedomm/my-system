@@ -1,6 +1,16 @@
 <template>
     <div>
         <div class="container">
+          <el-row>
+            <el-col :span="3"><span style=" font-size: 18px;  color: #475669; opacity: 0.75;">通知消息：</span></el-col>
+            <el-col :span="21" style="height: 30px;">
+               <el-carousel indicator-position>
+                <el-carousel-item v-for="item in noticeData" :key="item">
+                  <h3 style="cursor:pointer;" @click="showDetail(item.content)">{{ item.title }}</h3>
+                </el-carousel-item>
+              </el-carousel>
+            </el-col>
+          </el-row>
             <el-row>
                 <el-col :span="9">
                 <treeselect style="width:90%" 
@@ -174,6 +184,9 @@
                 <el-button type="primary" @click="saveEdit">确 定</el-button>
             </span>
         </el-dialog>
+        <el-dialog title="通知详情" :visible.sync="detailVisible" width="50%">
+          <div id="detail"></div>
+      </el-dialog>
     </div>
 </template>
 
@@ -183,7 +196,7 @@ import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import {getQueryOrgList,getAllTerminalTotalListForOrg,getAllDeviceListForOrg,getTerminalTotalListForOrgOrChild,
 getTerminalAlertTotalInFaultStatus, getTerminalRecordListForDevice,getTotalListForDeviceList,QueryUnhandledTerminalAlertListInFaultStatus} from '@/api/monitor';
-
+import {queryList} from '@/api/usernotice';
 export default {
     name: 'monitor',
 　　components: {
@@ -198,6 +211,8 @@ export default {
 
     data() {
         return {
+          noticeData: [],
+          detailVisible:false,
             dForm:{},
             editVisible:false,
             msgSize1:0,
@@ -248,6 +263,9 @@ export default {
     methods: {
         //初始化数据
         initData(){
+            //获取通知
+            this.getNotice();
+
             this.cData = [];
             //获取企业
             this.getOrgList();
@@ -262,6 +280,20 @@ export default {
             this.getWarningDatas(24, true);
             this.getWarningDatas(48, true);
             this.getWarningDatas(72, true);
+        },
+        showDetail(d){
+            this.detailVisible = true;
+            this.$nextTick(()=>{
+                document.getElementById("detail").innerHTML = d;
+            })
+        },
+        //获取通知
+        getNotice(){
+          queryList().then(res => {
+              if(res.success){
+                  this.noticeData = res.object
+              }
+          });
         },
         //下拉框数据
         getOrgList(){
@@ -632,6 +664,12 @@ export default {
 
 
 <style scoped>
+  .el-carousel__item h3 {
+    color: #475669;
+    font-size: 18px;
+    opacity: 0.75;
+    margin: 0;
+  }
 .table{
     height:400px;
     width:100%;
