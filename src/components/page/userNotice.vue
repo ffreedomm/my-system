@@ -63,7 +63,7 @@
         </div>
 
 
-    <el-dialog title="title" :visible.sync="detailVisible" width="60%">
+    <el-dialog title="查看" :visible.sync="detailVisible" width="60%">
         <div id="detail"></div>
     </el-dialog>
         <!-- 新增/编辑弹出框 -->
@@ -176,22 +176,30 @@ export default {
             });
         },
         getData() {
-            if(this.qTime && this.qTime.length == 2){
-                const req ={
-                    userName:this.userName,
-                    content:this.content,
-                    startTime: this.qTime[0] + '-0-0-1',
-                    endTime: this.qTime[1] + '-23-59-59',
-                    start:this.start,
-                    end:this.end
-                }
-                queryList(req).then(res => {
-                    if(res.success){
-                        this.tableData = res.object
-                        this.queryTotal()
-                    }
-                });
+            let req ={
+                userName:this.userName,
+                content:this.content,
+                startTime: '',
+                endTime: '',
+                start:this.start,
+                end:this.end
             }
+            if(this.qTime && this.qTime.length == 2){
+                req ={
+                userName:this.userName,
+                content:this.content,
+                startTime: this.qTime[0] + '-0-0-1',
+                endTime: this.qTime[1] + '-23-59-59',
+                start:this.start,
+                end:this.end
+            }
+            }
+            queryList(req).then(res => {
+                if(res.success){
+                    this.tableData = res.object
+                    this.queryTotal()
+                }
+            });
         },
         // 分页导航
         handlePageChange(val) {
