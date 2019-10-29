@@ -63,7 +63,7 @@
         </div>
 
 
-    <el-dialog title="查看" :visible.sync="detailVisible" width="60%">
+    <el-dialog title="查看" :visible.sync="detailVisible" width="70%">
         <div id="detail"></div>
     </el-dialog>
         <!-- 新增/编辑弹出框 -->
@@ -186,13 +186,13 @@ export default {
             }
             if(this.qTime && this.qTime.length == 2){
                 req ={
-                userName:this.userName,
-                content:this.content,
-                startTime: this.qTime[0] + '-0-0-1',
-                endTime: this.qTime[1] + '-23-59-59',
-                start:this.start,
-                end:this.end
-            }
+                  userName:this.userName,
+                  content:this.content,
+                  startTime: this.qTime[0] + '-0-0-1',
+                  endTime: this.qTime[1] + '-23-59-59',
+                  start:this.start,
+                  end:this.end
+              }
             }
             queryList(req).then(res => {
                 if(res.success){
