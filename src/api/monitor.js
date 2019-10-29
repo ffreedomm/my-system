@@ -77,6 +77,24 @@ export const QueryUnhandledTerminalAlertListInFaultStatus = (hours) => {
     })
 }
 
+export const HandleTerminalAlertInFaultStatusForUser = (data) => {
+    return request({
+        url: '/QueryUnhandledTerminalAlertListInFaultStatus',
+        method: 'post',
+        data,
+        transformRequest: [function (data) {
+            let ret = ''
+            for (let it in data) {
+              ret += encodeURIComponent(it) + '=' + encodeURIComponent(data[it]) + '&'
+            }
+            return ret
+        }],
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+        }
+    })
+}
+
 
 
 

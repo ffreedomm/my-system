@@ -175,6 +175,11 @@
                     </el-col>
                 </el-row>
                 <el-row :gutter="0">
+                    <el-col :span="24">
+                        <el-form-item prop="terminalAlertId" label="备注">
+                            <el-input v-model="dForm.terminalAlertId"></el-input>
+                        </el-form-item>
+                    </el-col>
                 </el-row>
                 <el-row :gutter="0">
                 </el-row>
@@ -195,7 +200,8 @@ import {BaiduMap,BmNavigation,BmView,BmGeolocation,BmCityList,BmMarker,BmLabel} 
 import Treeselect from '@riophae/vue-treeselect'
 import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import {getQueryOrgList,getAllTerminalTotalListForOrg,getAllDeviceListForOrg,getTerminalTotalListForOrgOrChild,
-getTerminalAlertTotalInFaultStatus, getTerminalRecordListForDevice,getTotalListForDeviceList,QueryUnhandledTerminalAlertListInFaultStatus} from '@/api/monitor';
+getTerminalAlertTotalInFaultStatus, getTerminalRecordListForDevice,getTotalListForDeviceList,
+QueryUnhandledTerminalAlertListInFaultStatus,HandleTerminalAlertInFaultStatusForUser} from '@/api/monitor';
 import {queryList} from '@/api/usernotice';
 export default {
     name: 'monitor',
@@ -369,7 +375,13 @@ export default {
 
         },
 
-        saveEdit(){},
+        saveEdit(){
+            HandleTerminalAlertInFaultStatusForUser(this.form).then(res=>{
+                if(res.success){
+                    
+                }
+            })
+        },
 
         //报警条数
         getWarningDatas(hours, isfirst){
