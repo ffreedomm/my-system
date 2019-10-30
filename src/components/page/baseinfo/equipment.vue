@@ -98,7 +98,7 @@
                     <el-input v-model="deviceForm.memo"></el-input>
                 </el-form-item>
                 <el-form-item label="所属企业">
-                    <el-select @click="" v-model="deviceForm.orgId"  placeholder="选择">
+                    <el-select v-model="deviceForm.orgId"  placeholder="选择">
                     <el-option
                         v-for="item in OrgList"
                         :key="item.id"
@@ -194,11 +194,11 @@
         </el-dialog>
 
         <!--  查看设备 -->
-        <el-dialog :title="title" :visible.sync="historyVisible" width="35%" >
+        <el-dialog :title="title" :visible.sync="historyVisible" width="50%" >
           <div class="container">
             <div class="form-box">  
               <el-form :model="tradeFormEqu" label-width="70px" >
-                <el-row :gutter="20">
+                <el-row :gutter="10">
                   <el-col :span="12">  
                     <el-form-item label="设备编号">
                         <label>{{tradeFormEqu.number}}</label>
