@@ -72,6 +72,7 @@
                 <el-table-column prop="creator.name" label="创建人"></el-table-column>
                 <el-table-column label="操作" width="280" align="center">
                     <template slot-scope="scope">
+                        <el-button type="text" icon="el-icon-upload" @click="handleUpload(scope.row)">下载</el-button>
                         <el-button
                             v-if="scope.row.status !== '2'"
                             type="text"
@@ -181,6 +182,13 @@ export default {
     this.queryOrgList()
   },
   methods: {
+    handleUpload(row){
+      if(row.url){
+        window.location.href = 'https://video1.dushuren123.com/iotserver/'+row.url
+      }else {
+         this.$message.error('您还没有上传文件')
+      }
+    },
     formatStatus(status) {
       if (status === '1') {
         return '未审核'
