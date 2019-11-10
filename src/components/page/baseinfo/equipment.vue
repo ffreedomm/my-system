@@ -356,6 +356,7 @@ export default {
             powerData: [],
             elecData: [],
             BtData: [],
+            swData: [],
             
             typeList:[
                 {id:1,name:'治污设备'},
@@ -652,9 +653,11 @@ export default {
         getZxList(){   
             this.elecData = []
             this.powerData = []
+            this.swData = []
             this.hisData.forEach((item) =>{
                 this.elecData.push(Number(item.electricity))
                 this.powerData.push(Number(item.power/1000).toFixed(2))
+                this.swData.push('')
             });
             this.initZXChart();
         },
@@ -682,7 +685,7 @@ export default {
                 xAxis: {
                     type: 'category',
                     boundaryGap: false,
-                    data: ''
+                    data: 'this.swData'
                 },
                 yAxis: {
                     type: 'value'
