@@ -139,7 +139,7 @@ export default {
         return {
             editor:{},
             fileList:[],
-            imageUploadUrl: 'https://video1.dushuren123.com/iotserver/UploadImageFile?width=800&FiledataFileName=Filedata',
+            imageUploadUrl: 'https://video1.dushuren123.com/iotserver/UploadImageFile?width=800&FiledataFileName=Filedata&name=Filedata',
             fileUploadUrl: 'https://video1.dushuren123.com/iotserver/UploadAccessoryFile?width=800&FiledataFileName=Filedata',
             users:[],
             qTime:[],
@@ -245,7 +245,7 @@ export default {
             this.dForm = {
                 userNoticeId: row.id,
                 userId: row.user.id,
-                dForm:row.dForm,
+                title:row.title,
                 content: row.content
             }
             this.editVisible = true;
@@ -254,13 +254,12 @@ export default {
             })
         },
         initEditor(content){
-            debugger
             this.editor = new E(this.$refs.editor)
             this.editor.customConfig.uploadImgShowBase64 = true // 使用 base64 保存图片
             this.editor.customConfig.uploadFileName = 'file'
-            this.editor.customConfig.uploadImgServer = this.imageUploadUrl // 上传图片到服务器
+            //this.editor.customConfig.uploadImgServer = this.imageUploadUrl // 上传图片到服务器
             this.editor.customConfig.onchange = (html) => {
-            this.form.description = html
+            this.dForm.content = html
             }
             this.editor.create()
             this.editor.txt.html(content)
