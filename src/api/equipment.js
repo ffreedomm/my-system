@@ -125,9 +125,9 @@ export const terminalRecordListForDevice = (id,starthis, endhis) => {
     })
 }
 
-export const terminalRecordListSumForDevice = (id) => {
+export const terminalRecordListSumForDevice = (id,starthis, endhis) => {
     return request({
-        url: `/TerminalRecordListSumForDevice?deviceId=${id}`,
+        url: `/TerminalRecordListSumForDevice?deviceId=${id}&start=${starthis}&end=${endhis}`,
         method: 'post'
     })
 }
@@ -145,6 +145,17 @@ export const queryTerminals = () => {
 export const queryOrgList = () => {
     return request({
         url: `/QueryOrgList`,
+        method: 'post'
+    })
+}
+
+/**
+ * 设备故障数
+ */
+
+export const getTotalListForDeviceList = (ids) => {
+    return request({
+        url: '/TotalListForDeviceList?ids='+ids,
         method: 'post'
     })
 }
