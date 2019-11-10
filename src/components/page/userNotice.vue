@@ -22,7 +22,6 @@
                 class="table"
                 ref="multipleTable"
                 header-cell-class-name="table-header"
-                @row-click="getDevices"
             >
                 <el-table-column type="index" width="70"  label="序号" align="center"></el-table-column>
                 <el-table-column prop="user.name" label="用户名称"></el-table-column>
@@ -67,7 +66,7 @@
         <div id="detail"></div>
     </el-dialog>
         <!-- 新增/编辑弹出框 -->
-        <el-dialog :title="title" :visible.sync="editVisible" width="60%">
+        <el-dialog :title="title" :visible.sync="editVisible" width="80%">
             <el-form :model="dForm" ref="dForm" :rules="rules" label-width="170px">
                 <el-row :gutter="0"> 
                     <el-col :span="20">
@@ -93,7 +92,8 @@
                 <el-row :gutter="0"> 
                     <el-col :span="20">
                         <el-form-item prop="normalPowerLowLimit" label="内容">
-                            <el-input type="textarea" :rows="10" v-model="dForm.content"></el-input>
+                            <div ref="editor" style="text-align:left;margin: 5px">
+                            </div>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -131,11 +131,14 @@
 </template>
 
 <script>
+import E from 'wangeditor'
 import {queryList,queryTotal,add, update, remove, queryUsers} from '@/api/usernotice';
 export default {
     name: 'industry',
     data() {
         return {
+            editor:{},
+            fileList:[],
             imageUploadUrl: 'https://video1.dushuren123.com/iotserver/UploadImageFile?width=800&FiledataFileName=Filedata',
             fileUploadUrl: 'https://video1.dushuren123.com/iotserver/UploadAccessoryFile?width=800&FiledataFileName=Filedata',
             users:[],
@@ -233,16 +236,36 @@ export default {
             this.title = '新增'
             this.dForm = {}
             this.editVisible = true;
+            this.$nextTick(()=> {
+                this.initEditor("");
+            })
         },
         handleEdit(row){
             this.title = '编辑'
             this.dForm = {
                 userNoticeId: row.id,
                 userId: row.user.id,
+                dForm:row.dForm,
                 content: row.content
             }
             this.editVisible = true;
+            this.$nextTick(()=> {
+                this.initEditor(row.content);
+            })
         },
+        initEditor(content){
+            debugger
+            this.editor = new E(this.$refs.editor)
+            this.editor.customConfig.uploadImgShowBase64 = true // 使用 base64 保存图片
+            this.editor.customConfig.uploadFileName = 'file'
+            this.editor.customConfig.uploadImgServer = this.imageUploadUrl // 上传图片到服务器
+            this.editor.customConfig.onchange = (html) => {
+            this.form.description = html
+            }
+            this.editor.create()
+            this.editor.txt.html(content)
+        },
+
         saveEdit() {
             this.$refs['dForm'].validate((valid) => {
                 if (valid) {
@@ -274,6 +297,7 @@ export default {
         });
               
         },
+        
          // 删除操作
         handleDelete(row) {
             this.$confirm('确定要删除吗？', '提示', {
@@ -295,6 +319,7 @@ export default {
         handleFileSuccess(res, file){
             this.dForm.content = this.dForm.content +"</br><a href='"+"https://video1.dushuren123.com/iotnewclient/" +res.object.href+"'>"+res.object.name+"</a>"
         },
+        handleRemove(){},
         showDetail(d){
             this.detailVisible = true;
             this.$nextTick(()=>{
