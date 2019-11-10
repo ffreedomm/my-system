@@ -194,52 +194,67 @@
         </el-dialog>
 
         <!--  查看设备 -->
-        <el-dialog :title="title" :visible.sync="historyVisible" width="50%" >
-          <div class="container">
-            <div class="form-box">  
-              <el-form :model="tradeFormEqu" label-width="70px" >
-                <el-row :gutter="10">
-                  <el-col :span="12">  
-                    <el-form-item label="设备编号">
-                        <label>{{tradeFormEqu.number}}</label>
-                    </el-form-item>
-                    <el-form-item label="设备名称">            
-                      <label>{{tradeFormEqu.name}}</label>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="12"> 
-                    <el-form-item label="额定电压">
-                      <label>{{tradeFormEqu.voltage}}</label>
-                    </el-form-item>
-                    <el-form-item label="额定功率">
-                      <label>{{tradeFormEqu.power}}</label>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="12">  
-                    <el-form-item label="经度位置">
-                      <label>{{tradeFormEqu.longitude}}</label>
-                    </el-form-item>
-                    <el-form-item label="纬度位置">
-                      <label>{{tradeFormEqu.latitude}}</label>
-                    </el-form-item>
-                  </el-col> 
-                  <el-col :span="12"> 
-                    <el-form-item label="备注说明">
-                      <label>{{tradeFormEqu.memo}}</label>
-                    </el-form-item>
-                      <el-form-item label=" 所属企业">
-                    <label>{{tradeFormEqu.orgId}}</label>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="12"> 
-                    <el-form-item label="设备类型">
-                      <label>{{tradeFormEqu.type}}</label>
-                    </el-form-item> 
-                  </el-col>
-                </el-row>
-              </el-form>
-            </div>  
-          </div>    
+        <el-dialog title="设备详情" :visible.sync="historyVisible" width="90%">
+           <div class="container">
+            <el-table
+                :data="hisData" 
+                border
+                class="table"
+                ref="multipleTable"
+                header-cell-class-name="table-header"
+            >
+            <el-table-column label="所属终端" width=""> 
+                <template slot-scope="scope">
+                    <span>{{scope.row.terminal.number}}</span>
+                </template>
+	        </el-table-column>
+            <el-table-column label="所属设备" width="">
+                <template slot-scope="scope">
+                    <span>{{scope.row.device.name}}</span>
+                </template>
+	        </el-table-column>
+            <el-table-column label="电流值" width="">
+                <template slot-scope="scope">
+                    <span>{{scope.row.electricity}}</span>
+                </template>
+	        </el-table-column>
+            <el-table-column label="电压值" width="">
+                <template slot-scope="scope">
+                    <span>{{scope.row.voltage}}</span>
+                </template>
+	        </el-table-column>
+            <el-table-column label="功率值" width="">
+                <template slot-scope="scope">
+                    <span>{{scope.row.power}}</span>
+                </template>
+	        </el-table-column>
+            <el-table-column label="记录时间" width="">
+                <template slot-scope="scope">
+                    <span>{{scope.row.createTime}}</span>
+                </template>
+	        </el-table-column>
+            </el-table>
+            <br>
+            <br>
+            <el-row :gutter="40">
+                <el-col :span="9">
+                    <div id="ChartZx" :style="{width: '100%', height: '400px'}"></div>
+                </el-col>
+                <el-col :span="6">
+                    <div id="ChartBt" :style="{width: '100%', height: '400px'}"></div>
+                </el-col>
+            </el-row>
+            <div class="pagination">
+                <el-pagination
+                    background
+                    layout="total, prev, pager, next"
+                    :current-page="currentPageHis"
+                    :page-size="pageSizeHis"
+                    :total="sumDeviceHis"
+                    @current-change="handlePageChangeHis"
+                ></el-pagination>
+            </div>
+        </div>
         </el-dialog>
 
         <!-- 设置连接终端 -->
@@ -303,8 +318,8 @@
 
 <script>
 import { queryDeviceList,queryDeviceListSum,addDevice,updateDevice,removeDevice,linkTerminalToDevice,linkProductDeviceToTreatDevice,
-        treatDeviceListForOrg,productDeviceListForOrg,device,queryTerminals,
-        queryOrgList} from '@/api/equipment'
+        treatDeviceListForOrg,productDeviceListForOrg,device,queryTerminals,terminalRecordListForDevice,terminalRecordListSumForDevice,
+        queryOrgList,getTotalListForDeviceList} from '@/api/equipment'
 export default {
     name: 'device',
     data() {
@@ -327,10 +342,22 @@ export default {
             currentPageOrg: 1,
             orgData: [],
 
+            startHis: 1,
+            endHis: 15,
+            pageSizeHis: 15,
+            sumDeviceHis: '',
+            currentPageHis: 1,
+            hisData: [],
+            deviceID: '',
+
             connData: [],
             relData: [],
             OrgList: [],
-
+            powerData: [],
+            elecData: [],
+            BtData: [],
+            swData: [],
+            
             typeList:[
                 {id:1,name:'治污设备'},
                 {id:2,name:'产污设备'}
@@ -346,7 +373,7 @@ export default {
             deviceIdD:'',
             multipleSelectionT: [],   // 终端选中
             multipleSelectionD: [],   // 设备选中
-        };
+        }
     },
     created() {
         this.getData();
@@ -479,23 +506,48 @@ export default {
             }
             this.detailVisible = true
         },
-        //查看设备
+
+        //查看设备详情
         handleHistory(row){
-            this.title = '设备详情'
-            this.tradeFormEqu = {
-              id: row.id,
-              number: row.number,
-              memo: row.memo,
-              name: row.name,
-              longitude: row.longitude,
-              latitude: row.latitude,
-              voltage: row.voltage,
-              power: row.power,
-              type: row.type == 1 ? '治污设备' : '产污设备',
-              orgId :row.org.id,
-            }
-            this.historyVisible = true;
+            terminalRecordListForDevice(row.id, this.startHis, this.endHis).then(res=>{
+             if(res.success){
+                this.hisData = res.object
+                this.deviceID = row.id
+                this.terminalRecordListSumForDevice(row)
+                this.historyVisible = true
+                this.getBtList()
+                }
+            })
         },
+
+        terminalRecordListSumForDevice(row){
+          terminalRecordListSumForDevice(row.id, this.startHis, this.endHis).then(res=>{
+            if(res.success){
+              this.sumDeviceHis = res.object
+            }
+          })
+        },
+
+        //查看设备详情分页调用
+        handleHistoryVal(){
+            terminalRecordListForDevice(this.deviceID, this.startHis, this.endHis).then(res=>{
+             if(res.success){
+                this.hisData = res.object
+                this.terminalRecordListSumForDeviceVal()
+                this.historyVisible = true
+              }
+          })
+        },
+
+        terminalRecordListSumForDeviceVal(){
+          terminalRecordListSumForDevice(this.deviceID, this.startHis, this.endHis).then(res=>{
+            if(res.success){
+              this.sumDeviceHis = res.object
+            }
+          })
+        },
+
+
         //连接终端列表
         handleConnect(row) {
             queryTerminals().then(res=>{
@@ -529,7 +581,15 @@ export default {
           this.handleDetail()
         },
 
+        //设备详情分页
+        handlePageChangeHis(val){
+          this.startHis = this.pageSizeHis * (val - 1) + 1
+          this.endHis = this.pageSizeHis * val
+          this.currentPageHis = val
+          this.handleHistoryVal()
+        },
 
+        
         //企业列表
         queryOrgList() {
             queryOrgList().then(res=>{
@@ -563,6 +623,131 @@ export default {
                 this.getData()
               }
           })
+        },
+
+        //获取饼状图数据
+        getBtList(){
+            getTotalListForDeviceList(this.deviceID).then(res=>{
+                if(res.success){
+                    if(res.object && res.object.length > 0){
+                        this.BtData = [];
+                        let temp = res.object[0];
+                        this.BtData.push(
+                            {
+                                value:temp.faultSum - temp.handledSum,
+                                name:'未处理故障数'
+                            },
+                            {
+                                value:temp.handledSum,
+                                name:'已处理故障数'
+                            },
+                        );
+                        this.initCChart();
+                        this.getZxList();
+                    }
+                }
+            });
+        },
+
+        //获取折线图数据
+        getZxList(){   
+            this.elecData = []
+            this.powerData = []
+            this.swData = []
+            this.hisData.forEach((item) =>{
+                this.elecData.push(Number(item.electricity))
+                this.powerData.push(Number(item.power/1000).toFixed(2))
+                this.swData.push('')
+            });
+            this.initZXChart();
+        },
+
+        //折线图
+        initZXChart(){
+            let ChartZx = this.$echarts.init(document.getElementById('ChartZx'));
+            ChartZx.setOption({
+                title: {
+                    text: '实时数据趋势'
+                },
+                tooltip: {
+                    trigger: 'axis'
+                },
+                legend: {
+                    data:['电流值','功率值'],
+                    align: 'left'
+                },
+                grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                },
+                xAxis: {
+                    type: 'category',
+                    boundaryGap: false,
+                    data: 'this.swData'
+                },
+                yAxis: {
+                    type: 'value'
+                },
+                series: [
+                    {
+                        name:'电流值',
+                        type:'line',
+                        data: this.elecData
+                    },
+                    {
+                        name:'功率值',
+                        type:'line',
+                        data: this.powerData
+                    }
+                ]
+            });
+
+        },
+
+        //饼图
+        initCChart(){
+            let ChartBt = this.$echarts.init(document.getElementById('ChartBt'));
+            ChartBt.setOption({
+                title: {
+                    text: '实时状态统计'
+                },
+                tooltip : {
+                    position: 'inner',
+                    trigger: 'item',
+                    formatter: "{a} <br/>{b} : {c} ({d}%)"
+                },
+                series : [
+                    {
+                        name: '',
+                        type: 'pie',
+                        radius : '75%',
+                        center: ['45%', '50%'],
+                        data:this.BtData,
+                        itemStyle: {
+                            emphasis: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            },
+                            normal:{ 
+                                label:{ 
+                                    show: true, 
+                                    formatter: '{a} \n{b}\n{c} ({d}%)' 
+                                }, 
+                                labelLine :{show:true} 
+                            }
+                        },
+                        label: {
+                            // normal: {
+                            //     position: 'inner'
+                            // }
+                        },
+                        labelLine :{show:true} 
+                    }
+                ]
+            });
         },
         
                     
