@@ -184,7 +184,7 @@ export default {
   methods: {
     handleUpload(row){
       if(row.url){
-        window.location.href = 'https://video1.dushuren123.com/iotserver/'+row.url
+        window.location.href = 'https://video1.dushuren123.com/iotnewclient/'+row.url
       }else {
          this.$message.error('您还没有上传文件')
       }
