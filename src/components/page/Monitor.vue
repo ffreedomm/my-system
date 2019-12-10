@@ -1,153 +1,140 @@
 <template>
     <div>
-        <div class="container">
-          <el-row>
-            <el-col :span="3"><span style=" font-size: 18px;  color: #475669; opacity: 0.75;">通知消息：</span></el-col>
-            <el-col :span="21" style="height: 30px;">
-               <el-carousel indicator-position>
-                <el-carousel-item v-for="item in noticeData" :key="item">
-                  <h3 style="cursor:pointer;" @click="showDetail(item.content)">{{ item.title }}</h3>
-                </el-carousel-item>
-              </el-carousel>
+        
+        <div :style="backgroundDiv">
+        <el-row style="margin-bottom:8px;">
+            <el-col :span="9">
+                <div :style="systemName" style="text-align: center;"><span style="display:block;text-align:center；line-height:42px;font-size:21px;color:rgb(197,146,42)">物联网终端管理平台</span></div>
             </el-col>
-          </el-row>
-            <el-row>
-                <el-col :span="9">
-                <treeselect style="width:90%" 
-                    v-model="orgId" 
-                    :options="orgList"
-                    :default-expand-level="2"
-                    placeholder="企业信息" />
-                </el-col>
-                <el-col :span="15">
-                    {{weather}} &nbsp; &nbsp; &nbsp; {{ date | formaDate }}
-                </el-col>
-            </el-row>
-            <el-row :gutter="40">
-                <el-col :span="9">
-                    <el-row>
-                        <div id="myChart" :style="{width: '100%', height: '200px'}"></div>
-                    </el-row>
-                    <el-row>
-                        <el-table :data="tData" height="320">
-                            <el-table-column fixed="left" type="index" width="50" label="序号" align="center" />
-                            <el-table-column prop="org.name" label="企业名称"/>
-                            <el-table-column prop="deviceSum" label="设备数量" width="100"/>
-                            <el-table-column prop="terminalSum" label="终端数量" width="100"/>
-                        </el-table>
-                    </el-row>
-                </el-col>
-                <el-col :span="15">
-                    <el-row :gutter="40">
-                           <baidu-map  class="map" 
-                                :zoom="zoom" :center="center"
-                                @ready="handler" 
-                                :scroll-wheel-zoom="true"
-                                ak="%E6%82%A8%E7%9A%84%E5%AF%86%E9%92%A5">
-                                <bm-marker 
-                                v-for="marker in markers" :key="marker.id"
-                                    @click="getDeviceInfo(marker.id)"
-                                    :position="{lng: marker.longitude, lat: marker.latitude}" 
-                                    >
-                                <bm-label 
-                                    :content="marker.name" 
-                                    :labelStyle="{color: 'red', fontSize : '15px'}" 
-                                    :offset="{width: 20, height: -20}"/>
-                                </bm-marker>
-                                <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"/>
-                                <bm-city-list anchor="BMAP_ANCHOR_TOP_LEFT"/>
-                                <!-- <bm-view 
-                                    :style="{width:'100%',height: '600px',flex: 1,marginBottom:'-30px'}"/> -->
-                                </baidu-map>
-                    </el-row>
-                </el-col>
-            </el-row>
-            <el-divider/>
-            <el-row :gutter="40">
-                <el-col :span="9">
-                    <el-row :gutter="20" class="mgb20">
-                        <el-col :span="8">
-                            <el-card
-                                shadow="always"
-                                :body-style="{padding: '0px','background-color': 'lightskyblue'}"
+            <el-col :offset="6" :span="9">
+                <div :style="systemName" style="text-align: center;"><span style="display:block;text-align:center；line-height:42px;font-size:21px;color:rgb(203,229,25)">{{ date | formaDate }}，{{weather}}</span></div>
+            </el-col>
+        </el-row>
+
+        <el-row :gutter="30">
+            <el-col :span="8" >
+                <div :style="bg1" style="height:auta;width:100%;padding-bottom:20%">
+                    <treeselect style="width:78%;padding-top: 23%; padding-left: 12%;" 
+                        v-model="orgId" 
+                        :options="orgList"
+                        :default-expand-level="2"
+                        placeholder="企业信息" />
+                    <div id="myChart" :style="{width: '100%', height: '200px'}"></div>
+                    <el-table :data="tData" height="320px" style="width: 80%;margin-left: 10%;">
+                        <el-table-column fixed="left" type="index" width="50" label="序号" align="center" />
+                        <el-table-column prop="org.name" label="企业名称"/>
+                        <el-table-column prop="deviceSum" label="设备数量" width="100"/>
+                        <el-table-column prop="terminalSum" label="终端数量" width="100"/>
+                    </el-table>
+                </div>
+            </el-col>
+
+            <el-col :span="8">
+                    <baidu-map  class="map" :zoom="zoom" :center="center"
+                        @ready="handler" 
+                        :scroll-wheel-zoom="true"
+                        ak="%E6%82%A8%E7%9A%84%E5%AF%86%E9%92%A5">
+                        <bm-marker 
+                        v-for="marker in markers" :key="marker.id"
+                            @click="getDeviceInfo(marker.id)"
+                            :position="{lng: marker.longitude, lat: marker.latitude}" 
                             >
-                                <div slot="header" class="clearfix">
-                                    <div
-                                        style="color:blue;font-size:16px;font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #f3f3f3;"
-                                    >总报警数</div>
-                                </div>
-                                <div class="grid-content grid-con-1">
-                                    <div class="grid-cont-right">
-                                        <div class="grid-num">{{warningData.total}}</div>
+                        <bm-label 
+                            :content="marker.name" 
+                            :labelStyle="{color: 'red', fontSize : '15px'}" 
+                            :offset="{width: 20, height: -20}"/>
+                        </bm-marker>
+                        <bm-navigation anchor="BMAP_ANCHOR_TOP_RIGHT"/>
+                        <bm-city-list anchor="BMAP_ANCHOR_TOP_LEFT"/>
+                    </baidu-map>
+                    <div :style="bg2" style="height:auta;width:100%;padding-bottom:2%">
+                        <div>
+                            <el-row :gutter="20">
+                                <el-col span="12">
+                                    <div v-if="deviceObj && deviceObj.name" id="myChart2" :style="{width: '95%', height: '150px'}" style=";padding-left:12%;margin-top: 50px">
+                                        <p style="color:white;font-size:14px;padding-top:2px;padding-bottom: 1px;">设备名称：{{deviceObj.name}}</p>
+
+                                        <p style="color:white;font-size:14px;padding-top:2px;padding-bottom: 1px;">设备编号：{{deviceObj.number}}</p>
+
+                                        <p style="color:white;font-size:14px;padding-top:2px;padding-bottom: 1px;">设备类型：{{deviceObj.type == 1?'治污设备':'产污设备'}}</p>
+
+                                        <p style="color:white;font-size:14px;padding-top:2px;padding-bottom: 1px;">所属企业：{{deviceObj.org.name}}</p>
                                     </div>
-                                </div>
-                            </el-card>
-                        </el-col>
-                        <el-col :span="8">
-                            <el-card
-                                shadow="hover"
-                                :body-style="{padding: '0px','background-color': '#94d6da'}"
-                            >
-                                <div slot="header" class="clearfix">
-                                    <div
-                                        style="color:green;font-size:16px;font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #f3f3f3;"
-                                    >已处理数</div>
-                                </div>
-                                <div class="grid-content grid-con-2">
-                                    <div class="grid-cont-right">
-                                        <div class="grid-num">{{warningData.handled}}</div>
-                                        <span class="percent">{{warningData.handledPercent}}%</span>
-                                    </div>
-                                </div>
-                            </el-card>
-                        </el-col>
-                        <el-col :span="8">
-                            <el-card
-                                shadow="hover"
-                                :body-style="{padding: '0px','background-color': '#f3704b'}"
-                            >
-                                <div slot="header" class="clearfix">
-                                    <div
-                                        style="color:red;font-size:16px;font-weight:bold;margin:-18px -20px; padding:10px 10px; background: #f3f3f3;"
-                                    >未处理数</div>
-                                </div>
-                                <div class="grid-content grid-con-2">
-                                    <div class="grid-cont-right">
-                                        <div class="grid-num">{{warningData.unhandled}}</div>
-                                        <span class="percent">{{warningData.unhandledPercent}}%</span>
-                                    </div>
-                                </div>
-                            </el-card>
-                        </el-col>
+                                </el-col>
+                                <el-col span="12">
+                                    <div id="myChart3" :style="{width: '200px', height: '200px'}"></div>
+                                </el-col>
+                            </el-row>
+                        </div>
+                </div>
+
+            </el-col>
+
+            <el-col :span="8">
+                <el-row :gutter="10" style="margin-top:9%">
+                    <el-col :span="8">
+                        <div :style="pane" style="width:100%;height:100%">
+                            <div>
+                                <span style="color:rgb(83,118,238);margin-left:10px;margin-top:15px;font-size:18px">总报警数</span><br /><br />
+                                <span style="color:rgb(83,118,238);margin-left:10px;height:12px;font-weight:bold">{{warningData.total}}</span>
+                            </div>
+                        </div>
+                     </el-col>
+                    <el-col :span="8">
+                        <div :style="pane" style="width:100%;height:100%">
+                            <div>
+                                <span style="color:rgb(81,143,24);margin-left:10px;margin-top:15px;font-size:18px">已处理数</span><br /><br />
+                                <span style="color:rgb(81,143,24);margin-left:10px;margin-bottom:8px;font-weight:bold">{{warningData.handled}}</span>
+                                <span style="color:rgb(81,143,24);margin-left:10px;font-weight:bold">{{warningData.handledPercent*100}}%</span>
+                            </div>
+                        </div>
+                    </el-col>
+                    <el-col :span="8">
+                        <div :style="pane" style="width:100%;height:100%">
+                            <div>
+                                <span style="color:rgb(220,17,117);margin-left:10px;margin-top:15px;font-size:18px">未处理数</span><br /><br />
+                                <span style="color:rgb(220,17,117);margin-left:10px;margin-bottom:8px;font-weight:bold">{{warningData.unhandled}}</span>
+                                <span style="color:rgb(220,17,117);margin-left:10px;font-weight:bold">{{warningData.unhandledPercent*100}}%</span>
+                            </div>
+                        </div>
+                    </el-col>
                     </el-row>
-                        <el-divider>报警条数</el-divider>
-                        <el-tabs type="border-card" header-style="font-size: 12px;">
-                            <el-tab-pane>
-                                <span slot="label" @click="getWarningDatas(24, false)">1小时内({{msgSize1}}条)</span>
-                            </el-tab-pane>
-                            <el-tab-pane>
-                                <span slot="label" @click="getWarningDatas(48, false)">8小时内({{msgSize2}}条)</span>
-                            </el-tab-pane>
-                            <el-tab-pane>
-                                <span slot="label" @click="getWarningDatas(72, false)">24小时内({{msgSize3}}条)</span>
-                            </el-tab-pane>
-                            <el-table :data="warningMsgs" @row-click="dealWarming">
-                                <el-table-column width="400">
-                                    <template scope="scope">
-                                {{scope.row.device.org.name}}——{{scope.row.device.name}}出现{{dCodeStatus(scope.row.status)}}，
-                                电流峰值={{scope.row.maxElectricity}}A，功率峰值={{scope.row.maxPower/1000}}KW
-                                </template></el-table-column>
-                                <el-table-column prop="endTime"></el-table-column>
-                            </el-table>
-                        </el-tabs>
-                </el-col>
-                <el-col :span="9">
-                    <div id="myChart2" :style="{width: '100%', height: '400px'}"></div>
-                </el-col>
-                <el-col :span="6">
-                    <div id="myChart3" :style="{width: '100%', height: '400px'}"></div>
-                </el-col>
-            </el-row>
+                    
+                    <div :style="warningBG" style="margin-top:20px;width:100%;height:400px;">
+                        <div style="padding-top:32px;padding-left:35px;"><span style="font-size:18px;color:white">报警信息</span></div> 
+                        <el-tabs type="border-card" header-style="font-size: 12px;" style="width:88%;height:70%;margin-left:35px;margin-top:5px;margin-right:45px;margin-bottom:50px;">
+
+                                <el-tab-pane >
+                                    <span slot="label" @click="getWarningDatas(24, false)">1小时内({{msgSize1}}条)</span>
+                                </el-tab-pane>
+                                <el-tab-pane>
+                                    <span slot="label" @click="getWarningDatas(48, false)">8小时内({{msgSize2}}条)</span>
+                                </el-tab-pane>
+                                <el-tab-pane>
+                                    <span slot="label" @click="getWarningDatas(72, false)">24小时内({{msgSize3}}条)</span>
+                                </el-tab-pane>
+                                <el-table :data="warningMsgs" @row-click="dealWarming">
+                                    <el-table-column>
+                                        <template scope="scope">
+                                    {{scope.row.device.org.name}}——{{scope.row.device.name}}出现{{dCodeStatus(scope.row.status)}}，
+                                    电流峰值={{scope.row.maxElectricity}}A，功率峰值={{scope.row.maxPower/1000}}KW
+                                    </template></el-table-column>
+                                    <el-table-column prop="endTime"></el-table-column>
+                                </el-table>
+                            </el-tabs> 
+                    </div>
+
+                        <div :style="lastBG" style="margin-top:30px;width:100%;height:100%;">
+                            <div style="width:88%;height:70%;margin-left:35px;margin-top:25px;margin-right:45px;margin-bottom:50px;padding-bottom:18px">
+                            <p style="color:white;font-size:18px;padding-top:18px;padding-bottom:15px">最新通知</p>
+                            <p style="color:white;font-size:14px;padding-top:2px;padding-bottom: 1px;" v-for="item in noticeData" :key="item" @click="showDetail(item.content)">
+                                <a href="#" style="color:white;font-size:14px;">{{ item.title }}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ item.createTime }}</a></p>
+                            </div>
+                        </div>
+                    </el-table>
+            </el-col>
+        
+        </el-row>
         </div>
 
                 <!-- 新增/编辑弹出框 -->
@@ -200,6 +187,7 @@ import '@riophae/vue-treeselect/dist/vue-treeselect.css'
 import {getQueryOrgList,getAllTerminalTotalListForOrg,getAllDeviceListForOrg,getTerminalTotalListForOrgOrChild,
 getTerminalAlertTotalInFaultStatus, getTerminalRecordListForDevice,getTotalListForDeviceList,
 QueryUnhandledTerminalAlertListInFaultStatus,HandleTerminalAlertInFaultStatusForUser} from '@/api/monitor';
+import {device} from '@/api/equipment';
 import {queryList} from '@/api/usernotice';
 export default {
     name: 'monitor',
@@ -215,6 +203,7 @@ export default {
 
     data() {
         return {
+            deviceObj:{},
           noticeData: [],
           detailVisible:false,
             dForm:{},
@@ -237,7 +226,42 @@ export default {
             lastTGLArr:[],
             lastTYArr:[],
             lastCData:[],
-            warningMsgs:[]
+            warningMsgs:[],
+            backgroundDiv: {
+                backgroundImage:'url(' + require('../../assets/img/bg_1.jpg') + ')',
+                backgroundRepeat:'no-repeat',
+                backgroundSize:'100% 100%'
+            },
+            systemName:{
+                backgroundImage:'url(' + require('../../assets/img/1-2.png') + ')',
+                backgroundRepeat:'no-repeat',
+                backgroundSize:'100% 100%'
+            },
+            bg1:{
+                backgroundImage:'url(' + require('../../assets/img/1-7.png') + ')',
+                backgroundRepeat:'no-repeat',
+                backgroundSize:'100% 100%'
+            },
+            bg2:{
+                backgroundImage:'url(' + require('../../assets/img/1-15.png') + ')',
+                backgroundRepeat:'no-repeat',
+                backgroundSize:'100% 100%'
+            },
+            pane:{
+                backgroundImage:'url(' + require('../../assets/img/1-4.png') + ')',
+                backgroundRepeat:'no-repeat',
+                backgroundSize:'100% 100%'
+            },
+            warningBG:{
+                backgroundImage:'url(' + require('../../assets/img/1-15.png') + ')',
+                backgroundRepeat:'no-repeat',
+                backgroundSize:'100% 100%'
+            },
+            lastBG:{
+                backgroundImage:'url(' + require('../../assets/img/1-15.png') + ')',
+                backgroundRepeat:'no-repeat',
+                backgroundSize:'100% 100%'
+            },
         };
     },
     watch: {
@@ -487,6 +511,11 @@ export default {
 
         //初始化地图
         handler ({BMap, map}) {
+            var mapStyle ={
+                features: ["road","building","water","land"],//隐藏地图上的"poi",
+            style : 'midnight',
+            };
+            map.setMapStyle(mapStyle);
             window.map = map;
         },
         initChart(){
@@ -534,7 +563,7 @@ export default {
             let myChart3 = this.$echarts.init(document.getElementById('myChart3'));
             myChart3.setOption({
                 title: {
-                    text: '实时状态统计'
+                    //text: '实时状态统计'
                 },
                 tooltip : {
                     position: 'inner',
@@ -563,9 +592,9 @@ export default {
                             }
                         },
                         label: {
-                            // normal: {
-                            //     position: 'inner'
-                            // }
+                            normal: {
+                                position: 'inner'
+                            }
                         },
                         labelLine :{show:true} 
                     }
@@ -591,7 +620,7 @@ export default {
                             this.lastTGLArr.push(Number(item.power/1000).toFixed(2))
                             this.lastTYArr.push('')
                         })
-                        this.initZXChart();
+                        //this.initZXChart();
                     }
                 }
             });
@@ -638,6 +667,14 @@ export default {
                     }
                 }
             });
+
+            //获取设备信息
+            device(id).then(res=>{
+                if(res.success){
+                    this.deviceObj = res.object
+                }
+            });
+            
             
         },
         //折线图
@@ -660,7 +697,19 @@ export default {
                 xAxis: {
                     type: 'category',
                     boundaryGap: false,
-                    data: this.lastTYArr
+                    data: this.lastTYArr,
+                    axisLabel: {
+                    show: true,
+                        textStyle: {
+                        color: 'white',  //更改坐标轴文字颜色
+                        //fontSize : 14      //更改坐标轴文字大小
+                        }
+                    },
+                    axisLine:{
+                        lineStyle:{
+                            color:'white' //更改坐标轴颜色
+                        }
+                    }
                 },
                 yAxis: {
                     type: 'value'
@@ -718,7 +767,8 @@ export default {
 
 .map {
  width: 100%;
- height: 520px;
+ height: 500px;
+ margin-top:9%
 }
 .el-select el-select--small{
     width: 35% !important;
